@@ -2,43 +2,39 @@
 <html lang="fa" dir="rtl">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-<title>نبرد سلطنتی — سرگرمی در حین انتظار ⚔️</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>شکار زامبی — دو نفرهٔ آنلاین 🧟</title>
 
 <link rel="preconnect" href="https://cdn.jsdelivr.net">
 <link href="https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/Vazirmatn-font-face.css" rel="stylesheet">
+<script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script>
 
 <style>
-/* ============================================================
-   ریست
-   ============================================================ */
 *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 
 :root {
-  --gold: #fbbf24;
-  --gold-deep: #b45309;
-  --blue: #22d3ee;
-  --blue-deep: #0369a1;
-  --red: #f43f5e;
-  --red-deep: #9f1239;
-  --purple: #a78bfa;
-  --lime: #a3e635;
+  --cyan: #22d3ee;
   --pink: #ff5fae;
+  --purple: #a78bfa;
+  --red: #f43f5e;
+  --gold: #fbbf24;
+  --lime: #a3e635;
+  --green: #22c55e;
 }
 
 html, body {
   height: 100%;
   overflow: hidden;
-  background: #0a0a15;
+  background: #05010a;
 }
 
 body {
-  font-family: "Vazirmatn", system-ui, -apple-system, Tahoma, sans-serif;
+  font-family: "Vazirmatn", system-ui, Tahoma, sans-serif;
   color: #fff;
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 8px;
+  padding: 10px;
   -webkit-font-smoothing: antialiased;
   user-select: none;
   -webkit-user-select: none;
@@ -46,481 +42,561 @@ body {
   touch-action: manipulation;
 }
 
-/* ============================================================
-   کانتینر اصلی
-   ============================================================ */
-.game {
-  width: min(430px, 100vw);
-  height: min(96dvh, 860px);
-  display: flex;
-  flex-direction: column;
-  gap: 7px;
-}
+::selection { background: var(--pink); color: #000; }
 
-.arena {
-  position: relative;
-  flex: 1;
-  min-height: 0;
-  border-radius: 20px;
-  overflow: hidden;
-  border: 2px solid rgba(251, 191, 36, 0.45);
+/* ============================================================
+   لابی
+   ============================================================ */
+#lobby {
+  width: min(560px, 100%);
+  max-height: 96dvh;
+  overflow-y: auto;
+  padding: 32px 24px;
+
+  background:
+    linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.02)),
+    rgba(12, 4, 25, 0.75);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border: 1.5px solid rgba(167, 139, 250, 0.35);
+  border-radius: 26px;
   box-shadow:
-    0 0 50px -10px rgba(251, 191, 36, 0.55),
-    0 20px 60px -20px rgba(168, 85, 247, 0.7),
-    inset 0 0 40px rgba(0, 0, 0, 0.6);
-  animation: arenaIn 0.8s cubic-bezier(0.2, 0.9, 0.3, 1.3) both;
-}
-
-@keyframes arenaIn {
-  from { opacity: 0; transform: scale(0.94); filter: blur(8px); }
-  to   { opacity: 1; transform: scale(1); filter: blur(0); }
-}
-
-.arena::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  border-radius: 18px;
-  pointer-events: none;
-  background: repeating-linear-gradient(
-    0deg,
-    rgba(0, 0, 0, 0.06) 0,
-    rgba(0, 0, 0, 0.06) 1px,
-    transparent 1px,
-    transparent 3px
-  );
-  z-index: 5;
-}
-
-canvas#game {
-  display: block;
-  width: 100%;
-  height: 100%;
-}
-
-/* ============================================================
-   HUD بالای صفحه
-   ============================================================ */
-.hud {
-  position: absolute;
-  top: 10px;
-  left: 10px;
-  right: 10px;
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  gap: 8px;
-  z-index: 6;
-  pointer-events: none;
-}
-
-.team-stats {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  padding: 5px 10px;
-  background: rgba(0, 0, 0, 0.55);
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  border-radius: 999px;
-  backdrop-filter: blur(10px);
-  font-size: 0.72rem;
-  font-weight: 800;
-}
-
-.team-stats .crown {
-  font-size: 0.9rem;
-  filter: drop-shadow(0 0 6px currentColor);
-}
-
-.team-stats.player { color: #7dd3fc; border-color: rgba(34, 211, 238, 0.5); }
-.team-stats.enemy  { color: #fda4af; border-color: rgba(244, 63, 94, 0.5); }
-
-.timer {
-  display: inline-flex;
-  align-items: center;
-  gap: 5px;
-  padding: 5px 12px;
-  background: rgba(0, 0, 0, 0.55);
-  border: 1px solid rgba(251, 191, 36, 0.4);
-  border-radius: 999px;
-  font-size: 0.75rem;
-  font-weight: 900;
-  color: var(--gold);
-  font-variant-numeric: tabular-nums;
-  backdrop-filter: blur(10px);
-  text-shadow: 0 0 10px rgba(251, 191, 36, 0.9);
-}
-
-/* پیام‌های شناور وسط صفحه */
-.toast {
-  position: absolute;
-  top: 45%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  z-index: 7;
-  padding: 12px 26px;
-  font-size: 1rem;
-  font-weight: 900;
-  color: #fff;
-
-  background: linear-gradient(135deg, rgba(0, 0, 0, 0.85), rgba(30, 10, 60, 0.85));
-  border: 1.5px solid var(--gold);
-  border-radius: 999px;
-  box-shadow: 0 0 40px -6px var(--gold);
-  text-shadow: 0 0 12px var(--gold);
-
-  opacity: 0;
-  pointer-events: none;
-}
-
-.toast.show {
-  animation: toastPop 1.4s cubic-bezier(0.2, 0.9, 0.3, 1.3);
-}
-
-@keyframes toastPop {
-  0%   { opacity: 0; transform: translate(-50%, -50%) scale(0.5); }
-  20%  { opacity: 1; transform: translate(-50%, -50%) scale(1.15); }
-  40%  { transform: translate(-50%, -50%) scale(1); }
-  85%  { opacity: 1; }
-  100% { opacity: 0; transform: translate(-50%, -80%) scale(1); }
-}
-
-/* ============================================================
-   نوار کارت‌های پایین
-   ============================================================ */
-.bottom-bar {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 6px;
-  background: linear-gradient(180deg, rgba(15, 10, 30, 0.9), rgba(8, 4, 18, 0.95));
-  border: 1.5px solid rgba(251, 191, 36, 0.3);
-  border-radius: 16px;
-  box-shadow: 0 10px 30px -10px rgba(251, 191, 36, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.06);
-}
-
-/* نوار الیکسیر */
-.elixir {
-  position: relative;
-  width: 38px;
-  height: 100%;
-  min-height: 78px;
-  border-radius: 10px;
-  background: rgba(255, 255, 255, 0.06);
-  border: 1px solid rgba(168, 85, 247, 0.4);
-  overflow: hidden;
-  flex-shrink: 0;
-}
-
-.elixir-fill {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  height: 50%;
-  background: linear-gradient(180deg, #d946ef, #a855f7 40%, #7c3aed);
-  transition: height 0.3s ease;
-  box-shadow: 0 0 20px rgba(217, 70, 239, 0.85);
-}
-
-.elixir-fill::after {
-  content: "";
-  position: absolute;
-  top: 0; left: 0; right: 0;
-  height: 3px;
-  background: linear-gradient(90deg, #f0abfc, #fff, #f0abfc);
-  box-shadow: 0 0 14px #f0abfc;
-}
-
-.elixir-num {
-  position: absolute;
-  inset: 0;
-  display: grid;
-  place-items: center;
-  font-size: 1.1rem;
-  font-weight: 900;
-  color: #fff;
-  text-shadow: 0 0 10px #000, 0 0 20px #a855f7;
-  z-index: 2;
-  font-variant-numeric: tabular-nums;
-}
-
-/* کارت‌ها */
-.hand {
-  flex: 1;
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 5px;
-  height: 78px;
-}
-
-.card {
-  position: relative;
-  border-radius: 12px;
-  overflow: hidden;
-  cursor: pointer;
-  background: linear-gradient(160deg, #2a1a4a, #1a0e30);
-  border: 1.5px solid rgba(255, 255, 255, 0.15);
-  transition: transform 0.2s cubic-bezier(0.2, 0.9, 0.3, 1.4), border-color 0.2s, box-shadow 0.2s;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: 4px;
-  touch-action: manipulation;
-}
-
-.card::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(180deg, rgba(255,255,255,0.12), transparent 60%);
-  pointer-events: none;
-}
-
-.card .icon {
-  font-size: 1.55rem;
-  line-height: 1;
-  filter: drop-shadow(0 2px 6px rgba(0, 0, 0, 0.6));
-}
-
-.card .name {
-  font-size: 0.6rem;
-  font-weight: 800;
-  color: rgba(255, 255, 255, 0.85);
-  margin-top: 2px;
-  letter-spacing: -0.02em;
-}
-
-.card .cost {
-  position: absolute;
-  top: 3px;
-  right: 3px;
-  width: 18px;
-  height: 18px;
-  display: grid;
-  place-items: center;
-  font-size: 0.68rem;
-  font-weight: 900;
-  color: #fff;
-  background: linear-gradient(135deg, #d946ef, #7c3aed);
-  border: 1.5px solid rgba(255, 255, 255, 0.35);
-  border-radius: 50%;
-  box-shadow: 0 0 10px rgba(217, 70, 239, 0.8);
-  font-variant-numeric: tabular-nums;
-}
-
-.card.selected {
-  transform: translateY(-8px) scale(1.08);
-  border-color: var(--gold);
-  box-shadow: 0 0 24px -4px var(--gold), 0 0 40px -10px var(--pink);
-  z-index: 10;
-}
-
-.card.selected::after {
-  content: "";
-  position: absolute;
-  inset: -3px;
-  border-radius: 14px;
-  border: 2px solid var(--gold);
-  animation: selectedPulse 1.2s ease-in-out infinite;
-  pointer-events: none;
-}
-
-@keyframes selectedPulse {
-  0%, 100% { opacity: 0.5; transform: scale(1); }
-  50%      { opacity: 1; transform: scale(1.03); }
-}
-
-.card.disabled {
-  opacity: 0.4;
-  filter: grayscale(0.85);
-  cursor: not-allowed;
-}
-
-.card:not(.disabled):active {
-  transform: scale(0.94);
-}
-
-/* ============================================================
-   اورلی‌ها
-   ============================================================ */
-.overlay {
-  position: absolute;
-  inset: 0;
-  z-index: 20;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 14px;
-  padding: 26px 22px;
+    0 40px 90px -30px rgba(124, 58, 237, 0.7),
+    inset 0 1px 0 rgba(255, 255, 255, 0.12);
   text-align: center;
-  background: radial-gradient(ellipse at center, rgba(30, 15, 60, 0.92), rgba(5, 2, 12, 0.97));
-  backdrop-filter: blur(14px);
-  -webkit-backdrop-filter: blur(14px);
-  transition: opacity 0.4s ease, transform 0.4s ease;
+  animation: popIn 0.8s cubic-bezier(0.2, 0.9, 0.3, 1.3) both;
 }
 
-.overlay.hidden {
-  opacity: 0;
-  pointer-events: none;
-  transform: scale(1.06);
+@keyframes popIn {
+  from { opacity: 0; transform: translateY(40px) scale(0.94); filter: blur(8px); }
+  to   { opacity: 1; transform: translateY(0) scale(1); filter: blur(0); }
 }
 
-.overlay .logo {
-  font-size: 3.4rem;
-  line-height: 1;
-  filter: drop-shadow(0 0 30px var(--gold));
-  animation: bob 2.6s ease-in-out infinite;
-}
-
-@keyframes bob {
-  0%, 100% { transform: translateY(0) rotate(-6deg); }
-  50%      { transform: translateY(-12px) rotate(6deg); }
-}
-
-.overlay h1 {
-  font-size: clamp(1.5rem, 6vw, 2.3rem);
+.lobby-head h1 {
+  font-size: clamp(1.6rem, 5vw, 2.3rem);
   font-weight: 900;
   line-height: 1.5;
-  background: linear-gradient(120deg, #fde68a, #fbbf24, #f59e0b, #fbbf24);
-  background-size: 250% 100%;
+  background: linear-gradient(120deg, var(--cyan), var(--purple) 40%, var(--pink) 70%, var(--gold));
+  background-size: 300% 100%;
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
-  animation: flow 5s linear infinite;
-  filter: drop-shadow(0 4px 30px rgba(251, 191, 36, 0.5));
+  animation: flow 6s linear infinite;
+  filter: drop-shadow(0 4px 30px rgba(34, 211, 238, 0.5));
 }
 
-@keyframes flow { to { background-position: 250% 50%; } }
+@keyframes flow { to { background-position: 300% 50%; } }
 
-.overlay p {
-  font-size: clamp(0.82rem, 2.4vw, 0.96rem);
+.lobby-head p {
+  font-size: 0.9rem;
+  color: rgba(255, 255, 255, 0.65);
   line-height: 2;
-  color: rgba(255, 255, 255, 0.72);
-  max-width: 36ch;
+  margin-top: 6px;
 }
 
-.overlay p b { color: var(--gold); font-weight: 800; }
-
-.legend {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 6px;
-  max-width: 340px;
-  margin-top: 4px;
+.lobby-head .emojis {
+  font-size: 2.2rem;
+  margin-bottom: 6px;
+  letter-spacing: 8px;
 }
 
-.legend span {
-  padding: 5px 10px;
-  font-size: 0.72rem;
+.lobby-head .emojis span {
+  display: inline-block;
+  animation: wiggle 2.4s ease-in-out infinite;
+}
+.lobby-head .emojis span:nth-child(2) { animation-delay: 0.2s; }
+.lobby-head .emojis span:nth-child(3) { animation-delay: 0.4s; }
+.lobby-head .emojis span:nth-child(4) { animation-delay: 0.6s; }
+
+@keyframes wiggle {
+  0%, 100% { transform: translateY(0) rotate(0); }
+  25%      { transform: translateY(-8px) rotate(-8deg) scale(1.1); }
+  75%      { transform: translateY(-4px) rotate(8deg); }
+}
+
+.section {
+  margin-top: 22px;
+  padding: 16px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  border-radius: 16px;
+}
+
+.section-label {
+  font-size: 0.82rem;
   font-weight: 800;
-  color: rgba(255, 255, 255, 0.85);
-  background: rgba(255, 255, 255, 0.06);
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  border-radius: 8px;
+  color: rgba(255, 255, 255, 0.75);
+  margin-bottom: 12px;
+  text-align: right;
 }
 
 .btn {
   position: relative;
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   gap: 8px;
-  padding: 15px 40px;
+
+  padding: 14px 32px;
   font-family: inherit;
-  font-size: 1rem;
+  font-size: 0.98rem;
   font-weight: 900;
   color: #1a0e00;
-  background: linear-gradient(135deg, #fde68a, #fbbf24 50%, #f59e0b);
+
+  background: linear-gradient(135deg, #ffb45c, #ff7a3c 45%, #ff5c8b);
   background-size: 200% 200%;
   border: none;
   border-radius: 999px;
   cursor: pointer;
-  box-shadow:
-    0 0 0 1px rgba(255, 255, 255, 0.3) inset,
-    0 18px 50px -14px rgba(251, 191, 36, 0.95),
-    0 0 80px -10px rgba(251, 191, 36, 0.7);
+  width: 100%;
+
+  box-shadow: 0 18px 44px -14px rgba(255, 120, 60, 0.95), 0 0 60px -10px rgba(255, 95, 174, 0.6);
   transition: transform 0.3s cubic-bezier(0.2, 0.9, 0.3, 1.4), box-shadow 0.3s, background-position 0.6s;
   overflow: hidden;
-  margin-top: 8px;
+}
+
+.btn.secondary {
+  color: #fff;
+  background: linear-gradient(135deg, #22d3ee, #a78bfa 50%, #ff5fae);
+  box-shadow: 0 18px 44px -14px rgba(34, 211, 238, 0.9), 0 0 60px -10px rgba(167, 139, 250, 0.7);
 }
 
 .btn::after {
   content: "";
   position: absolute;
   inset: 0;
-  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.75), transparent);
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.65), transparent);
   transform: translateX(-130%);
-  animation: shine 3s ease-in-out infinite 0.8s;
+  animation: shine 3.2s ease-in-out infinite 1s;
 }
 
 @keyframes shine {
-  0% { transform: translateX(-130%); }
-  40% { transform: translateX(130%); }
+  0%   { transform: translateX(-130%); }
+  40%  { transform: translateX(130%); }
   100% { transform: translateX(130%); }
 }
 
-.btn:hover {
-  transform: translateY(-4px) scale(1.06);
+.btn:hover:not(:disabled) {
+  transform: translateY(-3px) scale(1.02);
   background-position: 100% 50%;
-  box-shadow:
-    0 0 0 1px rgba(255, 255, 255, 0.4) inset,
-    0 26px 60px -16px rgba(251, 191, 36, 1),
-    0 0 110px -10px rgba(251, 191, 36, 0.9);
 }
 
-.btn:active { transform: translateY(-1px) scale(0.98); }
+.btn:active:not(:disabled) { transform: translateY(-1px) scale(0.98); }
+.btn:disabled { opacity: 0.5; cursor: not-allowed; }
 
-/* آمار پایان بازی */
-.stats {
+.room-code-display {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  margin: 14px 0;
+}
+
+.room-code-display span {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 10px;
-  width: 100%;
-  max-width: 300px;
-  margin-top: 6px;
+  place-items: center;
+  width: 46px;
+  height: 58px;
+
+  font-size: 1.7rem;
+  font-weight: 900;
+  color: var(--gold);
+  font-family: 'Courier New', monospace;
+
+  background: linear-gradient(180deg, rgba(251, 191, 36, 0.1), rgba(251, 191, 36, 0.02));
+  border: 1.5px solid rgba(251, 191, 36, 0.5);
+  border-radius: 10px;
+  text-shadow: 0 0 20px var(--gold);
+
+  animation: codePop 0.5s cubic-bezier(0.2, 0.9, 0.3, 1.5) both;
 }
 
-.stat {
-  padding: 10px 12px;
+.room-code-display span:nth-child(1) { animation-delay: 0.1s; }
+.room-code-display span:nth-child(2) { animation-delay: 0.15s; }
+.room-code-display span:nth-child(3) { animation-delay: 0.2s; }
+.room-code-display span:nth-child(4) { animation-delay: 0.25s; }
+.room-code-display span:nth-child(5) { animation-delay: 0.3s; }
+.room-code-display span:nth-child(6) { animation-delay: 0.35s; }
+
+@keyframes codePop {
+  from { opacity: 0; transform: scale(0.5) rotateY(90deg); }
+  to   { opacity: 1; transform: scale(1) rotateY(0); }
+}
+
+.copy-hint {
+  font-size: 0.78rem;
+  color: rgba(255, 255, 255, 0.55);
+  margin-bottom: 10px;
+}
+
+.waiting {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 10px;
+  padding: 8px 18px;
+  font-size: 0.82rem;
+  font-weight: 800;
+  color: var(--cyan);
+  background: rgba(34, 211, 238, 0.08);
+  border: 1px solid rgba(34, 211, 238, 0.4);
+  border-radius: 999px;
+  backdrop-filter: blur(8px);
+}
+
+.waiting .dot {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: var(--cyan);
+  box-shadow: 0 0 0 0 rgba(34, 211, 238, 0.85);
+  animation: ping 1.6s ease-out infinite;
+}
+
+@keyframes ping {
+  0%   { box-shadow: 0 0 0 0 rgba(34, 211, 238, 0.85); }
+  70%  { box-shadow: 0 0 0 12px rgba(34, 211, 238, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(34, 211, 238, 0); }
+}
+
+.input-wrap {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.input-wrap input {
+  flex: 1;
+  padding: 13px 16px;
+  font-family: 'Courier New', monospace;
+  font-size: 1.2rem;
+  font-weight: 900;
+  letter-spacing: 6px;
+  text-align: center;
+  color: #fff;
+  text-transform: uppercase;
+
+  background: rgba(0, 0, 0, 0.35);
+  border: 1.5px solid rgba(167, 139, 250, 0.35);
+  border-radius: 12px;
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.input-wrap input:focus {
+  border-color: var(--gold);
+  box-shadow: 0 0 0 3px rgba(251, 191, 36, 0.2);
+}
+
+.input-wrap input::placeholder {
+  color: rgba(255, 255, 255, 0.25);
+  letter-spacing: 4px;
+}
+
+.error-msg {
+  font-size: 0.8rem;
+  color: var(--red);
+  font-weight: 800;
+  margin-top: 8px;
+  min-height: 18px;
+}
+
+.how-to {
+  font-size: 0.78rem;
+  line-height: 2;
+  color: rgba(255, 255, 255, 0.5);
+  margin-top: 20px;
+  padding-top: 16px;
+  border-top: 1px dashed rgba(255, 255, 255, 0.1);
+  text-align: right;
+}
+
+.how-to b { color: var(--cyan); }
+
+/* ============================================================
+   بازی
+   ============================================================ */
+#game {
+  position: fixed;
+  inset: 0;
+  display: none;
+  background: #05010a;
+}
+
+#game.active { display: block; }
+
+#canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+  background: radial-gradient(ellipse at center, #150a2e 0%, #05010a 70%);
+}
+
+.game-hud {
+  position: fixed;
+  top: 12px;
+  left: 12px;
+  right: 12px;
+  z-index: 10;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 8px;
+  pointer-events: none;
+  flex-wrap: wrap;
+}
+
+.hud-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  font-size: 0.82rem;
+  font-weight: 900;
+  color: #fff;
+  background: rgba(0, 0, 0, 0.55);
+  border: 1.5px solid rgba(255, 255, 255, 0.15);
+  border-radius: 999px;
+  backdrop-filter: blur(12px);
+  text-shadow: 0 0 12px rgba(255, 255, 255, 0.5);
+}
+
+.hud-pill b { color: var(--gold); text-shadow: 0 0 14px var(--gold); font-variant-numeric: tabular-nums; }
+.hud-pill .wave-icon { animation: bob 2s ease-in-out infinite; }
+
+@keyframes bob {
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(-4px); }
+}
+
+.hud-pill.wave { border-color: rgba(251, 191, 36, 0.6); }
+.hud-pill.wave b { color: var(--pink); text-shadow: 0 0 14px var(--pink); }
+
+.connection-status {
+  position: fixed;
+  top: 60px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 10;
+  padding: 6px 14px;
+  font-size: 0.75rem;
+  font-weight: 800;
+  color: var(--green);
+  background: rgba(0, 0, 0, 0.55);
+  border: 1px solid rgba(34, 197, 94, 0.4);
+  border-radius: 999px;
+  backdrop-filter: blur(8px);
+  pointer-events: none;
+  display: none;
+}
+
+.connection-status.show { display: inline-flex; align-items: center; gap: 6px; }
+.connection-status.lost { color: var(--red); border-color: rgba(244, 63, 94, 0.5); }
+
+/* نوارهای جان */
+.hp-panel {
+  position: fixed;
+  bottom: 14px;
+  left: 14px;
+  right: 14px;
+  z-index: 10;
+  display: flex;
+  gap: 12px;
+  pointer-events: none;
+}
+
+.hp-item {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.hp-item .label {
+  font-size: 0.72rem;
+  font-weight: 900;
+  color: rgba(255, 255, 255, 0.85);
+  text-shadow: 0 0 8px currentColor;
+  display: flex;
+  justify-content: space-between;
+}
+
+.hp-item.me .label { color: var(--cyan); text-shadow: 0 0 8px var(--cyan); }
+.hp-item.peer .label { color: var(--pink); text-shadow: 0 0 8px var(--pink); }
+
+.hp-bar {
+  height: 12px;
+  border-radius: 999px;
+  background: rgba(0, 0, 0, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  overflow: hidden;
+  position: relative;
+}
+
+.hp-bar i {
+  display: block;
+  height: 100%;
+  width: 100%;
+  border-radius: 999px;
+  transition: width 0.3s ease, background 0.3s;
+}
+
+.hp-item.me .hp-bar i {
+  background: linear-gradient(90deg, #0891b2, #22d3ee);
+  box-shadow: 0 0 12px rgba(34, 211, 238, 0.9);
+}
+
+.hp-item.peer .hp-bar i {
+  background: linear-gradient(90deg, #be185d, #ff5fae);
+  box-shadow: 0 0 12px rgba(255, 95, 174, 0.9);
+}
+
+.hp-item.dead .hp-bar i {
+  background: #333 !important;
+  box-shadow: none !important;
+}
+
+/* پیام شناور وسط */
+.toast {
+  position: fixed;
+  top: 40%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 20;
+  padding: 14px 32px;
+  font-size: 1.3rem;
+  font-weight: 900;
+  color: #fff;
+  background: linear-gradient(135deg, rgba(0,0,0,0.85), rgba(30,10,60,0.85));
+  border: 2px solid var(--gold);
+  border-radius: 999px;
+  box-shadow: 0 0 60px -6px var(--gold);
+  text-shadow: 0 0 20px var(--gold);
+  opacity: 0;
+  pointer-events: none;
+  white-space: nowrap;
+}
+
+.toast.show { animation: toastPop 2s cubic-bezier(0.2, 0.9, 0.3, 1.3); }
+
+@keyframes toastPop {
+  0%   { opacity: 0; transform: translate(-50%, -50%) scale(0.4); }
+  15%  { opacity: 1; transform: translate(-50%, -50%) scale(1.15); }
+  30%  { transform: translate(-50%, -50%) scale(1); }
+  80%  { opacity: 1; }
+  100% { opacity: 0; transform: translate(-50%, -70%) scale(1); }
+}
+
+/* اورلی پایان بازی */
+.game-over {
+  position: fixed;
+  inset: 0;
+  z-index: 30;
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  padding: 30px;
+  text-align: center;
+  background: radial-gradient(ellipse at center, rgba(60, 0, 20, 0.92), rgba(5, 1, 10, 0.97));
+  backdrop-filter: blur(14px);
+}
+
+.game-over.show { display: flex; animation: fadeIn 0.6s ease; }
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+.game-over .icon {
+  font-size: 4.5rem;
+  filter: drop-shadow(0 0 40px var(--red));
+  animation: bob 2s ease-in-out infinite;
+}
+
+.game-over h2 {
+  font-size: clamp(1.6rem, 6vw, 2.5rem);
+  font-weight: 900;
+  background: linear-gradient(120deg, var(--red), var(--pink), var(--gold));
+  background-size: 250% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: flow 5s linear infinite;
+}
+
+.game-over p {
+  font-size: 0.98rem;
+  color: rgba(255, 255, 255, 0.7);
+  line-height: 2;
+  max-width: 40ch;
+}
+
+.game-over .stats {
+  display: flex;
+  gap: 14px;
+  margin-top: 8px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.game-over .stat {
+  padding: 12px 22px;
   background: rgba(255, 255, 255, 0.05);
   border: 1px solid rgba(255, 255, 255, 0.12);
-  border-radius: 12px;
+  border-radius: 14px;
+  min-width: 110px;
 }
 
-.stat .k {
+.game-over .stat .k {
   font-size: 0.7rem;
   color: rgba(255, 255, 255, 0.5);
   font-weight: 700;
-  margin-bottom: 3px;
+  margin-bottom: 4px;
 }
 
-.stat .v {
-  font-size: 1.2rem;
+.game-over .stat .v {
+  font-size: 1.6rem;
   font-weight: 900;
   color: var(--gold);
+  text-shadow: 0 0 16px var(--gold);
   font-variant-numeric: tabular-nums;
-  text-shadow: 0 0 12px rgba(251, 191, 36, 0.9);
 }
 
-/* ============================================================
-   ریسپانسیو
-   ============================================================ */
-@media (max-width: 420px) {
-  .card .icon { font-size: 1.35rem; }
-  .card .name { font-size: 0.55rem; }
-  .hand { height: 72px; }
-  .elixir { min-height: 72px; width: 34px; }
-  .elixir-num { font-size: 1rem; }
+/* شمارش معکوس شروع */
+.countdown-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 25;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.75);
+  backdrop-filter: blur(8px);
+  font-size: 8rem;
+  font-weight: 900;
+  color: var(--gold);
+  text-shadow: 0 0 60px var(--gold);
 }
 
-@media (max-height: 720px) {
-  .hand { height: 68px; }
-  .elixir { min-height: 68px; }
-  .card .icon { font-size: 1.3rem; }
-  .overlay .logo { font-size: 2.8rem; }
+.countdown-overlay.show { display: flex; }
+
+.countdown-overlay span {
+  animation: countPulse 1s ease-out;
+}
+
+@keyframes countPulse {
+  0%   { transform: scale(0.4); opacity: 0; }
+  40%  { transform: scale(1.15); opacity: 1; }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+/* موبایل */
+@media (max-width: 480px) {
+  #lobby { padding: 22px 16px; }
+  .room-code-display span { width: 38px; height: 50px; font-size: 1.4rem; }
+  .hp-panel { bottom: 8px; left: 8px; right: 8px; gap: 8px; }
+  .hud-pill { padding: 6px 12px; font-size: 0.75rem; }
 }
 
 /* کاهش انیمیشن */
@@ -535,69 +611,110 @@ canvas#game {
 
 <body>
 
-<div class="game">
-  <div class="arena" id="arena">
-    <canvas id="game"></canvas>
+<!-- ============================== لابی ============================== -->
+<div id="lobby">
 
-    <!-- HUD -->
-    <div class="hud">
-      <div class="team-stats enemy">
-        <span class="crown">👑</span>
-        <span id="enemyCrowns">۰</span>
-      </div>
-      <div class="timer" id="timer">۳:۰۰</div>
-      <div class="team-stats player">
-        <span id="playerCrowns">۰</span>
-        <span class="crown">👑</span>
-      </div>
+  <div class="lobby-head">
+    <div class="emojis">
+      <span>🧟</span><span>🔫</span><span>🧟</span><span>💥</span>
     </div>
+    <h1>شکار زامبی — دو نفره</h1>
+    <p>با رفیقت هم‌تیمی شو و تا می‌تونید زامبی بکشید!</p>
+  </div>
 
-    <div class="toast" id="toast"></div>
-
-    <!-- منوی شروع -->
-    <div class="overlay" id="menu">
-      <div class="logo">🏰</div>
-      <h1>نبرد سلطنتی</h1>
-      <p>
-        کارت‌ها رو از پایین بکش روی <b>نیمهٔ خودت</b> تا سرباز بفرستی.
-        با <b>الیکسیر</b> کارت بازی کن، برج‌های دشمن رو منفجر کن و به برج پادشاه برس!
-      </p>
-      <div class="legend">
-        <span>🛡️ شوالیه</span>
-        <span>🏹 کمانگیر</span>
-        <span>👹 غول</span>
-        <span>👺 گابلین ×۳</span>
-        <span>🧙 جادوگر</span>
+  <!-- ساخت اتاق -->
+  <div class="section" id="hostSection">
+    <div class="section-label">🏠 میزبان شو</div>
+    <button class="btn" id="hostBtn">🎮 ساخت اتاق جدید</button>
+    <div id="hostInfo" hidden>
+      <p class="copy-hint" style="margin-top:14px;">این کد رو برای رفیقت بفرست:</p>
+      <div class="room-code-display" id="codeDisplay"></div>
+      <div class="waiting">
+        <span class="dot"></span>
+        در انتظار رفیق...
       </div>
-      <button class="btn" id="startBtn">⚔️ شروع نبرد</button>
-    </div>
-
-    <!-- پایان -->
-    <div class="overlay hidden" id="end">
-      <div class="logo" id="endIcon">🏆</div>
-      <h1 id="endTitle">پیروزی!</h1>
-      <p id="endText">برج پادشاه دشمن رو نابود کردی!</p>
-      <div class="stats">
-        <div class="stat">
-          <div class="k">تاج‌های تو</div>
-          <div class="v" id="endPlayer">۰</div>
-        </div>
-        <div class="stat">
-          <div class="k">تاج‌های دشمن</div>
-          <div class="v" id="endEnemy">۰</div>
-        </div>
-      </div>
-      <button class="btn" id="retryBtn">🔄 دوباره بزن</button>
     </div>
   </div>
 
-  <!-- نوار پایین -->
-  <div class="bottom-bar">
-    <div class="elixir">
-      <div class="elixir-fill" id="elixirFill"></div>
-      <div class="elixir-num" id="elixirNum">۵</div>
+  <!-- ورود به اتاق -->
+  <div class="section">
+    <div class="section-label">🚀 یا به اتاق رفیقت بپیوند</div>
+    <div class="input-wrap">
+      <input id="joinInput" maxlength="6" placeholder="XXXXXX" autocomplete="off" spellcheck="false">
     </div>
-    <div class="hand" id="hand"></div>
+    <button class="btn secondary" id="joinBtn">پیوستن به بازی</button>
+    <div class="error-msg" id="errorMsg"></div>
+  </div>
+
+  <div class="how-to">
+    <b>🖱️ روی موبایل:</b> انگشتت رو بکش تا حرکت کنی، شلیک خودکاره.
+    <br>
+    <b>⌨️ روی دسکتاپ:</b> ماوس رو حرکت بده، شلیک خودکاره.
+    <br>
+    <b>💀 هدف:</b> تا موج آخر زنده بمونید و رکورد بزنید!
+  </div>
+
+</div>
+
+<!-- ============================== بازی ============================== -->
+<div id="game">
+  <canvas id="canvas"></canvas>
+
+  <div class="game-hud">
+    <div class="hud-pill">امتیاز: <b id="hudScore">۰</b></div>
+    <div class="hud-pill wave">
+      <span class="wave-icon">🌊</span>
+      موج <b id="hudWave">۱</b>
+    </div>
+    <div class="hud-pill">🧟 <b id="hudZombies">۰</b></div>
+  </div>
+
+  <div class="connection-status" id="connStatus">
+    <span>●</span> متصل
+  </div>
+
+  <div class="hp-panel">
+    <div class="hp-item me" id="hpMe">
+      <div class="label">
+        <span>👤 تو</span>
+        <span id="hpMeText">۱۰۰٪</span>
+      </div>
+      <div class="hp-bar"><i id="hpMeBar"></i></div>
+    </div>
+    <div class="hp-item peer" id="hpPeer">
+      <div class="label">
+        <span>👥 رفیقت</span>
+        <span id="hpPeerText">۱۰۰٪</span>
+      </div>
+      <div class="hp-bar"><i id="hpPeerBar"></i></div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <div class="countdown-overlay" id="countdown">
+    <span id="countdownNum">۳</span>
+  </div>
+
+  <div class="game-over" id="gameOver">
+    <div class="icon" id="goIcon">💀</div>
+    <h2 id="goTitle">زامبی‌ها گرفتن‌تون!</h2>
+    <p id="goText">هر دو تون ناک‌اوت شدید. یه بار دیگه تلاش کنید و رکورد بزنید!</p>
+    <div class="stats">
+      <div class="stat">
+        <div class="k">امتیاز</div>
+        <div class="v" id="goScore">۰</div>
+      </div>
+      <div class="stat">
+        <div class="k">موج</div>
+        <div class="v" id="goWave">۱</div>
+      </div>
+      <div class="stat">
+        <div class="k">زامبی‌ها</div>
+        <div class="v" id="goKills">۰</div>
+      </div>
+    </div>
+    <button class="btn" id="playAgainBtn" style="max-width: 260px;">🔄 دوباره بزن</button>
   </div>
 </div>
 
@@ -610,19 +727,19 @@ const toFa = (n) => String(n).split('').map(d => faD[+d] ?? d).join('');
 const rand = (a, b) => a + Math.random() * (b - a);
 const randInt = (a, b) => Math.floor(rand(a, b + 1));
 const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
+const dist2 = (x1, y1, x2, y2) => (x1-x2)**2 + (y1-y2)**2;
 
 /* ============================================================
    صدا
    ============================================================ */
 const Sfx = {
-  ctx: null, enabled: true,
+  ctx: null,
   init() {
     if (this.ctx) return;
     try { this.ctx = new (window.AudioContext || window.webkitAudioContext)(); }
-    catch (e) { this.enabled = false; }
+    catch (e) {}
   },
   tone(freq, dur, type = 'sine', vol = 0.05, glide = null) {
-    if (!this.enabled) return;
     this.init();
     if (!this.ctx) return;
     if (this.ctx.state === 'suspended') this.ctx.resume();
@@ -637,1023 +754,218 @@ const Sfx = {
     o.connect(g); g.connect(this.ctx.destination);
     o.start(); o.stop(this.ctx.currentTime + dur + 0.02);
   },
-  place() { this.tone(520, 0.1, 'triangle', 0.06, 720); },
-  attack() { this.tone(240, 0.05, 'square', 0.02); },
-  hit() { this.tone(160, 0.07, 'sawtooth', 0.03, 90); },
-  towerHit() { this.tone(180, 0.15, 'sawtooth', 0.05, 80); },
-  towerDown() {
-    this.tone(90, 0.6, 'sawtooth', 0.1, 40);
-    setTimeout(() => this.tone(70, 0.8, 'triangle', 0.08, 30), 100);
+  noise(dur, vol = 0.06, freq = 800) {
+    this.init();
+    if (!this.ctx) return;
+    if (this.ctx.state === 'suspended') this.ctx.resume();
+    const bufSize = Math.floor(this.ctx.sampleRate * dur);
+    const buf = this.ctx.createBuffer(1, bufSize, this.ctx.sampleRate);
+    const d = buf.getChannelData(0);
+    for (let i = 0; i < bufSize; i++) d[i] = (Math.random() * 2 - 1) * (1 - i / bufSize);
+    const src = this.ctx.createBufferSource();
+    src.buffer = buf;
+    const f = this.ctx.createBiquadFilter();
+    f.type = 'lowpass'; f.frequency.value = freq;
+    const g = this.ctx.createGain();
+    g.gain.setValueAtTime(vol, this.ctx.currentTime);
+    g.gain.exponentialRampToValueAtTime(0.0001, this.ctx.currentTime + dur);
+    src.connect(f); f.connect(g); g.connect(this.ctx.destination);
+    src.start(); src.stop(this.ctx.currentTime + dur);
   },
-  win() { [523,659,784,1047,1319].forEach((f,i)=>setTimeout(()=>this.tone(f,0.25,'sine',0.08), i*110)); },
-  lose() { [400,330,260,200].forEach((f,i)=>setTimeout(()=>this.tone(f,0.35,'sine',0.08, f*0.7), i*160)); },
-  cardSelect() { this.tone(880, 0.06, 'sine', 0.05); }
+  shoot()     { this.tone(880, 0.05, 'square', 0.025, 350); },
+  hit()       { this.tone(200, 0.08, 'sawtooth', 0.04, 80); },
+  kill()      { this.noise(0.22, 0.08, 1200); this.tone(160, 0.18, 'triangle', 0.05, 60); },
+  hurt()      { this.tone(260, 0.18, 'sawtooth', 0.07, 100); this.noise(0.15, 0.06, 400); },
+  wave()      { [440, 554, 659, 880].forEach((f,i)=>setTimeout(()=>this.tone(f,0.15,'sine',0.06), i*90)); },
+  gameover()  { [400,330,260,180].forEach((f,i)=>setTimeout(()=>this.tone(f,0.4,'sine',0.08, f*0.7), i*180)); },
+  countdown() { this.tone(660, 0.15, 'sine', 0.07); },
+  start()     { [523,659,784,1047].forEach((f,i)=>setTimeout(()=>this.tone(f,0.2,'triangle',0.07), i*100)); }
 };
 
 /* ============================================================
-   تعریف کارت‌ها
+   شبکه (PeerJS)
    ============================================================ */
-const CARDS = {
-  knight: {
-    name: 'شوالیه', cost: 3, color: '#a78bfa', icon: '🛡️',
-    unit: { hp: 750, dmg: 95, range: 24, speed: 48, atkSpd: 1.2, r: 13, count: 1 }
+const GameNet = {
+  peer: null,
+  conn: null,
+  isHost: false,
+  roomCode: '',
+  myId: '',
+  connected: false,
+
+  // تولید کد ۶ حرفی
+  genCode() {
+    const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+    let s = '';
+    for (let i = 0; i < 6; i++) s += chars[Math.floor(Math.random() * chars.length)];
+    return s;
   },
-  archer: {
-    name: 'کمانگیر', cost: 3, color: '#22d3ee', icon: '🏹',
-    unit: { hp: 260, dmg: 48, range: 135, speed: 52, atkSpd: 1.0, r: 10, ranged: true, count: 2 }
-  },
-  giant: {
-    name: 'غول', cost: 5, color: '#fbbf24', icon: '👹',
-    unit: { hp: 2400, dmg: 140, range: 26, speed: 32, atkSpd: 1.8, r: 17, targetsBuilding: true, count: 1 }
-  },
-  goblin: {
-    name: 'گابلین', cost: 2, color: '#a3e635', icon: '👺',
-    unit: { hp: 200, dmg: 58, range: 22, speed: 82, atkSpd: 0.9, r: 9, count: 3 }
-  },
-  wizard: {
-    name: 'جادوگر', cost: 4, color: '#f43f5e', icon: '🧙',
-    unit: { hp: 420, dmg: 105, range: 108, speed: 50, atkSpd: 1.5, r: 11, ranged: true, aoe: 38, count: 1 }
-  }
-};
-const CARD_KEYS = Object.keys(CARDS);
 
-/* ============================================================
-   وضعیت بازی
-   ============================================================ */
-const canvas = document.getElementById('game');
-const ctx = canvas.getContext('2d');
-const arena = document.getElementById('arena');
+  host() {
+    return new Promise((resolve, reject) => {
+      this.roomCode = this.genCode();
+      this.myId = 'zombie-fa-' + this.roomCode;
 
-let W = 0, H = 0, dpr = 1;
-let riverY = 0;
-let bridgeXs = [0, 0];
+      this.peer = new Peer(this.myId, { debug: 0 });
 
-const state = {
-  mode: 'menu', // menu | playing | ended
-  timeLeft: 180,
-  playerElixir: 5,
-  enemyElixir: 5,
-  playerCrowns: 0,
-  enemyCrowns: 0,
-  selectedCard: null,
-  playerHand: [],
-  enemyHand: [],
-  aiTimer: 2,
-  shake: 0,
-  started: false
-};
+      const timeout = setTimeout(() => {
+        reject(new Error('زمان اتصال به سرور تموم شد. یه بار دیگه امتحان کن.'));
+      }, 15000);
 
-let towers = [];
-let units = [];
-let projectiles = [];
-let particles = [];
-let damageTexts = [];
-
-/* ============================================================
-   ریسایز و لایوت
-   ============================================================ */
-function resize() {
-  const rect = canvas.getBoundingClientRect();
-  dpr = Math.min(window.devicePixelRatio || 1, 2);
-  W = rect.width;
-  H = rect.height;
-  canvas.width = W * dpr;
-  canvas.height = H * dpr;
-  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-
-  riverY = H * 0.5;
-  bridgeXs = [W * 0.20, W * 0.80];
-
-  layoutTowers();
-}
-addEventListener('resize', resize);
-
-/* ============================================================
-   برج‌ها
-   ============================================================ */
-function layoutTowers() {
-  if (towers.length === 0) return;
-  // فقط موقعیت‌ها رو آپدیت کن (HP و بقیه حفظ بشن)
-  const positions = towerPositions();
-  towers.forEach((t, i) => {
-    t.x = positions[i].x;
-    t.y = positions[i].y;
-    t.r = positions[i].r;
-  });
-}
-
-function towerPositions() {
-  const kingR = Math.min(W, H) * 0.070;
-  const prR = Math.min(W, H) * 0.058;
-  return [
-    // enemy
-    { x: W / 2,     y: H * 0.085, r: kingR }, // king
-    { x: W * 0.16,  y: H * 0.205, r: prR },   // left
-    { x: W * 0.84,  y: H * 0.205, r: prR },   // right
-    // player
-    { x: W / 2,     y: H * 0.915, r: kingR }, // king
-    { x: W * 0.16,  y: H * 0.795, r: prR },
-    { x: W * 0.84,  y: H * 0.795, r: prR }
-  ];
-}
-
-function createTowers() {
-  const pos = towerPositions();
-  towers = [
-    { team: 'enemy',  king: true,  hp: 2400, maxHp: 2400, dmg: 55, range: 118, atkSpd: 1.0, cooldown: 0, r: pos[0].r, x: pos[0].x, y: pos[0].y, dead: false, hitFlash: 0 },
-    { team: 'enemy',  king: false, hp: 1500, maxHp: 1500, dmg: 62, range: 130, atkSpd: 0.85, cooldown: 0, r: pos[1].r, x: pos[1].x, y: pos[1].y, dead: false, hitFlash: 0 },
-    { team: 'enemy',  king: false, hp: 1500, maxHp: 1500, dmg: 62, range: 130, atkSpd: 0.85, cooldown: 0, r: pos[2].r, x: pos[2].x, y: pos[2].y, dead: false, hitFlash: 0 },
-    { team: 'player', king: true,  hp: 2400, maxHp: 2400, dmg: 55, range: 118, atkSpd: 1.0, cooldown: 0, r: pos[3].r, x: pos[3].x, y: pos[3].y, dead: false, hitFlash: 0 },
-    { team: 'player', king: false, hp: 1500, maxHp: 1500, dmg: 62, range: 130, atkSpd: 0.85, cooldown: 0, r: pos[4].r, x: pos[4].x, y: pos[4].y, dead: false, hitFlash: 0 },
-    { team: 'player', king: false, hp: 1500, maxHp: 1500, dmg: 62, range: 130, atkSpd: 0.85, cooldown: 0, r: pos[5].r, x: pos[5].x, y: pos[5].y, dead: false, hitFlash: 0 }
-  ];
-}
-
-/* ============================================================
-   واحدها
-   ============================================================ */
-function spawnUnit(cardKey, team, x, y) {
-  const card = CARDS[cardKey];
-  const u = card.unit;
-  const count = u.count || 1;
-
-  for (let i = 0; i < count; i++) {
-    // فاصله دور مرکز برای گروه‌ها
-    const angle = (Math.PI * 2 * i) / count;
-    const offsetX = count > 1 ? Math.cos(angle) * 20 : 0;
-    const offsetY = count > 1 ? Math.sin(angle) * 20 : 0;
-
-    units.push({
-      team,
-      type: cardKey,
-      color: card.color,
-      icon: card.icon,
-      x: clamp(x + offsetX, 14, W - 14),
-      y: clamp(y + offsetY, 14, H - 14),
-      hp: u.hp, maxHp: u.hp,
-      dmg: u.dmg,
-      range: u.range,
-      speed: u.speed,
-      atkSpd: u.atkSpd,
-      cooldown: rand(0, 0.3),
-      r: u.r,
-      ranged: !!u.ranged,
-      aoe: u.aoe || 0,
-      targetsBuilding: !!u.targetsBuilding,
-      target: null,
-      dead: false,
-      hitFlash: 0,
-      wobblePhase: Math.random() * Math.PI * 2,
-      spawnAnim: 0.4
-    });
-  }
-}
-
-function findTarget(u) {
-  let best = null, bestD = Infinity;
-
-  // اگر واحد فقط ساختمان‌ها رو هدف می‌گیره، دنبال برج بگرد
-  if (!u.targetsBuilding) {
-    for (const e of units) {
-      if (e.team === u.team || e.dead) continue;
-      const d = (e.x - u.x) ** 2 + (e.y - u.y) ** 2;
-      if (d < bestD) { bestD = d; best = e; }
-    }
-  }
-
-  // برج‌ها
-  for (const t of towers) {
-    if (t.team === u.team || t.dead) continue;
-    const d = (t.x - u.x) ** 2 + (t.y - u.y) ** 2;
-    // برج پادشاه فقط وقتی هدف قرار می‌گیره که برج‌های دیگه نابود شده باشن
-    // (اما اگه برج کناری نزدیک‌تر باشه، همون انتخاب میشه)
-    if (d < bestD) { bestD = d; best = t; }
-  }
-  return best;
-}
-
-function moveUnit(u, target, dt) {
-  let tx = target.x, ty = target.y;
-
-  // منطق عبور از رودخانه
-  const uBelow = u.y > riverY;
-  const tBelow = ty > riverY;
-
-  if (uBelow !== tBelow) {
-    const nearestB = bridgeXs.reduce((a, b) => Math.abs(a - u.x) < Math.abs(b - u.x) ? a : b);
-    const distToBridge = Math.abs(u.x - nearestB);
-
-    if (distToBridge > 12) {
-      tx = nearestB;
-      ty = u.y;
-    } else {
-      tx = nearestB;
-      ty = uBelow ? riverY - 24 : riverY + 24;
-    }
-  }
-
-  const dx = tx - u.x;
-  const dy = ty - u.y;
-  const d = Math.hypot(dx, dy);
-  if (d > 0.5) {
-    u.x += (dx / d) * u.speed * dt;
-    u.y += (dy / d) * u.speed * dt;
-  }
-}
-
-/* ============================================================
-   حمله
-   ============================================================ */
-function attackUnit(u) {
-  const t = u.target;
-  if (!t || t.dead) return;
-
-  if (u.ranged) {
-    // پرتابه
-    projectiles.push({
-      x: u.x, y: u.y,
-      target: t,
-      speed: 340,
-      dmg: u.dmg,
-      aoe: u.aoe,
-      color: u.color,
-      team: u.team,
-      r: 5,
-      trail: []
-    });
-    Sfx.attack();
-  } else {
-    // حمله نزدیک
-    dealDamage(t, u.dmg, u.team);
-    Sfx.hit();
-    // ذرات ضربه
-    spawnHitParticles(t.x, t.y, u.color, 5);
-  }
-}
-
-function dealDamage(target, dmg, fromTeam) {
-  if (target.dead) return;
-  target.hp -= dmg;
-  target.hitFlash = 0.25;
-
-  // متن آسیب
-  damageTexts.push({
-    x: target.x,
-    y: target.y - (target.r || 10) - 6,
-    text: toFa(Math.round(dmg)),
-    life: 0.8,
-    color: fromTeam === 'player' ? '#7dd3fc' : '#fda4af'
-  });
-
-  if (target.hp <= 0) {
-    target.dead = true;
-    if (target.king !== undefined) {
-      // برج
-      onTowerDestroyed(target);
-    } else {
-      // واحد
-      spawnExplosion(target.x, target.y, target.color, 14);
-    }
-  }
-}
-
-function onTowerDestroyed(t) {
-  spawnExplosion(t.x, t.y, t.team === 'player' ? '#7dd3fc' : '#fda4af', 45, { speed: rand(180, 400), size: rand(2, 5) });
-  Sfx.towerDown();
-  state.shake = 22;
-
-  if (t.team === 'enemy') {
-    state.playerCrowns++;
-    showToast('👑 برج دشمن نابود شد!');
-  } else {
-    state.enemyCrowns++;
-    showToast('💥 برجت نابود شد!');
-  }
-  updateHUD();
-
-  // شرط پایان
-  if (t.king) {
-    if (t.team === 'enemy') endGame(true);
-    else endGame(false);
-  }
-}
-
-/* ============================================================
-   ذرات
-   ============================================================ */
-function spawnExplosion(x, y, color, count = 14, opts = {}) {
-  for (let i = 0; i < count; i++) {
-    const a = Math.random() * Math.PI * 2;
-    const sp = opts.speed ?? rand(80, 220);
-    particles.push({
-      x, y,
-      vx: Math.cos(a) * sp,
-      vy: Math.sin(a) * sp,
-      life: 1,
-      decay: rand(1.3, 2.6),
-      color: i % 4 === 0 ? '#fff' : color,
-      size: opts.size ?? rand(1.5, 3.5),
-      drag: 2.2
-    });
-  }
-}
-
-function spawnHitParticles(x, y, color, count = 5) {
-  for (let i = 0; i < count; i++) {
-    const a = Math.random() * Math.PI * 2;
-    const sp = rand(60, 160);
-    particles.push({
-      x, y,
-      vx: Math.cos(a) * sp,
-      vy: Math.sin(a) * sp,
-      life: 0.6,
-      decay: 3,
-      color,
-      size: rand(1, 2.5),
-      drag: 3
-    });
-  }
-}
-
-/* ============================================================
-   آپدیت
-   ============================================================ */
-function update(dt) {
-  if (state.mode !== 'playing') return;
-
-  // تایمر
-  state.timeLeft -= dt;
-  if (state.timeLeft <= 0) {
-    state.timeLeft = 0;
-    // تصمیم بر اساس تاج
-    if (state.playerCrowns > state.enemyCrowns) endGame(true);
-    else if (state.enemyCrowns > state.playerCrowns) endGame(false);
-    else endGame(null); // مساوی
-    return;
-  }
-
-  // الیکسیر
-  state.playerElixir = Math.min(10, state.playerElixir + dt / 2.8);
-  state.enemyElixir = Math.min(10, state.enemyElixir + dt / 2.8);
-
-  // AI
-  state.aiTimer -= dt;
-  if (state.aiTimer <= 0) {
-    aiPlay();
-    state.aiTimer = rand(1.4, 3.0);
-  }
-
-  // واحدها
-  for (const u of units) {
-    if (u.dead) continue;
-
-    if (u.spawnAnim > 0) u.spawnAnim -= dt;
-    if (u.hitFlash > 0) u.hitFlash -= dt;
-    if (u.cooldown > 0) u.cooldown -= dt;
-
-    // هدف‌گیری
-    if (!u.target || u.target.dead || !isTargetValid(u, u.target)) {
-      u.target = findTarget(u);
-    }
-
-    if (!u.target) continue;
-
-    const dx = u.target.x - u.x;
-    const dy = u.target.y - u.y;
-    const d = Math.hypot(dx, dy);
-    const tr = u.target.r || 10;
-
-    if (d <= u.range + tr) {
-      // در برد
-      if (u.cooldown <= 0) {
-        attackUnit(u);
-        u.cooldown = u.atkSpd;
-      }
-    } else {
-      moveUnit(u, u.target, dt);
-    }
-  }
-
-  // حذف واحدهای مرده
-  units = units.filter(u => !u.dead);
-
-  // برج‌ها
-  for (const t of towers) {
-    if (t.dead) continue;
-    if (t.hitFlash > 0) t.hitFlash -= dt;
-    if (t.cooldown > 0) t.cooldown -= dt;
-
-    // پیدا کردن نزدیک‌ترین دشمن در برد
-    let best = null, bestD = Infinity;
-    for (const u of units) {
-      if (u.team === t.team || u.dead) continue;
-      const d = (u.x - t.x) ** 2 + (u.y - t.y) ** 2;
-      if (d < bestD && d < t.range * t.range) {
-        bestD = d;
-        best = u;
-      }
-    }
-    if (best && t.cooldown <= 0) {
-      projectiles.push({
-        x: t.x, y: t.y - t.r * 0.5,
-        target: best,
-        speed: 420,
-        dmg: t.dmg,
-        aoe: 0,
-        color: t.team === 'player' ? '#7dd3fc' : '#fda4af',
-        team: t.team,
-        r: 6,
-        trail: []
+      this.peer.on('open', (id) => {
+        clearTimeout(timeout);
+        this.isHost = true;
+        resolve(this.roomCode);
       });
-      t.cooldown = t.atkSpd;
-      Sfx.attack();
-    }
-  }
 
-  // پرتابه‌ها
-  for (let i = projectiles.length - 1; i >= 0; i--) {
-    const p = projectiles[i];
-    if (!p.target || p.target.dead) { projectiles.splice(i, 1); continue; }
-
-    p.trail.push({ x: p.x, y: p.y });
-    if (p.trail.length > 8) p.trail.shift();
-
-    const dx = p.target.x - p.x;
-    const dy = p.target.y - p.y;
-    const d = Math.hypot(dx, dy);
-
-    if (d < p.speed * dt + p.target.r + 4) {
-      // برخورد
-      if (p.aoe > 0) {
-        // آسیب ناحیه‌ای
-        for (const u of units) {
-          if (u.team === p.team || u.dead) continue;
-          const dd = Math.hypot(u.x - p.target.x, u.y - p.target.y);
-          if (dd <= p.aoe) dealDamage(u, p.dmg, p.team);
+      this.peer.on('error', (err) => {
+        clearTimeout(timeout);
+        if (err.type === 'unavailable-id') {
+          // کد تکراری — دوباره امتحان
+          this.host().then(resolve).catch(reject);
+        } else {
+          reject(err);
         }
-        // آسیب به برج هم اگه تو ناحیه باشه
-        for (const t of towers) {
-          if (t.team === p.team || t.dead) continue;
-          const dd = Math.hypot(t.x - p.target.x, t.y - p.target.y);
-          if (dd <= p.aoe + t.r) dealDamage(t, p.dmg, p.team);
+      });
+
+      this.peer.on('connection', (c) => {
+        this.conn = c;
+        c.on('open', () => {
+          this.connected = true;
+          Game.onPeerConnected();
+        });
+        c.on('data', (d) => Game.handleData(d));
+        c.on('close', () => {
+          this.connected = false;
+          Game.onPeerDisconnected();
+        });
+        c.on('error', () => {
+          this.connected = false;
+          Game.onPeerDisconnected();
+        });
+      });
+    });
+  },
+
+  join(code) {
+    return new Promise((resolve, reject) => {
+      this.roomCode = code.toUpperCase();
+      const targetId = 'zombie-fa-' + this.roomCode;
+      this.isHost = false;
+
+      this.peer = new Peer({ debug: 0 });
+
+      const timeout = setTimeout(() => {
+        reject(new Error('زمان اتصال تموم شد. مطمئن شو کد درسته.'));
+      }, 15000);
+
+      this.peer.on('open', () => {
+        this.myId = this.peer.id;
+        const c = this.peer.connect(targetId, { reliable: true });
+
+        c.on('open', () => {
+          clearTimeout(timeout);
+          this.conn = c;
+          this.connected = true;
+          c.on('data', (d) => Game.handleData(d));
+          c.on('close', () => {
+            this.connected = false;
+            Game.onPeerDisconnected();
+          });
+          resolve();
+        });
+
+        c.on('error', (err) => {
+          clearTimeout(timeout);
+          reject(new Error('اتصال به اتاق ممکن نشد.'));
+        });
+      });
+
+      this.peer.on('error', (err) => {
+        clearTimeout(timeout);
+        if (err.type === 'peer-unavailable') {
+          reject(new Error('اتاقی با این کد پیدا نشد.'));
+        } else {
+          reject(err);
         }
-        spawnExplosion(p.target.x, p.target.y, p.color, 14, { speed: rand(80, 200) });
-      } else {
-        dealDamage(p.target, p.dmg, p.team);
-      }
-      spawnHitParticles(p.target.x, p.target.y, p.color, 6);
-      if (p.target.king !== undefined && !p.target.dead) Sfx.towerHit();
-      projectiles.splice(i, 1);
-      continue;
+      });
+    });
+  },
+
+  send(msg) {
+    if (this.conn && this.connected) {
+      try { this.conn.send(msg); } catch (e) {}
     }
+  },
 
-    p.x += (dx / d) * p.speed * dt;
-    p.y += (dy / d) * p.speed * dt;
+  destroy() {
+    if (this.conn) try { this.conn.close(); } catch(e){}
+    if (this.peer) try { this.peer.destroy(); } catch(e){}
+    this.conn = null;
+    this.peer = null;
+    this.connected = false;
   }
-
-  // ذرات
-  for (let i = particles.length - 1; i >= 0; i--) {
-    const p = particles[i];
-    p.x += p.vx * dt;
-    p.y += p.vy * dt;
-    const k = Math.exp(-p.drag * dt);
-    p.vx *= k;
-    p.vy *= k;
-    p.life -= p.decay * dt;
-    if (p.life <= 0) particles.splice(i, 1);
-  }
-
-  // متن آسیب
-  for (let i = damageTexts.length - 1; i >= 0; i--) {
-    const t = damageTexts[i];
-    t.y -= dt * 30;
-    t.life -= dt;
-    if (t.life <= 0) damageTexts.splice(i, 1);
-  }
-
-  // لرزش
-  if (state.shake > 0) state.shake = Math.max(0, state.shake - dt * 40);
-}
-
-function isTargetValid(u, t) {
-  if (t.dead) return false;
-  // اگه واحد فقط ساختمان هدف می‌گیره، پس هدف باید برج باشه
-  if (u.targetsBuilding && t.king === undefined) return false;
-  // اگه داره به یه واحد حمله می‌کنه، باید در محدوده‌ای باشه (نجات از تعقیب بی‌پایان)
-  const d = Math.hypot(t.x - u.x, t.y - u.y);
-  return d < 300;
-}
+};
 
 /* ============================================================
-   AI دشمن
+   Game
    ============================================================ */
-function aiPlay() {
-  // فقط در صورتی بازی کنه که الیکسیر کافی داشته باشه
-  const affordable = state.enemyHand.filter(c => CARDS[c].cost <= state.enemyElixir);
-  if (affordable.length === 0) return;
+const Game = {
+  // state
+  mode: 'lobby', // lobby | countdown | playing | over
+  myShip:  { x: 0, y: 0, hp: 100, maxHp: 100, angle: 0, dead: false, respawnTimer: 0 },
+  peerShip:{ x: 0, y: 0, hp: 100, maxHp: 100, angle: 0, dead: false, respawnTimer: 0 },
+  peerTarget: { x: 0, y: 0 }, // برای نرم‌سازی (interpolation)
 
-  // ترجیح کارت با هزینه بالا اگه الیکسیر زیاده
-  let cardKey;
-  if (state.enemyElixir >= 8 && state.enemyHand.includes('giant')) {
-    cardKey = 'giant';
-  } else {
-    cardKey = affordable[randInt(0, affordable.length - 1)];
-  }
+  zombies: [],
+  bullets: [],
+  particles: [],
+  bloodStains: [],
 
-  // موقعیت اسپاون
-  const playerUnitsOnEnemySide = units.filter(u => u.team === 'player' && u.y < riverY);
-  let spawnX;
+  score: 0,
+  wave: 1,
+  kills: 0,
+  elapsed: 0,
+  lastSpawnTime: 0,
+  lastWaveTime: 0,
+  startTime: 0,
 
-  if (playerUnitsOnEnemySide.length > 0) {
-    // کانتر در نزدیکی تهدید
-    const threat = playerUnitsOnEnemySide[0];
-    spawnX = threat.x + rand(-40, 40);
-  } else {
-    // تصادفی بین دو لاین
-    spawnX = bridgeXs[randInt(0, 1)] + rand(-20, 20);
-  }
+  // network
+  lastStateSend: 0,
+  lastPeerStateRecv: 0,
 
-  spawnX = clamp(spawnX, 30, W - 30);
-  const spawnY = H * 0.22 + rand(0, H * 0.08);
+  // canvas
+  W: 0, H: 0, dpr: 1,
 
-  spawnUnit(cardKey, 'enemy', spawnX, spawnY);
-  state.enemyElixir -= CARDS[cardKey].cost;
-
-  // چرخه کارت
-  const idx = state.enemyHand.indexOf(cardKey);
-  if (idx >= 0) {
-    state.enemyHand.splice(idx, 1);
-    state.enemyHand.push(CARD_KEYS[randInt(0, CARD_KEYS.length - 1)]);
-  }
-}
+  // input
+  pointerX: 0,
+  pointerY: 0,
+  hasPointer: false,
+};
 
 /* ============================================================
-   رسم
+   Canvas setup
    ============================================================ */
-function render() {
-  // پاک کردن
-  ctx.clearRect(0, 0, W, H);
+const canvas = document.getElementById('canvas');
+const ctx = canvas.getContext('2d');
 
-  const sx = state.shake > 0 ? (Math.random() - 0.5) * state.shake : 0;
-  const sy = state.shake > 0 ? (Math.random() - 0.5) * state.shake : 0;
-
-  ctx.save();
-  ctx.translate(sx, sy);
-
-  drawField();
-  drawRiverAndBridges();
-  drawTowers();
-  drawUnits();
-  drawProjectiles();
-  drawParticles();
-  drawDamageTexts();
-  drawPlacementPreview();
-
-  ctx.restore();
+function resize() {
+  Game.dpr = Math.min(window.devicePixelRatio || 1, 2);
+  Game.W = window.innerWidth;
+  Game.H = window.innerHeight;
+  canvas.width = Game.W * Game.dpr;
+  canvas.height = Game.H * Game.dpr;
+  canvas.style.width = Game.W + 'px';
+  canvas.style.height = Game.H + 'px';
+  ctx.setTransform(Game.dpr, 0, 0, Game.dpr, 0, 0);
 }
-
-function drawField() {
-  // چمن بالا و پایین
-  const enemySide = ctx.createLinearGradient(0, 0, 0, riverY);
-  enemySide.addColorStop(0, '#1e3a2f');
-  enemySide.addColorStop(0.5, '#2d5040');
-  enemySide.addColorStop(1, '#1e3a2f');
-  ctx.fillStyle = enemySide;
-  ctx.fillRect(0, 0, W, riverY);
-
-  const playerSide = ctx.createLinearGradient(0, riverY, 0, H);
-  playerSide.addColorStop(0, '#1e3a2f');
-  playerSide.addColorStop(0.5, '#2d5040');
-  playerSide.addColorStop(1, '#1e3a2f');
-  ctx.fillStyle = playerSide;
-  ctx.fillRect(0, riverY, W, H - riverY);
-
-  // بافت چمن
-  ctx.globalAlpha = 0.08;
-  for (let i = 0; i < 80; i++) {
-    const x = (i * 73.7) % W;
-    const y = (i * 137.3) % H;
-    ctx.fillStyle = i % 2 ? '#000' : '#fff';
-    ctx.fillRect(x, y, 2, 2);
-  }
-  ctx.globalAlpha = 1;
-
-  // خط نیمه
-  ctx.strokeStyle = 'rgba(255,255,255,0.06)';
-  ctx.lineWidth = 1;
-  ctx.setLineDash([4, 6]);
-  ctx.beginPath();
-  ctx.moveTo(0, riverY);
-  ctx.lineTo(W, riverY);
-  ctx.stroke();
-  ctx.setLineDash([]);
-}
-
-function drawRiverAndBridges() {
-  const riverH = H * 0.075;
-
-  // آب
-  const waterGrad = ctx.createLinearGradient(0, riverY - riverH / 2, 0, riverY + riverH / 2);
-  waterGrad.addColorStop(0, '#0c4a6e');
-  waterGrad.addColorStop(0.5, '#0284c7');
-  waterGrad.addColorStop(1, '#0c4a6e');
-  ctx.fillStyle = waterGrad;
-  ctx.fillRect(0, riverY - riverH / 2, W, riverH);
-
-  // موج‌های متحرک
-  const t = performance.now() * 0.001;
-  ctx.strokeStyle = 'rgba(125, 211, 252, 0.4)';
-  ctx.lineWidth = 1.5;
-  for (let k = 0; k < 3; k++) {
-    ctx.beginPath();
-    for (let x = 0; x <= W; x += 8) {
-      const y = riverY - riverH / 2 + 8 + k * 8 + Math.sin(x * 0.05 + t * 2 + k) * 2;
-      x === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
-    }
-    ctx.stroke();
-  }
-
-  // پل‌ها
-  for (const bx of bridgeXs) {
-    const bw = W * 0.13;
-    const y = riverY - riverH / 2 - 4;
-    const h = riverH + 8;
-
-    const g = ctx.createLinearGradient(0, y, 0, y + h);
-    g.addColorStop(0, '#78350f');
-    g.addColorStop(0.5, '#a16207');
-    g.addColorStop(1, '#78350f');
-    ctx.fillStyle = g;
-    ctx.fillRect(bx - bw / 2, y, bw, h);
-
-    // تخته‌ها
-    ctx.strokeStyle = 'rgba(0,0,0,0.35)';
-    ctx.lineWidth = 1;
-    for (let i = 1; i < 5; i++) {
-      const yy = y + (h * i / 5);
-      ctx.beginPath();
-      ctx.moveTo(bx - bw / 2, yy);
-      ctx.lineTo(bx + bw / 2, yy);
-      ctx.stroke();
-    }
-
-    // لبه‌های روشن
-    ctx.strokeStyle = 'rgba(251, 191, 36, 0.55)';
-    ctx.lineWidth = 1.5;
-    ctx.strokeRect(bx - bw / 2, y, bw, h);
-  }
-}
-
-function drawTowers() {
-  for (const t of towers) {
-    if (t.dead) {
-      // خرابه
-      ctx.fillStyle = 'rgba(60, 40, 30, 0.65)';
-      ctx.beginPath();
-      ctx.arc(t.x, t.y, t.r * 0.85, 0, Math.PI * 2);
-      ctx.fill();
-      ctx.strokeStyle = 'rgba(0,0,0,0.5)';
-      ctx.lineWidth = 2;
-      ctx.stroke();
-      continue;
-    }
-
-    const color = t.team === 'player' ? '#0891b2' : '#be123c';
-    const colorLight = t.team === 'player' ? '#22d3ee' : '#f43f5e';
-    const colorDark = t.team === 'player' ? '#075985' : '#881337';
-
-    ctx.save();
-    ctx.translate(t.x, t.y);
-
-    // هاله تیم
-    const halo = ctx.createRadialGradient(0, 0, 0, 0, 0, t.r * 2.6);
-    halo.addColorStop(0, colorLight + '44');
-    halo.addColorStop(1, 'transparent');
-    ctx.fillStyle = halo;
-    ctx.beginPath();
-    ctx.arc(0, 0, t.r * 2.6, 0, Math.PI * 2);
-    ctx.fill();
-
-    // پایه
-    ctx.fillStyle = colorDark;
-    ctx.beginPath();
-    ctx.arc(0, 0, t.r * 1.15, 0, Math.PI * 2);
-    ctx.fill();
-
-    // بدنه برج
-    const grad = ctx.createLinearGradient(0, -t.r, 0, t.r);
-    grad.addColorStop(0, colorLight);
-    grad.addColorStop(0.5, color);
-    grad.addColorStop(1, colorDark);
-    ctx.fillStyle = grad;
-    ctx.beginPath();
-    ctx.arc(0, 0, t.r, 0, Math.PI * 2);
-    ctx.fill();
-    ctx.strokeStyle = t.hitFlash > 0 ? '#fff' : 'rgba(0,0,0,0.4)';
-    ctx.lineWidth = t.hitFlash > 0 ? 3 : 2;
-    ctx.stroke();
-
-    // کنگره (ایمنی) - ۸ تا گنبد کوچک دور برج
-    ctx.fillStyle = colorDark;
-    for (let i = 0; i < 8; i++) {
-      const a = (Math.PI * 2 * i) / 8;
-      ctx.beginPath();
-      ctx.arc(Math.cos(a) * t.r * 0.92, Math.sin(a) * t.r * 0.92, t.r * 0.18, 0, Math.PI * 2);
-      ctx.fill();
-    }
-
-    // تاج یا نماد
-    ctx.font = (t.king ? t.r * 0.9 : t.r * 0.85) + 'px sans-serif';
-    ctx.textAlign = 'center';
-    ctx.textBaseline = 'middle';
-    ctx.fillText(t.king ? '👑' : '🏰', 0, 2);
-
-    // نوار جان
-    const barW = t.r * 2.2;
-    const barH = 5;
-    const barY = -t.r - 12;
-
-    ctx.fillStyle = 'rgba(0,0,0,0.65)';
-    ctx.fillRect(-barW / 2 - 1, barY - 1, barW + 2, barH + 2);
-    ctx.fillStyle = 'rgba(255,255,255,0.15)';
-    ctx.fillRect(-barW / 2, barY, barW, barH);
-
-    const pct = clamp(t.hp / t.maxHp, 0, 1);
-    const hpColor = pct > 0.6 ? '#22c55e' : pct > 0.3 ? '#fbbf24' : '#ef4444';
-    ctx.fillStyle = hpColor;
-    ctx.fillRect(-barW / 2, barY, barW * pct, barH);
-
-    ctx.restore();
-  }
-}
-
-function drawUnits() {
-  // مرتب‌سازی بر اساس y برای عمق
-  const sorted = [...units].sort((a, b) => a.y - b.y);
-
-  for (const u of sorted) {
-    const isPlayer = u.team === 'player';
-
-    ctx.save();
-    ctx.translate(u.x, u.y);
-
-    // انیمیشن تولد
-    let scale = 1;
-    if (u.spawnAnim > 0) {
-      scale = 1 + Math.sin((0.4 - u.spawnAnim) * 15) * 0.15;
-    }
-
-    // گهواره
-    const wobble = Math.sin(performance.now() * 0.008 + u.wobblePhase) * 0.06;
-    ctx.rotate(wobble);
-
-    // سایه
-    ctx.fillStyle = 'rgba(0,0,0,0.35)';
-    ctx.beginPath();
-    ctx.ellipse(0, u.r * 0.7, u.r * 0.9, u.r * 0.4, 0, 0, Math.PI * 2);
-    ctx.fill();
-
-    // هاله تیم
-    const haloColor = isPlayer ? 'rgba(34, 211, 238, 0.55)' : 'rgba(244, 63, 94, 0.55)';
-    const halo = ctx.createRadialGradient(0, 0, 0, 0, 0, u.r * 2.4);
-    halo.addColorStop(0, haloColor);
-    halo.addColorStop(1, 'transparent');
-    ctx.fillStyle = halo;
-    ctx.beginPath();
-    ctx.arc(0, 0, u.r * 2.4, 0, Math.PI * 2);
-    ctx.fill();
-
-    // حلقه تیم
-    ctx.strokeStyle = isPlayer ? '#22d3ee' : '#f43f5e';
-    ctx.lineWidth = 2;
-    ctx.beginPath();
-    ctx.arc(0, 0, u.r * 1.25, 0, Math.PI * 2);
-    ctx.stroke();
-
-    // بدن واحد
-    const bodyGrad = ctx.createRadialGradient(-u.r * 0.3, -u.r * 0.3, 0, 0, 0, u.r * 1.2);
-    bodyGrad.addColorStop(0, u.hitFlash > 0 ? '#fff' : u.color);
-    bodyGrad.addColorStop(1, isPlayer ? '#0e7490' : '#831843');
-    ctx.fillStyle = bodyGrad;
-    ctx.beginPath();
-    ctx.arc(0, 0, u.r, 0, Math.PI * 2);
-    ctx.fill();
-
-    ctx.strokeStyle = u.hitFlash > 0 ? '#fff' : 'rgba(0,0,0,0.45)';
-    ctx.lineWidth = u.hitFlash > 0 ? 2.5 : 1.5;
-    ctx.stroke();
-
-    // ایموجی
-    ctx.font = (u.r * 1.35) + 'px sans-serif';
-    ctx.textAlign = 'center';
-    ctx.textBaseline = 'middle';
-    ctx.fillText(u.icon, 0, 1);
-
-    ctx.restore();
-
-    // نوار جان
-    const barW = u.r * 2.1;
-    const barH = 3.5;
-    const barY = u.y - u.r - 8;
-
-    ctx.fillStyle = 'rgba(0,0,0,0.65)';
-    ctx.fillRect(u.x - barW / 2 - 0.5, barY - 0.5, barW + 1, barH + 1);
-    const pct = clamp(u.hp / u.maxHp, 0, 1);
-    ctx.fillStyle = isPlayer ? '#22d3ee' : '#f43f5e';
-    ctx.fillRect(u.x - barW / 2, barY, barW * pct, barH);
-  }
-}
-
-function drawProjectiles() {
-  for (const p of projectiles) {
-    // دنباله
-    for (let i = 0; i < p.trail.length; i++) {
-      const t = p.trail[i];
-      ctx.globalAlpha = (i / p.trail.length) * 0.5;
-      ctx.fillStyle = p.color;
-      ctx.beginPath();
-      ctx.arc(t.x, t.y, p.r * (i / p.trail.length) * 0.8, 0, Math.PI * 2);
-      ctx.fill();
-    }
-    ctx.globalAlpha = 1;
-
-    // هاله
-    const g = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, p.r * 3);
-    g.addColorStop(0, p.color);
-    g.addColorStop(0.4, p.color + '88');
-    g.addColorStop(1, 'transparent');
-    ctx.fillStyle = g;
-    ctx.beginPath();
-    ctx.arc(p.x, p.y, p.r * 3, 0, Math.PI * 2);
-    ctx.fill();
-
-    // مرکز
-    ctx.fillStyle = '#fff';
-    ctx.beginPath();
-    ctx.arc(p.x, p.y, p.r * 0.65, 0, Math.PI * 2);
-    ctx.fill();
-  }
-}
-
-function drawParticles() {
-  for (const p of particles) {
-    ctx.globalAlpha = Math.max(0, p.life);
-    ctx.fillStyle = p.color;
-    ctx.beginPath();
-    ctx.arc(p.x, p.y, p.size * (0.4 + p.life * 0.8), 0, Math.PI * 2);
-    ctx.fill();
-  }
-  ctx.globalAlpha = 1;
-}
-
-function drawDamageTexts() {
-  ctx.textAlign = 'center';
-  ctx.textBaseline = 'middle';
-  ctx.font = '700 13px Vazirmatn, sans-serif';
-  for (const t of damageTexts) {
-    ctx.globalAlpha = Math.min(1, t.life * 2);
-    ctx.fillStyle = 'rgba(0,0,0,0.6)';
-    ctx.fillText(t.text, t.x + 1, t.y + 1);
-    ctx.fillStyle = t.color;
-    ctx.fillText(t.text, t.x, t.y);
-  }
-  ctx.globalAlpha = 1;
-}
-
-function drawPlacementPreview() {
-  if (state.mode !== 'playing') return;
-  if (!state.selectedCard) return;
-  if (state.pointerX == null || state.pointerY == null) return;
-
-  const x = state.pointerX;
-  const y = state.pointerY;
-  const valid = y > riverY + 15 && y < H - 20;
-  const card = CARDS[state.selectedCard];
-
-  ctx.save();
-  ctx.globalAlpha = 0.35;
-  ctx.strokeStyle = valid ? '#22d3ee' : '#f43f5e';
-  ctx.lineWidth = 2;
-  ctx.setLineDash([6, 4]);
-  ctx.beginPath();
-  ctx.arc(x, y, card.unit.r * 1.6, 0, Math.PI * 2);
-  ctx.stroke();
-  ctx.setLineDash([]);
-
-  ctx.globalAlpha = 0.55;
-  ctx.font = (card.unit.r * 1.6) + 'px sans-serif';
-  ctx.textAlign = 'center';
-  ctx.textBaseline = 'middle';
-  ctx.fillText(card.icon, x, y);
-
-  ctx.restore();
-}
+window.addEventListener('resize', resize);
+resize();
 
 /* ============================================================
-   HUD
+   ورودی
    ============================================================ */
-const elixirFill = document.getElementById('elixirFill');
-const elixirNum = document.getElementById('elixirNum');
-const handEl = document.getElementById('hand');
-const toastEl = document.getElementById('toast');
-const timerEl = document.getElementById('timer');
-const playerCrownsEl = document.getElementById('playerCrowns');
-const enemyCrownsEl = document.getElementById('enemyCrowns');
-
-function updateHUD() {
-  playerCrownsEl.textContent = toFa(state.playerCrowns);
-  enemyCrownsEl.textContent = toFa(state.enemyCrowns);
-}
-
-function updateTimerDisplay() {
-  const s = Math.max(0, Math.ceil(state.timeLeft));
-  const m = Math.floor(s / 60);
-  const ss = s % 60;
-  timerEl.textContent = toFa(m) + ':' + String(ss).padStart(2, '0').split('').map(c => toFa(c)).join('');
-}
-
-function updateElixirUI() {
-  const v = state.playerElixir;
-  elixirNum.textContent = toFa(Math.floor(v));
-  elixirFill.style.height = (v / 10 * 100) + '%';
-
-  // فعال/غیرفعال کردن کارت‌ها
-  for (const cardEl of handEl.children) {
-    const key = cardEl.dataset.key;
-    if (!key) continue;
-    const cost = CARDS[key].cost;
-    if (cost > Math.floor(v)) {
-      cardEl.classList.add('disabled');
-    } else {
-      cardEl.classList.remove('disabled');
-    }
-  }
-}
-
-function showToast(text) {
-  toastEl.textContent = text;
-  toastEl.classList.remove('show');
-  void toastEl.offsetWidth;
-  toastEl.classList.add('show');
-}
-
-/* ============================================================
-   کارت‌ها
-   ============================================================ */
-function initHand() {
-  // کارت‌های بازیکن
-  state.playerHand = ['knight', 'archer', 'goblin', 'giant'];
-  state.enemyHand = ['knight', 'archer', 'goblin', 'wizard'];
-  renderHand();
-}
-
-function renderHand() {
-  handEl.innerHTML = '';
-  for (const key of state.playerHand) {
-    const card = CARDS[key];
-    const el = document.createElement('div');
-    el.className = 'card';
-    el.dataset.key = key;
-    el.innerHTML = `
-      <span class="cost">${toFa(card.cost)}</span>
-      <span class="icon">${card.icon}</span>
-      <span class="name">${card.name}</span>
-    `;
-    el.addEventListener('click', () => onCardClick(key, el));
-    handEl.appendChild(el);
-  }
-  updateElixirUI();
-}
-
-function onCardClick(key, el) {
-  if (state.mode !== 'playing') return;
-  const cost = CARDS[key].cost;
-  if (cost > Math.floor(state.playerElixir)) return;
-
-  Sfx.cardSelect();
-
-  if (state.selectedCard === key) {
-    // لغو انتخاب
-    state.selectedCard = null;
-    for (const c of handEl.children) c.classList.remove('selected');
-    return;
-  }
-
-  state.selectedCard = key;
-  for (const c of handEl.children) {
-    c.classList.toggle('selected', c.dataset.key === key);
-  }
-}
-
-/* ============================================================
-   کلیک روی میدان
-   ============================================================ */
-let pointerX = null, pointerY = null;
-state.pointerX = null;
-state.pointerY = null;
-
-function getPointerPos(e) {
-  const rect = canvas.getBoundingClientRect();
+function updatePointer(e) {
   let cx, cy;
   if (e.touches && e.touches.length) {
     cx = e.touches[0].clientX;
@@ -1662,201 +974,952 @@ function getPointerPos(e) {
     cx = e.clientX;
     cy = e.clientY;
   }
-  return { x: cx - rect.left, y: cy - rect.top };
+  Game.pointerX = cx;
+  Game.pointerY = cy;
+  Game.hasPointer = true;
 }
 
-canvas.addEventListener('mousemove', (e) => {
-  const p = getPointerPos(e);
-  state.pointerX = p.x;
-  state.pointerY = p.y;
-});
-canvas.addEventListener('mouseleave', () => {
-  state.pointerX = null;
-  state.pointerY = null;
-});
+canvas.addEventListener('mousemove', updatePointer);
+canvas.addEventListener('mousedown', updatePointer);
+canvas.addEventListener('touchstart', (e) => { e.preventDefault(); updatePointer(e); }, { passive: false });
+canvas.addEventListener('touchmove',  (e) => { e.preventDefault(); updatePointer(e); }, { passive: false });
 
-canvas.addEventListener('touchmove', (e) => {
-  e.preventDefault();
-  const p = getPointerPos(e);
-  state.pointerX = p.x;
-  state.pointerY = p.y;
-}, { passive: false });
+/* ============================================================
+   Zombie
+   ============================================================ */
+let zombieIdCounter = 0;
 
-canvas.addEventListener('touchend', (e) => {
-  state.pointerX = null;
-  state.pointerY = null;
-});
+const ZOMBIE_TYPES = {
+  walker: { speed: 45, r: 16, color: '#84cc16', icon: '🧟', score: 10 },
+  runner: { speed: 95, r: 12, color: '#facc15', icon: '🧟‍♂️', score: 20 },
+  tank:   { speed: 30, r: 24, color: '#a855f7', icon: '🧟‍♀️', score: 40 },
+  mini:   { speed: 130, r: 9,  color: '#f43f5e', icon: '🧟', score: 15 },
+};
 
-canvas.addEventListener('click', (e) => {
-  if (state.mode !== 'playing') return;
-  if (!state.selectedCard) return;
-  const p = getPointerPos(e);
-  tryPlace(p.x, p.y);
-});
+class Zombie {
+  constructor(id, type, x, y, dirX, dirY, spawnTime) {
+    const cfg = ZOMBIE_TYPES[type];
+    this.id = id;
+    this.type = type;
+    this.cfg = cfg;
+    this.spawnX = x;
+    this.spawnY = y;
+    this.dirX = dirX;
+    this.dirY = dirY;
+    this.spawnTime = spawnTime;
+    this.seed = Math.random() * Math.PI * 2;
+    this.hp = 1;
+    this.maxHp = 1;
+    this.hitFlash = 0;
+    this.r = cfg.r;
+    this.color = cfg.color;
+    this.icon = cfg.icon;
+  }
 
-canvas.addEventListener('touchstart', (e) => {
-  if (state.mode !== 'playing') return;
-  if (!state.selectedCard) return;
-  e.preventDefault();
-  const p = getPointerPos(e);
-  tryPlace(p.x, p.y);
-  state.pointerX = null;
-}, { passive: false });
+  getPos(elapsed) {
+    const t = elapsed - this.spawnTime;
+    if (t < 0) t = 0;
+    const speed = this.cfg.speed;
+    const sway = Math.sin(t * 3 + this.seed) * 22;
+    const swayY = Math.cos(t * 3 + this.seed) * 22;
+    const perpX = -this.dirY;
+    const perpY = this.dirX;
 
-function tryPlace(x, y) {
-  if (y < riverY + 15) {
-    showToast('فقط در نیمهٔ خودت!');
+    return {
+      x: this.spawnX + this.dirX * speed * t + perpX * sway,
+      y: this.spawnY + this.dirY * speed * t + perpY * swayY,
+    };
+  }
+
+  update(elapsed) {
+    const p = this.getPos(elapsed);
+    this.x = p.x;
+    this.y = p.y;
+    if (this.hitFlash > 0) this.hitFlash -= 0.05;
+  }
+}
+
+/* ============================================================
+   Spawn Zombie
+   ============================================================ */
+function pickZombieType() {
+  const w = Game.wave;
+  const r = Math.random();
+  if (w <= 2) return r < 0.85 ? 'walker' : 'runner';
+  if (w <= 4) {
+    if (r < 0.6) return 'walker';
+    if (r < 0.85) return 'runner';
+    if (r < 0.95) return 'mini';
+    return 'tank';
+  }
+  if (r < 0.45) return 'walker';
+  if (r < 0.7) return 'runner';
+  if (r < 0.87) return 'mini';
+  return 'tank';
+}
+
+function spawnZombie(elapsed) {
+  const W = Game.W, H = Game.H;
+  const edge = randInt(0, 3);
+  let x, y, dirX, dirY;
+
+  // از لبه‌ها به سمت وسط
+  if (edge === 0) { // بالا
+    x = rand(0, W); y = -20;
+    const tx = W / 2 + rand(-100, 100);
+    const ty = H / 2;
+    const dx = tx - x, dy = ty - y, d = Math.hypot(dx, dy);
+    dirX = dx / d; dirY = dy / d;
+  } else if (edge === 1) { // پایین
+    x = rand(0, W); y = H + 20;
+    const tx = W / 2 + rand(-100, 100);
+    const ty = H / 2;
+    const dx = tx - x, dy = ty - y, d = Math.hypot(dx, dy);
+    dirX = dx / d; dirY = dy / d;
+  } else if (edge === 2) { // چپ
+    x = -20; y = rand(0, H);
+    const tx = W / 2;
+    const ty = H / 2 + rand(-100, 100);
+    const dx = tx - x, dy = ty - y, d = Math.hypot(dx, dy);
+    dirX = dx / d; dirY = dy / d;
+  } else { // راست
+    x = W + 20; y = rand(0, H);
+    const tx = W / 2;
+    const ty = H / 2 + rand(-100, 100);
+    const dx = tx - x, dy = ty - y, d = Math.hypot(dx, dy);
+    dirX = dx / d; dirY = dy / d;
+  }
+
+  const type = pickZombieType();
+  const z = new Zombie(++zombieIdCounter, type, x, y, dirX, dirY, elapsed);
+  Game.zombies.push(z);
+
+  // اگه من هاستم، به رفیقم بگو
+  if (GameNet.isHost) {
+    GameNet.send({ t: 'spawn', id: z.id, type, x, y, dx: dirX, dy: dirY, st: elapsed });
+  }
+}
+
+/* ============================================================
+   ذرات
+   ============================================================ */
+function spawnParticles(x, y, color, count, opts = {}) {
+  for (let i = 0; i < count; i++) {
+    const a = Math.random() * Math.PI * 2;
+    const sp = opts.speed ?? rand(80, 260);
+    Game.particles.push({
+      x, y,
+      vx: Math.cos(a) * sp,
+      vy: Math.sin(a) * sp,
+      life: 1,
+      decay: rand(1.5, 3),
+      color: i % 4 === 0 ? '#fff' : color,
+      size: opts.size ?? rand(1.5, 3.5),
+      drag: 2.5,
+      glow: true
+    });
+  }
+}
+
+function spawnBlood(x, y, color) {
+  Game.bloodStains.push({ x, y, r: rand(14, 26), life: 1, color });
+  if (Game.bloodStains.length > 30) Game.bloodStains.shift();
+}
+
+/* ============================================================
+   شلیک
+   ============================================================ */
+function autoShoot() {
+  if (Game.mode !== 'playing') return;
+  if (Game.myShip.dead) return;
+
+  // نزدیک‌ترین زامبی
+  let nearest = null, bestD = Infinity;
+  for (const z of Game.zombies) {
+    const d = dist2(z.x, z.y, Game.myShip.x, Game.myShip.y);
+    if (d < bestD) { bestD = d; nearest = z; }
+  }
+  if (!nearest) return;
+  if (bestD > 620 * 620) return; // برد شلیک
+
+  Game.myShip.fireCooldown = (Game.myShip.fireCooldown || 0) - 0.016;
+  if (Game.myShip.fireCooldown > 0) return;
+  Game.myShip.fireCooldown = 0.18;
+
+  const dx = nearest.x - Game.myShip.x;
+  const dy = nearest.y - Game.myShip.y;
+  const d = Math.hypot(dx, dy) || 1;
+  const speed = 700;
+
+  Game.bullets.push({
+    x: Game.myShip.x,
+    y: Game.myShip.y,
+    vx: (dx / d) * speed,
+    vy: (dy / d) * speed,
+    r: 4,
+    color: '#22d3ee',
+    owner: 'me',
+    life: 1.2,
+    trail: []
+  });
+
+  Sfx.shoot();
+}
+
+/* ============================================================
+   مرگ زامبی
+   ============================================================ */
+function killZombie(z, index) {
+  Game.zombies.splice(index, 1);
+  Game.kills++;
+  Game.score += z.cfg.score;
+
+  spawnParticles(z.x, z.y, z.color, 18, { speed: rand(120, 320), size: rand(2, 4) });
+  spawnBlood(z.x, z.y, z.color);
+  Sfx.kill();
+
+  // اگه من هاستم، به رفیقم بگو
+  if (GameNet.isHost) {
+    GameNet.send({ t: 'kill', id: z.id });
+  } else {
+    // اگه مهمونم، به هاست بگو (تا هاست رکورد خودش رو هم به‌روز کنه)
+    GameNet.send({ t: 'kill', id: z.id });
+  }
+
+  updateHUD();
+}
+
+/* ============================================================
+   آسیب به بازیکن
+   ============================================================ */
+function damageMe(amount) {
+  if (Game.myShip.dead) return;
+  if (Game.myShip.invuln > 0) return;
+  Game.myShip.hp -= amount;
+  Game.myShip.invuln = 0.5;
+  Sfx.hurt();
+  Game.shake = 12;
+  if (Game.myShip.hp <= 0) {
+    Game.myShip.hp = 0;
+    Game.myShip.dead = true;
+    Game.myShip.respawnTimer = 4;
+    spawnParticles(Game.myShip.x, Game.myShip.y, '#22d3ee', 30, { speed: rand(150, 380) });
+    showToast('💀 ناک‌اوت شدی! ۴ ثانیه...');
+  }
+  updateHUD();
+}
+
+function reviveMe() {
+  Game.myShip.hp = Game.myShip.maxHp;
+  Game.myShip.dead = false;
+  Game.myShip.invuln = 2;
+  spawnParticles(Game.myShip.x, Game.myShip.y, '#22d3ee', 25, { speed: rand(100, 250) });
+}
+
+/* ============================================================
+   Update
+   ============================================================ */
+function update(dt) {
+  if (Game.mode !== 'playing') return;
+
+  // تایم
+  const elapsed = (performance.now() - Game.startTime) / 1000;
+  Game.elapsed = elapsed;
+
+  // حرکت کشتی من
+  if (!Game.myShip.dead && Game.hasPointer) {
+    const tx = Game.pointerX;
+    const ty = Game.pointerY;
+    // محدود به لبه‌ها
+    const txc = clamp(tx, 25, Game.W - 25);
+    const tyc = clamp(ty, 25, Game.H - 25);
+    Game.myShip.x += (txc - Game.myShip.x) * Math.min(1, dt * 14);
+    Game.myShip.y += (tyc - Game.myShip.y) * Math.min(1, dt * 14);
+  }
+
+  // نرمال‌سازی حرکت رفیق
+  Game.peerShip.x += (Game.peerTarget.x - Game.peerShip.x) * Math.min(1, dt * 10);
+  Game.peerShip.y += (Game.peerTarget.y - Game.peerShip.y) * Math.min(1, dt * 10);
+
+  if (Game.myShip.invuln > 0) Game.myShip.invuln -= dt;
+
+  // respawn timer
+  if (Game.myShip.dead) {
+    Game.myShip.respawnTimer -= dt;
+    if (Game.myShip.respawnTimer <= 0) reviveMe();
+  }
+
+  // اگه هم من هم رفیقم مرده‌ایم → پایان بازی
+  if (Game.myShip.dead && Game.peerShip.dead) {
+    if (Game.myShip.respawnTimer > 0 && Game.peerShip.respawnTimer <= 0) {
+      // رفیقم داره ریسپاون میشه — ادامه بده
+    } else {
+      endGame();
+      return;
+    }
+  }
+
+  // اسپاون زامبی (فقط هاست تصمیم می‌گیره)
+  if (GameNet.isHost) {
+    const spawnInterval = Math.max(0.25, 1.4 - Game.wave * 0.08);
+    while (elapsed - Game.lastSpawnTime > spawnInterval) {
+      Game.lastSpawnTime += spawnInterval;
+      if (Game.zombies.length < 60) spawnZombie(elapsed);
+    }
+
+    // موج بعدی
+    if (elapsed - Game.lastWaveTime > 25) {
+      Game.lastWaveTime = elapsed;
+      Game.wave++;
+      GameNet.send({ t: 'wave', n: Game.wave });
+      showToast('🌊 موج ' + toFa(Game.wave) + '!');
+      Sfx.wave();
+      updateHUD();
+    }
+  }
+
+  // آپدیت زامبی‌ها
+  for (const z of Game.zombies) z.update(elapsed);
+
+  // برخورد با بازیکن‌ها
+  for (let i = Game.zombies.length - 1; i >= 0; i--) {
+    const z = Game.zombies[i];
+    // با من
+    if (!Game.myShip.dead && dist2(z.x, z.y, Game.myShip.x, Game.myShip.y) < (z.r + 16) ** 2) {
+      damageMe(8 + Game.wave);
+      // زامبی هم منفجر میشه
+      spawnParticles(z.x, z.y, z.color, 12);
+      // حذف از همه — host sync
+      Game.zombies.splice(i, 1);
+      GameNet.send({ t: 'kill', id: z.id });
+      continue;
+    }
+    // با رفیقم
+    if (!Game.peerShip.dead && dist2(z.x, z.y, Game.peerShip.x, Game.peerShip.y) < (z.r + 16) ** 2) {
+      // رفیقم خودش آسیب رو حس می‌کنه، ولی زامبی از بین میره
+      spawnParticles(z.x, z.y, z.color, 12);
+      Game.zombies.splice(i, 1);
+      GameNet.send({ t: 'kill', id: z.id });
+      continue;
+    }
+    // خارج از صفحه (خیلی دور)
+    if (z.x < -200 || z.x > Game.W + 200 || z.y < -200 || z.y > Game.H + 200) {
+      // دور از دسترس — حذف نکن، در جریان بذار
+    }
+  }
+
+  // برخورد گلوله‌ها
+  for (let i = Game.bullets.length - 1; i >= 0; i--) {
+    const b = Game.bullets[i];
+    b.x += b.vx * dt;
+    b.y += b.vy * dt;
+    b.life -= dt;
+    b.trail.push({ x: b.x, y: b.y });
+    if (b.trail.length > 6) b.trail.shift();
+
+    if (b.life <= 0 || b.x < -50 || b.x > Game.W + 50 || b.y < -50 || b.y > Game.H + 50) {
+      Game.bullets.splice(i, 1);
+      continue;
+    }
+
+    // برخورد با زامبی
+    let hit = false;
+    for (let j = Game.zombies.length - 1; j >= 0; j--) {
+      const z = Game.zombies[j];
+      if (dist2(z.x, z.y, b.x, b.y) < (z.r + b.r) ** 2) {
+        spawnParticles(b.x, b.y, '#fff', 5, { speed: rand(80, 200), size: rand(1.5, 2.5) });
+        Game.zombies.splice(j, 1);
+        Game.kills++;
+        Game.score += z.cfg.score;
+        spawnParticles(z.x, z.y, z.color, 14, { speed: rand(120, 280), size: rand(2, 4) });
+        spawnBlood(z.x, z.y, z.color);
+        Sfx.kill();
+        GameNet.send({ t: 'kill', id: z.id });
+        Game.bullets.splice(i, 1);
+        hit = true;
+        updateHUD();
+        break;
+      }
+    }
+    if (hit) continue;
+  }
+
+  // ذرات
+  for (let i = Game.particles.length - 1; i >= 0; i--) {
+    const p = Game.particles[i];
+    p.x += p.vx * dt;
+    p.y += p.vy * dt;
+    const k = Math.exp(-p.drag * dt);
+    p.vx *= k; p.vy *= k;
+    p.life -= p.decay * dt;
+    if (p.life <= 0) Game.particles.splice(i, 1);
+  }
+
+  // لکه‌های خون
+  for (let i = Game.bloodStains.length - 1; i >= 0; i--) {
+    Game.bloodStains[i].life -= dt * 0.1;
+    if (Game.bloodStains[i].life <= 0) Game.bloodStains.splice(i, 1);
+  }
+
+  // شلیک
+  autoShoot();
+
+  // ارسال state به رفیق
+  const now = performance.now();
+  if (now - Game.lastStateSend > 40) {
+    Game.lastStateSend = now;
+    GameNet.send({
+      t: 's',
+      x: Game.myShip.x,
+      y: Game.myShip.y,
+      hp: Game.myShip.hp,
+      d: Game.myShip.dead,
+      rt: Game.myShip.respawnTimer
+    });
+  }
+
+  // لرزش
+  if (Game.shake > 0) Game.shake = Math.max(0, Game.shake - dt * 40);
+
+  updateHUD();
+}
+
+/* ============================================================
+   Render
+   ============================================================ */
+function render() {
+  const W = Game.W, H = Game.H;
+  ctx.clearRect(0, 0, W, H);
+
+  // پس‌زمینه
+  const bg = ctx.createRadialGradient(W/2, H/2, 0, W/2, H/2, Math.max(W, H) * 0.75);
+  bg.addColorStop(0, '#1a0b3a');
+  bg.addColorStop(0.5, '#0d0520');
+  bg.addColorStop(1, '#05010a');
+  ctx.fillStyle = bg;
+  ctx.fillRect(0, 0, W, H);
+
+  // لرزش
+  const shake = Game.shake || 0;
+  const sx = shake > 0 ? (Math.random() - 0.5) * shake : 0;
+  const sy = shake > 0 ? (Math.random() - 0.5) * shake : 0;
+
+  ctx.save();
+  ctx.translate(sx, sy);
+
+  // گرید
+  ctx.strokeStyle = 'rgba(167, 139, 250, 0.06)';
+  ctx.lineWidth = 1;
+  const gridSize = 60;
+  for (let x = 0; x < W; x += gridSize) {
+    ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, H); ctx.stroke();
+  }
+  for (let y = 0; y < H; y += gridSize) {
+    ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(W, y); ctx.stroke();
+  }
+
+  // لکه‌های خون
+  for (const b of Game.bloodStains) {
+    ctx.globalAlpha = b.life * 0.4;
+    ctx.fillStyle = b.color;
+    ctx.beginPath();
+    ctx.arc(b.x, b.y, b.r, 0, Math.PI * 2);
+    ctx.fill();
+  }
+  ctx.globalAlpha = 1;
+
+  // زامبی‌ها
+  for (const z of Game.zombies) {
+    drawZombie(z);
+  }
+
+  // گلوله‌ها
+  for (const b of Game.bullets) {
+    // دنباله
+    for (let i = 0; i < b.trail.length; i++) {
+      const t = b.trail[i];
+      ctx.globalAlpha = (i / b.trail.length) * 0.6;
+      ctx.fillStyle = b.color;
+      ctx.beginPath();
+      ctx.arc(t.x, t.y, b.r * (i / b.trail.length) * 0.9, 0, Math.PI * 2);
+      ctx.fill();
+    }
+    ctx.globalAlpha = 1;
+
+    // هاله
+    const g = ctx.createRadialGradient(b.x, b.y, 0, b.x, b.y, b.r * 3.5);
+    g.addColorStop(0, b.color);
+    g.addColorStop(0.4, b.color + '88');
+    g.addColorStop(1, 'transparent');
+    ctx.fillStyle = g;
+    ctx.beginPath();
+    ctx.arc(b.x, b.y, b.r * 3.5, 0, Math.PI * 2);
+    ctx.fill();
+
+    ctx.fillStyle = '#fff';
+    ctx.beginPath();
+    ctx.arc(b.x, b.y, b.r * 0.7, 0, Math.PI * 2);
+    ctx.fill();
+  }
+
+  // ذرات
+  for (const p of Game.particles) {
+    ctx.globalAlpha = Math.max(0, p.life);
+    ctx.fillStyle = p.color;
+    if (p.glow) { ctx.shadowColor = p.color; ctx.shadowBlur = 10; }
+    ctx.beginPath();
+    ctx.arc(p.x, p.y, p.size * (0.4 + p.life * 0.8), 0, Math.PI * 2);
+    ctx.fill();
+    if (p.glow) ctx.shadowBlur = 0;
+  }
+  ctx.globalAlpha = 1;
+
+  // کشتی رفیقم
+  if (Game.peerShip.x !== 0 || Game.peerShip.y !== 0) {
+    drawShip(Game.peerShip, '#ff5fae', '#be185d', '👥');
+  }
+
+  // کشتی من
+  drawShip(Game.myShip, '#22d3ee', '#0369a1', '👤');
+
+  ctx.restore();
+}
+
+function drawZombie(z) {
+  ctx.save();
+  ctx.translate(z.x, z.y);
+
+  // هاله
+  const g = ctx.createRadialGradient(0, 0, 0, 0, 0, z.r * 2.2);
+  g.addColorStop(0, z.color + 'aa');
+  g.addColorStop(1, 'transparent');
+  ctx.fillStyle = g;
+  ctx.beginPath();
+  ctx.arc(0, 0, z.r * 2.2, 0, Math.PI * 2);
+  ctx.fill();
+
+  // سایه
+  ctx.fillStyle = 'rgba(0,0,0,0.4)';
+  ctx.beginPath();
+  ctx.ellipse(0, z.r * 0.7, z.r * 0.9, z.r * 0.35, 0, 0, Math.PI * 2);
+  ctx.fill();
+
+  // بدنه
+  const grad = ctx.createRadialGradient(-z.r * 0.3, -z.r * 0.3, 0, 0, 0, z.r * 1.2);
+  grad.addColorStop(0, z.hitFlash > 0 ? '#fff' : z.color);
+  grad.addColorStop(1, '#1a0d2e');
+  ctx.fillStyle = grad;
+  ctx.beginPath();
+  ctx.arc(0, 0, z.r, 0, Math.PI * 2);
+  ctx.fill();
+
+  ctx.strokeStyle = z.color;
+  ctx.lineWidth = 2;
+  ctx.stroke();
+
+  // اموجی
+  ctx.font = (z.r * 1.35) + 'px sans-serif';
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  ctx.fillText(z.icon, 0, 1);
+
+  ctx.restore();
+}
+
+function drawShip(ship, colorLight, colorDark, label) {
+  if (ship.dead) {
+    // فقط سایه — بازیکن مرده
+    ctx.save();
+    ctx.globalAlpha = 0.25;
+    ctx.fillStyle = '#333';
+    ctx.beginPath();
+    ctx.arc(ship.x, ship.y, 16, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.restore();
     return;
   }
-  if (y > H - 15) return;
 
-  const key = state.selectedCard;
-  const card = CARDS[key];
-  if (card.cost > Math.floor(state.playerElixir)) return;
+  ctx.save();
+  ctx.translate(ship.x, ship.y);
 
-  spawnUnit(key, 'player', x, y);
-  state.playerElixir -= card.cost;
-  Sfx.place();
+  // هاله
+  const g = ctx.createRadialGradient(0, 0, 0, 0, 0, 55);
+  g.addColorStop(0, colorLight + 'aa');
+  g.addColorStop(0.5, colorLight + '44');
+  g.addColorStop(1, 'transparent');
+  ctx.fillStyle = g;
+  ctx.beginPath();
+  ctx.arc(0, 0, 55, 0, Math.PI * 2);
+  ctx.fill();
 
-  // ذرات اسپاون
-  spawnExplosion(x, y, card.color, 10, { speed: rand(60, 140), size: rand(1.5, 3) });
+  // حلقه
+  ctx.strokeStyle = colorLight;
+  ctx.lineWidth = 2;
+  ctx.beginPath();
+  ctx.arc(0, 0, 22, 0, Math.PI * 2);
+  ctx.stroke();
 
-  // چرخه کارت
-  const idx = state.playerHand.indexOf(key);
-  if (idx >= 0) {
-    state.playerHand.splice(idx, 1);
-    // کارت جدید تصادفی
-    const remaining = CARD_KEYS.filter(k => !state.playerHand.includes(k));
-    const newCard = remaining.length ? remaining[randInt(0, remaining.length - 1)] : CARD_KEYS[randInt(0, CARD_KEYS.length - 1)];
-    state.playerHand.splice(idx, 0, newCard);
+  // درخشش
+  ctx.shadowColor = colorLight;
+  ctx.shadowBlur = 18;
+
+  // مثلث کشتی — جهت به سمت نزدیک‌ترین زامبی
+  ctx.fillStyle = colorLight;
+  ctx.beginPath();
+  ctx.arc(0, 0, 14, 0, Math.PI * 2);
+  ctx.fill();
+
+  // بدن
+  ctx.fillStyle = colorDark;
+  ctx.beginPath();
+  ctx.arc(0, 0, 10, 0, Math.PI * 2);
+  ctx.fill();
+
+  ctx.shadowBlur = 0;
+
+  // آیکن
+  ctx.font = '14px sans-serif';
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  ctx.fillText(label, 0, 0);
+
+  // ذرات چرخان
+  const t = performance.now() * 0.003;
+  for (let i = 0; i < 3; i++) {
+    const a = t + (Math.PI * 2 / 3) * i;
+    ctx.fillStyle = colorLight;
+    ctx.beginPath();
+    ctx.arc(Math.cos(a) * 24, Math.sin(a) * 24, 2.5, 0, Math.PI * 2);
+    ctx.fill();
   }
 
-  state.selectedCard = null;
-  renderHand();
+  ctx.restore();
 }
 
 /* ============================================================
-   شروع / پایان بازی
-   ============================================================ */
-const menuEl = document.getElementById('menu');
-const endEl = document.getElementById('end');
-const startBtn = document.getElementById('startBtn');
-const retryBtn = document.getElementById('retryBtn');
-
-function resetGame() {
-  state.mode = 'playing';
-  state.timeLeft = 180;
-  state.playerElixir = 5;
-  state.enemyElixir = 5;
-  state.playerCrowns = 0;
-  state.enemyCrowns = 0;
-  state.selectedCard = null;
-  state.aiTimer = 2;
-  state.shake = 0;
-
-  units = [];
-  projectiles = [];
-  particles = [];
-  damageTexts = [];
-
-  createTowers();
-  initHand();
-  updateHUD();
-  updateTimerDisplay();
-
-  endEl.classList.add('hidden');
-}
-
-startBtn.addEventListener('click', () => {
-  Sfx.init();
-  Sfx.tone(660, 0.1, 'sine', 0.06);
-  menuEl.classList.add('hidden');
-  resetGame();
-});
-
-retryBtn.addEventListener('click', () => {
-  endEl.classList.add('hidden');
-  resetGame();
-});
-
-function endGame(playerWon) {
-  state.mode = 'ended';
-
-  document.getElementById('endPlayer').textContent = toFa(state.playerCrowns);
-  document.getElementById('endEnemy').textContent = toFa(state.enemyCrowns);
-
-  const iconEl = document.getElementById('endIcon');
-  const titleEl = document.getElementById('endTitle');
-  const textEl = document.getElementById('endText');
-
-  if (playerWon === true) {
-    iconEl.textContent = '🏆';
-    titleEl.textContent = 'پیروزی!';
-    textEl.textContent = 'برج پادشاه دشمن رو نابود کردی! فرمانروای میدان تو هستی 👑';
-    Sfx.win();
-  } else if (playerWon === false) {
-    iconEl.textContent = '💀';
-    titleEl.textContent = 'شکست خوردی!';
-    textEl.textContent = 'برج پادشاهت نابود شد. یه بار دیگه امتحان کن، اینبار قوی‌تر برگرد!';
-    Sfx.lose();
-  } else {
-    iconEl.textContent = '🤝';
-    titleEl.textContent = 'مساوی!';
-    textEl.textContent = 'وقت تموم شد و تاج‌ها برابر شدن. یه نبرد دیگه بزن و برنده شو!';
-    Sfx.tone(440, 0.4, 'sine', 0.08);
-  }
-
-  setTimeout(() => endEl.classList.remove('hidden'), 800);
-}
-
-/* ============================================================
-   حلقه اصلی
+   Loop
    ============================================================ */
 let lastT = performance.now();
-let timerAccumulator = 0;
-
 function loop(t) {
   const dt = Math.min((t - lastT) / 1000, 0.05);
   lastT = t;
 
-  if (state.mode === 'playing') {
-    update(dt);
-    updateElixirUI();
-
-    timerAccumulator += dt;
-    if (timerAccumulator >= 0.5) {
-      timerAccumulator = 0;
-      updateTimerDisplay();
-    }
-  } else {
-    // آپدیت ذرات حتی وقتی بازی متوقفه
-    for (let i = particles.length - 1; i >= 0; i--) {
-      const p = particles[i];
-      p.x += p.vx * dt;
-      p.y += p.vy * dt;
-      const k = Math.exp(-p.drag * dt);
-      p.vx *= k;
-      p.vy *= k;
-      p.life -= p.decay * dt;
-      if (p.life <= 0) particles.splice(i, 1);
-    }
-  }
-
+  update(dt);
   render();
+
   requestAnimationFrame(loop);
+}
+requestAnimationFrame(loop);
+
+/* ============================================================
+   HUD
+   ============================================================ */
+const hudScore = document.getElementById('hudScore');
+const hudWave = document.getElementById('hudWave');
+const hudZombies = document.getElementById('hudZombies');
+const hpMeBar = document.getElementById('hpMeBar');
+const hpMeText = document.getElementById('hpMeText');
+const hpPeerBar = document.getElementById('hpPeerBar');
+const hpPeerText = document.getElementById('hpPeerText');
+const hpMeEl = document.getElementById('hpMe');
+const hpPeerEl = document.getElementById('hpPeer');
+
+function updateHUD() {
+  hudScore.textContent = toFa(Game.score);
+  hudWave.textContent = toFa(Game.wave);
+  hudZombies.textContent = toFa(Game.kills);
+
+  // HP من
+  const pctMe = Math.max(0, Game.myShip.hp / Game.myShip.maxHp) * 100;
+  hpMeBar.style.width = pctMe + '%';
+  hpMeText.textContent = toFa(Math.max(0, Math.round(pctMe))) + '٪';
+  hpMeEl.classList.toggle('dead', Game.myShip.dead);
+
+  // HP رفیق
+  const pctPeer = Math.max(0, Game.peerShip.hp / Game.peerShip.maxHp) * 100;
+  hpPeerBar.style.width = pctPeer + '%';
+  hpPeerText.textContent = toFa(Math.max(0, Math.round(pctPeer))) + '٪';
+  hpPeerEl.classList.toggle('dead', Game.peerShip.dead);
 }
 
 /* ============================================================
-   راه‌اندازی اولیه
+   Toast
    ============================================================ */
-resize();
-createTowers();
-initHand();
-requestAnimationFrame(loop);
+const toastEl = document.getElementById('toast');
+function showToast(text) {
+  toastEl.textContent = text;
+  toastEl.classList.remove('show');
+  void toastEl.offsetWidth;
+  toastEl.classList.add('show');
+}
 
-// اگر کاربر بعد از رسیز، دوباره ریسایز کرد، لایوت رو آپدیت کن
-addEventListener('resize', () => {
-  resize();
+/* ============================================================
+   Networking handlers
+   ============================================================ */
+Game.handleData = function (d) {
+  if (!d) return;
+
+  if (d.t === 's') {
+    // state رفیق
+    Game.peerTarget.x = d.x;
+    Game.peerTarget.y = d.y;
+    Game.peerShip.hp = d.hp;
+    Game.peerShip.dead = d.d;
+    Game.peerShip.respawnTimer = d.rt || 0;
+    return;
+  }
+
+  if (d.t === 'spawn') {
+    // فقط مهمون‌ها این پیام رو از هاست می‌گیرن
+    if (GameNet.isHost) return;
+    // بررسی تکراری نبودن
+    if (Game.zombies.some(z => z.id === d.id)) return;
+    const z = new Zombie(d.id, d.type, d.x, d.y, d.dx, d.dy, d.st);
+    // سینک با تایم محلی (اگه startTime مشابه باشه)
+    Game.zombies.push(z);
+    return;
+  }
+
+  if (d.t === 'kill') {
+    // حذف زامبی
+    const idx = Game.zombies.findIndex(z => z.id === d.id);
+    if (idx >= 0) {
+      const z = Game.zombies[idx];
+      spawnParticles(z.x, z.y, z.color, 12, { speed: rand(100, 260) });
+      spawnBlood(z.x, z.y, z.color);
+      Game.zombies.splice(idx, 1);
+    }
+    return;
+  }
+
+  if (d.t === 'wave') {
+    if (GameNet.isHost) return;
+    Game.wave = d.n;
+    Game.lastWaveTime = Game.elapsed;
+    showToast('🌊 موج ' + toFa(d.n) + '!');
+    Sfx.wave();
+    updateHUD();
+    return;
+  }
+
+  if (d.t === 'over') {
+    endGame(true);
+    return;
+  }
+
+  if (d.t === 'again') {
+    // رفیقم دوباره شروع کرد
+    startGame(false);
+    return;
+  }
+};
+
+Game.onPeerConnected = function () {
+  const status = document.getElementById('connStatus');
+  status.classList.add('show');
+  status.textContent = '● متصل به رفیق';
+  status.style.color = 'var(--green)';
+
+  // شروع شمارش معکوس
+  startCountdown();
+};
+
+Game.onPeerDisconnected = function () {
+  if (Game.mode === 'lobby') return;
+  const status = document.getElementById('connStatus');
+  status.classList.add('show', 'lost');
+  status.textContent = '● رفیقت قطع شد';
+  showToast('⚠️ رفیقت از بازی خارج شد');
+};
+
+/* ============================================================
+   شروع بازی
+   ============================================================ */
+const countdownEl = document.getElementById('countdown');
+const countdownNum = document.getElementById('countdownNum');
+
+function startCountdown() {
+  Game.mode = 'countdown';
+  countdownEl.classList.add('show');
+
+  let n = 3;
+  countdownNum.textContent = toFa(n);
+  countdownNum.style.animation = 'none';
+  void countdownNum.offsetWidth;
+  countdownNum.style.animation = '';
+  Sfx.countdown();
+
+  const interval = setInterval(() => {
+    n--;
+    if (n > 0) {
+      countdownNum.textContent = toFa(n);
+      countdownNum.style.animation = 'none';
+      void countdownNum.offsetWidth;
+      countdownNum.style.animation = '';
+      Sfx.countdown();
+    } else {
+      clearInterval(interval);
+      countdownNum.textContent = 'بریم!';
+      Sfx.start();
+      setTimeout(() => {
+        countdownEl.classList.remove('show');
+        startGame(true);
+      }, 700);
+    }
+  }, 900);
+}
+
+function startGame(sendMsg) {
+  document.getElementById('lobby').style.display = 'none';
+  document.getElementById('game').classList.add('active');
+
+  // ریست state
+  Game.mode = 'playing';
+  Game.score = 0;
+  Game.wave = 1;
+  Game.kills = 0;
+  Game.elapsed = 0;
+  Game.zombies = [];
+  Game.bullets = [];
+  Game.particles = [];
+  Game.bloodStains = [];
+  zombieIdCounter = 0;
+
+  Game.myShip = {
+    x: GameNet.isHost ? Game.W * 0.35 : Game.W * 0.65,
+    y: Game.H * 0.5,
+    hp: 100, maxHp: 100, invuln: 2, dead: false, respawnTimer: 0, fireCooldown: 0
+  };
+
+  Game.peerShip = {
+    x: GameNet.isHost ? Game.W * 0.65 : Game.W * 0.35,
+    y: Game.H * 0.5,
+    hp: 100, maxHp: 100, dead: false, respawnTimer: 0
+  };
+  Game.peerTarget = { x: Game.peerShip.x, y: Game.peerShip.y };
+
+  Game.lastSpawnTime = 0;
+  Game.lastWaveTime = 0;
+  Game.startTime = performance.now();
+  Game.hasPointer = false;
+  Game.pointerX = Game.myShip.x;
+  Game.pointerY = Game.myShip.y;
+
+  document.getElementById('gameOver').classList.remove('show');
+  updateHUD();
+
+  if (sendMsg && GameNet.connected) {
+    GameNet.send({ t: 'again' });
+  }
+}
+
+/* ============================================================
+   پایان بازی
+   ============================================================ */
+let gameOverShown = false;
+
+function endGame(isRemote = false) {
+  if (Game.mode === 'over') return;
+  Game.mode = 'over';
+
+  // اطلاع به رفیق
+  if (!isRemote && GameNet.connected) {
+    GameNet.send({ t: 'over' });
+  }
+
+  document.getElementById('goScore').textContent = toFa(Game.score);
+  document.getElementById('goWave').textContent = toFa(Game.wave);
+  document.getElementById('goKills').textContent = toFa(Game.kills);
+
+  const icon = document.getElementById('goIcon');
+  const title = document.getElementById('goTitle');
+  const text = document.getElementById('goText');
+
+  if (Game.wave >= 5) {
+    icon.textContent = '🏆';
+    title.textContent = 'عالی بود!';
+    text.textContent = 'تا موج ' + toFa(Game.wave) + ' مقاومت کردید. رکورد خوبی زدید!';
+  } else {
+    icon.textContent = '💀';
+    title.textContent = 'زامبی‌ها گرفتن‌تون!';
+    text.textContent = 'به موج ' + toFa(Game.wave) + ' رسیدید. یه بار دیگه تلاش کنید!';
+  }
+
+  document.getElementById('gameOver').classList.add('show');
+  Sfx.gameover();
+}
+
+/* ============================================================
+   رویدادهای دکمه‌ها
+   ============================================================ */
+const hostBtn = document.getElementById('hostBtn');
+const joinBtn = document.getElementById('joinBtn');
+const joinInput = document.getElementById('joinInput');
+const errorMsg = document.getElementById('errorMsg');
+const hostInfo = document.getElementById('hostInfo');
+const codeDisplay = document.getElementById('codeDisplay');
+const playAgainBtn = document.getElementById('playAgainBtn');
+
+hostBtn.addEventListener('click', async () => {
+  hostBtn.disabled = true;
+  hostBtn.textContent = '⏳ در حال ساخت...';
+  errorMsg.textContent = '';
+
+  try {
+    const code = await GameNet.host();
+
+    // نمایش کد
+    codeDisplay.innerHTML = '';
+    for (const ch of code) {
+      const s = document.createElement('span');
+      s.textContent = ch;
+      codeDisplay.appendChild(s);
+    }
+    hostInfo.hidden = false;
+    hostBtn.style.display = 'none';
+    document.getElementById('hostSection').querySelector('.section-label').textContent = '🏠 اتاق تو آماده‌ست';
+  } catch (e) {
+    errorMsg.textContent = e.message || 'خطا در ساخت اتاق';
+    hostBtn.disabled = false;
+    hostBtn.textContent = '🎮 ساخت اتاق جدید';
+  }
+});
+
+joinBtn.addEventListener('click', async () => {
+  const code = joinInput.value.trim().toUpperCase();
+  if (code.length !== 6) {
+    errorMsg.textContent = 'کد باید ۶ حرفی باشه';
+    return;
+  }
+
+  joinBtn.disabled = true;
+  joinBtn.textContent = '⏳ در حال اتصال...';
+  errorMsg.textContent = '';
+
+  try {
+    await GameNet.join(code);
+    // شروع شمارش معکوس توسط Game.onPeerConnected انجام میشه
+  } catch (e) {
+    errorMsg.textContent = e.message || 'اتصال ناموفق';
+    joinBtn.disabled = false;
+    joinBtn.textContent = 'پیوستن به بازی';
+  }
+});
+
+joinInput.addEventListener('input', (e) => {
+  e.target.value = e.target.value.toUpperCase().replace(/[^A-Z0-9]/g, '');
+});
+
+playAgainBtn.addEventListener('click', () => {
+  document.getElementById('gameOver').classList.remove('show');
+  startCountdown();
+});
+
+/* ============================================================
+   تمیزکاری موقع خروج
+   ============================================================ */
+window.addEventListener('beforeunload', () => {
+  GameNet.destroy();
 });
 </script>
 </body>
