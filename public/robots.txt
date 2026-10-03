@@ -1,0 +1,8 @@
+User-agent: *
+Allow: /Mobilex/
+Disallow: /Mobilex/admin
+Disallow: /Mobilex/account/security
+Disallow: /Mobilex/checkout
+Disallow: /Mobilex/order-confirmation
+Disallow: /Mobilex/ui-lab
+Sitemap: https://mywc.github.io/Mobilex/sitemap.xml
