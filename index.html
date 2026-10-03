@@ -1,1926 +1,343 @@
 <!DOCTYPE html>
 <html lang="fa" dir="rtl">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>شکار زامبی — دو نفرهٔ آنلاین 🧟</title>
-
-<link rel="preconnect" href="https://cdn.jsdelivr.net">
-<link href="https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/Vazirmatn-font-face.css" rel="stylesheet">
-<script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script>
-
-<style>
-*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
-
-:root {
-  --cyan: #22d3ee;
-  --pink: #ff5fae;
-  --purple: #a78bfa;
-  --red: #f43f5e;
-  --gold: #fbbf24;
-  --lime: #a3e635;
-  --green: #22c55e;
-}
-
-html, body {
-  height: 100%;
-  overflow: hidden;
-  background: #05010a;
-}
-
-body {
-  font-family: "Vazirmatn", system-ui, Tahoma, sans-serif;
-  color: #fff;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 10px;
-  -webkit-font-smoothing: antialiased;
-  user-select: none;
-  -webkit-user-select: none;
-  -webkit-tap-highlight-color: transparent;
-  touch-action: manipulation;
-}
-
-::selection { background: var(--pink); color: #000; }
-
-/* ============================================================
-   لابی
-   ============================================================ */
-#lobby {
-  width: min(560px, 100%);
-  max-height: 96dvh;
-  overflow-y: auto;
-  padding: 32px 24px;
-
-  background:
-    linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.02)),
-    rgba(12, 4, 25, 0.75);
-  backdrop-filter: blur(24px);
-  -webkit-backdrop-filter: blur(24px);
-  border: 1.5px solid rgba(167, 139, 250, 0.35);
-  border-radius: 26px;
-  box-shadow:
-    0 40px 90px -30px rgba(124, 58, 237, 0.7),
-    inset 0 1px 0 rgba(255, 255, 255, 0.12);
-  text-align: center;
-  animation: popIn 0.8s cubic-bezier(0.2, 0.9, 0.3, 1.3) both;
-}
-
-@keyframes popIn {
-  from { opacity: 0; transform: translateY(40px) scale(0.94); filter: blur(8px); }
-  to   { opacity: 1; transform: translateY(0) scale(1); filter: blur(0); }
-}
-
-.lobby-head h1 {
-  font-size: clamp(1.6rem, 5vw, 2.3rem);
-  font-weight: 900;
-  line-height: 1.5;
-  background: linear-gradient(120deg, var(--cyan), var(--purple) 40%, var(--pink) 70%, var(--gold));
-  background-size: 300% 100%;
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-  animation: flow 6s linear infinite;
-  filter: drop-shadow(0 4px 30px rgba(34, 211, 238, 0.5));
-}
-
-@keyframes flow { to { background-position: 300% 50%; } }
-
-.lobby-head p {
-  font-size: 0.9rem;
-  color: rgba(255, 255, 255, 0.65);
-  line-height: 2;
-  margin-top: 6px;
-}
-
-.lobby-head .emojis {
-  font-size: 2.2rem;
-  margin-bottom: 6px;
-  letter-spacing: 8px;
-}
-
-.lobby-head .emojis span {
-  display: inline-block;
-  animation: wiggle 2.4s ease-in-out infinite;
-}
-.lobby-head .emojis span:nth-child(2) { animation-delay: 0.2s; }
-.lobby-head .emojis span:nth-child(3) { animation-delay: 0.4s; }
-.lobby-head .emojis span:nth-child(4) { animation-delay: 0.6s; }
-
-@keyframes wiggle {
-  0%, 100% { transform: translateY(0) rotate(0); }
-  25%      { transform: translateY(-8px) rotate(-8deg) scale(1.1); }
-  75%      { transform: translateY(-4px) rotate(8deg); }
-}
-
-.section {
-  margin-top: 22px;
-  padding: 16px;
-  background: rgba(255, 255, 255, 0.04);
-  border: 1px solid rgba(255, 255, 255, 0.09);
-  border-radius: 16px;
-}
-
-.section-label {
-  font-size: 0.82rem;
-  font-weight: 800;
-  color: rgba(255, 255, 255, 0.75);
-  margin-bottom: 12px;
-  text-align: right;
-}
-
-.btn {
-  position: relative;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-
-  padding: 14px 32px;
-  font-family: inherit;
-  font-size: 0.98rem;
-  font-weight: 900;
-  color: #1a0e00;
-
-  background: linear-gradient(135deg, #ffb45c, #ff7a3c 45%, #ff5c8b);
-  background-size: 200% 200%;
-  border: none;
-  border-radius: 999px;
-  cursor: pointer;
-  width: 100%;
-
-  box-shadow: 0 18px 44px -14px rgba(255, 120, 60, 0.95), 0 0 60px -10px rgba(255, 95, 174, 0.6);
-  transition: transform 0.3s cubic-bezier(0.2, 0.9, 0.3, 1.4), box-shadow 0.3s, background-position 0.6s;
-  overflow: hidden;
-}
-
-.btn.secondary {
-  color: #fff;
-  background: linear-gradient(135deg, #22d3ee, #a78bfa 50%, #ff5fae);
-  box-shadow: 0 18px 44px -14px rgba(34, 211, 238, 0.9), 0 0 60px -10px rgba(167, 139, 250, 0.7);
-}
-
-.btn::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.65), transparent);
-  transform: translateX(-130%);
-  animation: shine 3.2s ease-in-out infinite 1s;
-}
-
-@keyframes shine {
-  0%   { transform: translateX(-130%); }
-  40%  { transform: translateX(130%); }
-  100% { transform: translateX(130%); }
-}
-
-.btn:hover:not(:disabled) {
-  transform: translateY(-3px) scale(1.02);
-  background-position: 100% 50%;
-}
-
-.btn:active:not(:disabled) { transform: translateY(-1px) scale(0.98); }
-.btn:disabled { opacity: 0.5; cursor: not-allowed; }
-
-.room-code-display {
-  display: flex;
-  justify-content: center;
-  gap: 8px;
-  margin: 14px 0;
-}
-
-.room-code-display span {
-  display: grid;
-  place-items: center;
-  width: 46px;
-  height: 58px;
-
-  font-size: 1.7rem;
-  font-weight: 900;
-  color: var(--gold);
-  font-family: 'Courier New', monospace;
-
-  background: linear-gradient(180deg, rgba(251, 191, 36, 0.1), rgba(251, 191, 36, 0.02));
-  border: 1.5px solid rgba(251, 191, 36, 0.5);
-  border-radius: 10px;
-  text-shadow: 0 0 20px var(--gold);
-
-  animation: codePop 0.5s cubic-bezier(0.2, 0.9, 0.3, 1.5) both;
-}
-
-.room-code-display span:nth-child(1) { animation-delay: 0.1s; }
-.room-code-display span:nth-child(2) { animation-delay: 0.15s; }
-.room-code-display span:nth-child(3) { animation-delay: 0.2s; }
-.room-code-display span:nth-child(4) { animation-delay: 0.25s; }
-.room-code-display span:nth-child(5) { animation-delay: 0.3s; }
-.room-code-display span:nth-child(6) { animation-delay: 0.35s; }
-
-@keyframes codePop {
-  from { opacity: 0; transform: scale(0.5) rotateY(90deg); }
-  to   { opacity: 1; transform: scale(1) rotateY(0); }
-}
-
-.copy-hint {
-  font-size: 0.78rem;
-  color: rgba(255, 255, 255, 0.55);
-  margin-bottom: 10px;
-}
-
-.waiting {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  margin-top: 10px;
-  padding: 8px 18px;
-  font-size: 0.82rem;
-  font-weight: 800;
-  color: var(--cyan);
-  background: rgba(34, 211, 238, 0.08);
-  border: 1px solid rgba(34, 211, 238, 0.4);
-  border-radius: 999px;
-  backdrop-filter: blur(8px);
-}
-
-.waiting .dot {
-  width: 8px; height: 8px;
-  border-radius: 50%;
-  background: var(--cyan);
-  box-shadow: 0 0 0 0 rgba(34, 211, 238, 0.85);
-  animation: ping 1.6s ease-out infinite;
-}
-
-@keyframes ping {
-  0%   { box-shadow: 0 0 0 0 rgba(34, 211, 238, 0.85); }
-  70%  { box-shadow: 0 0 0 12px rgba(34, 211, 238, 0); }
-  100% { box-shadow: 0 0 0 0 rgba(34, 211, 238, 0); }
-}
-
-.input-wrap {
-  display: flex;
-  gap: 8px;
-  margin-bottom: 12px;
-}
-
-.input-wrap input {
-  flex: 1;
-  padding: 13px 16px;
-  font-family: 'Courier New', monospace;
-  font-size: 1.2rem;
-  font-weight: 900;
-  letter-spacing: 6px;
-  text-align: center;
-  color: #fff;
-  text-transform: uppercase;
-
-  background: rgba(0, 0, 0, 0.35);
-  border: 1.5px solid rgba(167, 139, 250, 0.35);
-  border-radius: 12px;
-  outline: none;
-  transition: border-color 0.2s, box-shadow 0.2s;
-}
-
-.input-wrap input:focus {
-  border-color: var(--gold);
-  box-shadow: 0 0 0 3px rgba(251, 191, 36, 0.2);
-}
-
-.input-wrap input::placeholder {
-  color: rgba(255, 255, 255, 0.25);
-  letter-spacing: 4px;
-}
-
-.error-msg {
-  font-size: 0.8rem;
-  color: var(--red);
-  font-weight: 800;
-  margin-top: 8px;
-  min-height: 18px;
-}
-
-.how-to {
-  font-size: 0.78rem;
-  line-height: 2;
-  color: rgba(255, 255, 255, 0.5);
-  margin-top: 20px;
-  padding-top: 16px;
-  border-top: 1px dashed rgba(255, 255, 255, 0.1);
-  text-align: right;
-}
-
-.how-to b { color: var(--cyan); }
-
-/* ============================================================
-   بازی
-   ============================================================ */
-#game {
-  position: fixed;
-  inset: 0;
-  display: none;
-  background: #05010a;
-}
-
-#game.active { display: block; }
-
-#canvas {
-  display: block;
-  width: 100%;
-  height: 100%;
-  background: radial-gradient(ellipse at center, #150a2e 0%, #05010a 70%);
-}
-
-.game-hud {
-  position: fixed;
-  top: 12px;
-  left: 12px;
-  right: 12px;
-  z-index: 10;
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  gap: 8px;
-  pointer-events: none;
-  flex-wrap: wrap;
-}
-
-.hud-pill {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  padding: 8px 16px;
-  font-size: 0.82rem;
-  font-weight: 900;
-  color: #fff;
-  background: rgba(0, 0, 0, 0.55);
-  border: 1.5px solid rgba(255, 255, 255, 0.15);
-  border-radius: 999px;
-  backdrop-filter: blur(12px);
-  text-shadow: 0 0 12px rgba(255, 255, 255, 0.5);
-}
-
-.hud-pill b { color: var(--gold); text-shadow: 0 0 14px var(--gold); font-variant-numeric: tabular-nums; }
-.hud-pill .wave-icon { animation: bob 2s ease-in-out infinite; }
-
-@keyframes bob {
-  0%, 100% { transform: translateY(0); }
-  50%      { transform: translateY(-4px); }
-}
-
-.hud-pill.wave { border-color: rgba(251, 191, 36, 0.6); }
-.hud-pill.wave b { color: var(--pink); text-shadow: 0 0 14px var(--pink); }
-
-.connection-status {
-  position: fixed;
-  top: 60px;
-  left: 50%;
-  transform: translateX(-50%);
-  z-index: 10;
-  padding: 6px 14px;
-  font-size: 0.75rem;
-  font-weight: 800;
-  color: var(--green);
-  background: rgba(0, 0, 0, 0.55);
-  border: 1px solid rgba(34, 197, 94, 0.4);
-  border-radius: 999px;
-  backdrop-filter: blur(8px);
-  pointer-events: none;
-  display: none;
-}
-
-.connection-status.show { display: inline-flex; align-items: center; gap: 6px; }
-.connection-status.lost { color: var(--red); border-color: rgba(244, 63, 94, 0.5); }
-
-/* نوارهای جان */
-.hp-panel {
-  position: fixed;
-  bottom: 14px;
-  left: 14px;
-  right: 14px;
-  z-index: 10;
-  display: flex;
-  gap: 12px;
-  pointer-events: none;
-}
-
-.hp-item {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-}
-
-.hp-item .label {
-  font-size: 0.72rem;
-  font-weight: 900;
-  color: rgba(255, 255, 255, 0.85);
-  text-shadow: 0 0 8px currentColor;
-  display: flex;
-  justify-content: space-between;
-}
-
-.hp-item.me .label { color: var(--cyan); text-shadow: 0 0 8px var(--cyan); }
-.hp-item.peer .label { color: var(--pink); text-shadow: 0 0 8px var(--pink); }
-
-.hp-bar {
-  height: 12px;
-  border-radius: 999px;
-  background: rgba(0, 0, 0, 0.6);
-  border: 1px solid rgba(255, 255, 255, 0.15);
-  overflow: hidden;
-  position: relative;
-}
-
-.hp-bar i {
-  display: block;
-  height: 100%;
-  width: 100%;
-  border-radius: 999px;
-  transition: width 0.3s ease, background 0.3s;
-}
-
-.hp-item.me .hp-bar i {
-  background: linear-gradient(90deg, #0891b2, #22d3ee);
-  box-shadow: 0 0 12px rgba(34, 211, 238, 0.9);
-}
-
-.hp-item.peer .hp-bar i {
-  background: linear-gradient(90deg, #be185d, #ff5fae);
-  box-shadow: 0 0 12px rgba(255, 95, 174, 0.9);
-}
-
-.hp-item.dead .hp-bar i {
-  background: #333 !important;
-  box-shadow: none !important;
-}
-
-/* پیام شناور وسط */
-.toast {
-  position: fixed;
-  top: 40%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  z-index: 20;
-  padding: 14px 32px;
-  font-size: 1.3rem;
-  font-weight: 900;
-  color: #fff;
-  background: linear-gradient(135deg, rgba(0,0,0,0.85), rgba(30,10,60,0.85));
-  border: 2px solid var(--gold);
-  border-radius: 999px;
-  box-shadow: 0 0 60px -6px var(--gold);
-  text-shadow: 0 0 20px var(--gold);
-  opacity: 0;
-  pointer-events: none;
-  white-space: nowrap;
-}
-
-.toast.show { animation: toastPop 2s cubic-bezier(0.2, 0.9, 0.3, 1.3); }
-
-@keyframes toastPop {
-  0%   { opacity: 0; transform: translate(-50%, -50%) scale(0.4); }
-  15%  { opacity: 1; transform: translate(-50%, -50%) scale(1.15); }
-  30%  { transform: translate(-50%, -50%) scale(1); }
-  80%  { opacity: 1; }
-  100% { opacity: 0; transform: translate(-50%, -70%) scale(1); }
-}
-
-/* اورلی پایان بازی */
-.game-over {
-  position: fixed;
-  inset: 0;
-  z-index: 30;
-  display: none;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 16px;
-  padding: 30px;
-  text-align: center;
-  background: radial-gradient(ellipse at center, rgba(60, 0, 20, 0.92), rgba(5, 1, 10, 0.97));
-  backdrop-filter: blur(14px);
-}
-
-.game-over.show { display: flex; animation: fadeIn 0.6s ease; }
-
-@keyframes fadeIn {
-  from { opacity: 0; }
-  to   { opacity: 1; }
-}
-
-.game-over .icon {
-  font-size: 4.5rem;
-  filter: drop-shadow(0 0 40px var(--red));
-  animation: bob 2s ease-in-out infinite;
-}
-
-.game-over h2 {
-  font-size: clamp(1.6rem, 6vw, 2.5rem);
-  font-weight: 900;
-  background: linear-gradient(120deg, var(--red), var(--pink), var(--gold));
-  background-size: 250% 100%;
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-  animation: flow 5s linear infinite;
-}
-
-.game-over p {
-  font-size: 0.98rem;
-  color: rgba(255, 255, 255, 0.7);
-  line-height: 2;
-  max-width: 40ch;
-}
-
-.game-over .stats {
-  display: flex;
-  gap: 14px;
-  margin-top: 8px;
-  flex-wrap: wrap;
-  justify-content: center;
-}
-
-.game-over .stat {
-  padding: 12px 22px;
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  border-radius: 14px;
-  min-width: 110px;
-}
-
-.game-over .stat .k {
-  font-size: 0.7rem;
-  color: rgba(255, 255, 255, 0.5);
-  font-weight: 700;
-  margin-bottom: 4px;
-}
-
-.game-over .stat .v {
-  font-size: 1.6rem;
-  font-weight: 900;
-  color: var(--gold);
-  text-shadow: 0 0 16px var(--gold);
-  font-variant-numeric: tabular-nums;
-}
-
-/* شمارش معکوس شروع */
-.countdown-overlay {
-  position: fixed;
-  inset: 0;
-  z-index: 25;
-  display: none;
-  align-items: center;
-  justify-content: center;
-  background: rgba(0, 0, 0, 0.75);
-  backdrop-filter: blur(8px);
-  font-size: 8rem;
-  font-weight: 900;
-  color: var(--gold);
-  text-shadow: 0 0 60px var(--gold);
-}
-
-.countdown-overlay.show { display: flex; }
-
-.countdown-overlay span {
-  animation: countPulse 1s ease-out;
-}
-
-@keyframes countPulse {
-  0%   { transform: scale(0.4); opacity: 0; }
-  40%  { transform: scale(1.15); opacity: 1; }
-  100% { transform: scale(1); opacity: 1; }
-}
-
-/* موبایل */
-@media (max-width: 480px) {
-  #lobby { padding: 22px 16px; }
-  .room-code-display span { width: 38px; height: 50px; font-size: 1.4rem; }
-  .hp-panel { bottom: 8px; left: 8px; right: 8px; gap: 8px; }
-  .hud-pill { padding: 6px 12px; font-size: 0.75rem; }
-}
-
-/* کاهش انیمیشن */
-@media (prefers-reduced-motion: reduce) {
-  *, *::before, *::after {
-    animation-duration: 0.001ms !important;
-    animation-iteration-count: 1 !important;
-  }
-}
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#0a0418">
+
+  <title>وب‌سایت من — خانه</title>
+  <meta name="description" content="وب‌سایت شخصی من — پروژه‌ها، بازی‌ها و چیزهای باحال">
+
+  <!-- Open Graph برای اشتراک‌گذاری در شبکه‌های اجتماعی -->
+  <meta property="og:title" content="وب‌سایت من">
+  <meta property="og:description" content="به دنیای من خوش اومدی 💜">
+  <meta property="og:type" content="website">
+  <meta property="og:image" content="images/og-image.jpg">
+
+  <!-- فاوآیکون -->
+  <link rel="icon" href="favicon.ico" type="image/x-icon">
+  <link rel="apple-touch-icon" href="images/icons/apple-touch-icon.png">
+
+  <!-- Preconnect برای سرعت بیشتر -->
+  <link rel="preconnect" href="https://cdn.jsdelivr.net">
+  <link rel="dns-prefetch" href="https://cdn.jsdelivr.net">
+
+  <!-- فونت وزیرمتن از CDN (اگه فونت محلی داری این خط رو حذف کن) -->
+  <link href="https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/Vazirmatn-font-face.css" rel="stylesheet">
+
+  <!-- استایل‌های سایت به ترتیب -->
+  <link rel="stylesheet" href="css/reset.css">
+  <link rel="stylesheet" href="css/fonts.css">
+  <link rel="stylesheet" href="css/variables.css">
+  <link rel="stylesheet" href="css/main.css">
 </head>
 
 <body>
 
-<!-- ============================== لابی ============================== -->
-<div id="lobby">
+  <!-- ═══════════════════════════════════════════════════════
+       لایه‌های پس‌زمینه تزئینی
+       ═══════════════════════════════════════════════════════ -->
+  <div class="bg-grid" aria-hidden="true"></div>
+  <div class="bg-aurora bg-aurora-1" aria-hidden="true"></div>
+  <div class="bg-aurora bg-aurora-2" aria-hidden="true"></div>
+  <div class="bg-aurora bg-aurora-3" aria-hidden="true"></div>
+  <div class="bg-grain" aria-hidden="true"></div>
 
-  <div class="lobby-head">
-    <div class="emojis">
-      <span>🧟</span><span>🔫</span><span>🧟</span><span>💥</span>
+  <!-- ═══════════════════════════════════════════════════════
+       هدر / نویگیشن
+       ═══════════════════════════════════════════════════════ -->
+  <header class="site-header" id="siteHeader">
+    <div class="container header-inner">
+
+      <a href="index.html" class="logo" aria-label="خانه">
+        <span class="logo-mark">✦</span>
+        <span class="logo-text">وب‌سایت من</span>
+      </a>
+
+      <nav class="nav" aria-label="منوی اصلی">
+        <a href="#home" class="nav-link active">خانه</a>
+        <a href="#projects" class="nav-link">پروژه‌ها</a>
+        <a href="#games" class="nav-link">بازی‌ها</a>
+        <a href="#about" class="nav-link">درباره</a>
+      </nav>
+
+      <button class="menu-btn" id="menuBtn" aria-label="باز کردن منو" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+
     </div>
-    <h1>شکار زامبی — دو نفره</h1>
-    <p>با رفیقت هم‌تیمی شو و تا می‌تونید زامبی بکشید!</p>
+  </header>
+
+  <!-- منوی موبایل -->
+  <div class="mobile-menu" id="mobileMenu" aria-hidden="true">
+    <a href="#home" class="mobile-link">خانه</a>
+    <a href="#projects" class="mobile-link">پروژه‌ها</a>
+    <a href="#games" class="mobile-link">بازی‌ها</a>
+    <a href="#about" class="mobile-link">درباره</a>
   </div>
 
-  <!-- ساخت اتاق -->
-  <div class="section" id="hostSection">
-    <div class="section-label">🏠 میزبان شو</div>
-    <button class="btn" id="hostBtn">🎮 ساخت اتاق جدید</button>
-    <div id="hostInfo" hidden>
-      <p class="copy-hint" style="margin-top:14px;">این کد رو برای رفیقت بفرست:</p>
-      <div class="room-code-display" id="codeDisplay"></div>
-      <div class="waiting">
-        <span class="dot"></span>
-        در انتظار رفیق...
+  <!-- ═══════════════════════════════════════════════════════
+       بخش اصلی — Hero
+       ═══════════════════════════════════════════════════════ -->
+  <main>
+
+    <section class="hero" id="home">
+      <div class="container">
+
+        <div class="hero-badge">
+          <span class="badge-dot"></span>
+          خوش اومدی
+        </div>
+
+        <h1 class="hero-title">
+          <span class="title-line">سلام، من اینجام</span>
+          <span class="title-line gradient">تا چیزهای خفن بسازم</span>
+        </h1>
+
+        <p class="hero-subtitle">
+          به دنیای کوچیک من خوش اومدی 💜 اینجا پروژه‌ها، بازی‌ها و کلی چیز باحال پیدا می‌کنی.
+          یه نگاه بنداز و کیف کن!
+        </p>
+
+        <div class="hero-actions">
+          <a href="#projects" class="btn btn-primary">
+            <span>بزن بریم</span>
+            <span class="btn-icon">🚀</span>
+          </a>
+          <a href="#games" class="btn btn-ghost">
+            <span>بازی‌ها</span>
+            <span class="btn-icon">🎮</span>
+          </a>
+        </div>
+
+        <!-- آمار کوچیک زیر Hero -->
+        <div class="hero-stats">
+          <div class="stat">
+            <div class="stat-value">۴+</div>
+            <div class="stat-label">پروژه</div>
+          </div>
+          <div class="stat">
+            <div class="stat-value">۲</div>
+            <div class="stat-label">بازی</div>
+          </div>
+          <div class="stat">
+            <div class="stat-value">∞</div>
+            <div class="stat-label">خلاقیت</div>
+          </div>
+        </div>
+
       </div>
-    </div>
-  </div>
 
-  <!-- ورود به اتاق -->
-  <div class="section">
-    <div class="section-label">🚀 یا به اتاق رفیقت بپیوند</div>
-    <div class="input-wrap">
-      <input id="joinInput" maxlength="6" placeholder="XXXXXX" autocomplete="off" spellcheck="false">
-    </div>
-    <button class="btn secondary" id="joinBtn">پیوستن به بازی</button>
-    <div class="error-msg" id="errorMsg"></div>
-  </div>
+      <!-- اسکرول ایندیکیتور -->
+      <a href="#projects" class="scroll-hint" aria-label="اسکرول به پایین">
+        <span class="scroll-mouse">
+          <span class="scroll-wheel"></span>
+        </span>
+      </a>
+    </section>
 
-  <div class="how-to">
-    <b>🖱️ روی موبایل:</b> انگشتت رو بکش تا حرکت کنی، شلیک خودکاره.
-    <br>
-    <b>⌨️ روی دسکتاپ:</b> ماوس رو حرکت بده، شلیک خودکاره.
-    <br>
-    <b>💀 هدف:</b> تا موج آخر زنده بمونید و رکورد بزنید!
-  </div>
+    <!-- ═══════════════════════════════════════════════════════
+         بخش پروژه‌ها
+         ═══════════════════════════════════════════════════════ -->
+    <section class="section" id="projects">
+      <div class="container">
 
-</div>
+        <div class="section-header">
+          <span class="section-tag">✦ پروژه‌ها</span>
+          <h2 class="section-title">چیزهایی که ساختم</h2>
+          <p class="section-desc">هر کدوم یه داستانی داره، روشون کلیک کن و ببین</p>
+        </div>
 
-<!-- ============================== بازی ============================== -->
-<div id="game">
-  <canvas id="canvas"></canvas>
+        <div class="cards-grid">
 
-  <div class="game-hud">
-    <div class="hud-pill">امتیاز: <b id="hudScore">۰</b></div>
-    <div class="hud-pill wave">
-      <span class="wave-icon">🌊</span>
-      موج <b id="hudWave">۱</b>
-    </div>
-    <div class="hud-pill">🧟 <b id="hudZombies">۰</b></div>
-  </div>
+          <!-- کارت ۱: به زودی -->
+          <a href="pages/coming-soon.html" class="card">
+            <div class="card-icon" style="--c1: #ff5fae; --c2: #a78bfa;">
+              <span>⏳</span>
+            </div>
+            <h3 class="card-title">صفحه «به زودی»</h3>
+            <p class="card-desc">
+              یه صفحهٔ انیمیشینی که وقتی سایت آماده نیست، به کاربرا میگه چند دقیقه دیگه میاد.
+            </p>
+            <span class="card-link">
+              مشاهده
+              <span class="arrow">←</span>
+            </span>
+          </a>
 
-  <div class="connection-status" id="connStatus">
-    <span>●</span> متصل
-  </div>
+          <!-- کارت ۲: سیاهچاله -->
+          <a href="pages/blackhole.html" class="card">
+            <div class="card-icon" style="--c1: #fbbf24; --c2: #f43f5e;">
+              <span>🕳️</span>
+            </div>
+            <h3 class="card-title">سیاهچاله</h3>
+            <p class="card-desc">
+              تجربهٔ سینمایی ورود به سایت — با دیسک برافزایشی، عدسی گرانشی و پرش نهایی!
+            </p>
+            <span class="card-link">
+              مشاهده
+              <span class="arrow">←</span>
+            </span>
+          </a>
 
-  <div class="hp-panel">
-    <div class="hp-item me" id="hpMe">
-      <div class="label">
-        <span>👤 تو</span>
-        <span id="hpMeText">۱۰۰٪</span>
+          <!-- کارت ۳: نئون دیفندر -->
+          <a href="pages/game.html" class="card">
+            <div class="card-icon" style="--c1: #22d3ee; --c2: #a78bfa;">
+              <span>🚀</span>
+            </div>
+            <h3 class="card-title">نئون دیفندر</h3>
+            <p class="card-desc">
+              شوتر فضایی تک‌نفره با ذرات، پاورآپ، کمبو و اوردرایو. با ماوس یا کیبورد بازی کن.
+            </p>
+            <span class="card-link">
+              بازی
+              <span class="arrow">←</span>
+            </span>
+          </a>
+
+          <!-- کارت ۴: زامبی دو نفره -->
+          <a href="pages/zombie-coop.html" class="card card-featured">
+            <div class="card-badge">جدید</div>
+            <div class="card-icon" style="--c1: #a3e635; --c2: #f43f5e;">
+              <span>🧟</span>
+            </div>
+            <h3 class="card-title">شکار زامبی — دو نفره</h3>
+            <p class="card-desc">
+              با رفیقت آنلاین بازی کن! یه کد ۶ حرفی می‌فرستید و با هم زامبی می‌کشید.
+            </p>
+            <span class="card-link">
+              بازی دو نفره
+              <span class="arrow">←</span>
+            </span>
+          </a>
+
+        </div>
+
       </div>
-      <div class="hp-bar"><i id="hpMeBar"></i></div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════════════════
+         بخش بازی‌ها (ویژه)
+         ═══════════════════════════════════════════════════════ -->
+    <section class="section section-games" id="games">
+      <div class="container">
+
+        <div class="section-header">
+          <span class="section-tag">🎮 وقت سرگرمی</span>
+          <h2 class="section-title">یه بازی بزن تا بیام</h2>
+          <p class="section-desc">در حال انتظار برای چیزی؟ اینا رو بازی کن و کیف کن</p>
+        </div>
+
+        <div class="games-row">
+
+          <!-- بازی بزرگ ۱ -->
+          <a href="pages/game.html" class="game-card game-blue">
+            <div class="game-visual">
+              <span class="game-emoji">🚀</span>
+              <span class="game-emoji small">💫</span>
+              <span class="game-emoji small">✨</span>
+            </div>
+            <div class="game-info">
+              <h3>نئون دیفندر</h3>
+              <p>شوتر فضایی · تک‌نفره</p>
+              <span class="game-play">▶ بازی کن</span>
+            </div>
+          </a>
+
+          <!-- بازی بزرگ ۲ -->
+          <a href="pages/zombie-coop.html" class="game-card game-green">
+            <div class="game-visual">
+              <span class="game-emoji">🧟</span>
+              <span class="game-emoji small">🔫</span>
+              <span class="game-emoji small">💥</span>
+            </div>
+            <div class="game-info">
+              <h3>شکار زامبی</h3>
+              <p>همکاری آنلاین · دو نفره</p>
+              <span class="game-play">▶ با رفیقت بازی کن</span>
+            </div>
+          </a>
+
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════════════════
+         بخش درباره
+         ═══════════════════════════════════════════════════════ -->
+    <section class="section section-about" id="about">
+      <div class="container">
+
+        <div class="about-wrap">
+
+          <div class="about-text">
+            <span class="section-tag">👋 درباره</span>
+            <h2 class="section-title">یه کم از من</h2>
+            <p>
+              من یه برنامه‌نویسم که عاشق ساختن چیزهای باحال و تعاملیه. از طراحی رابط‌های کاربری
+              تا ساخت بازی‌های کوچیک — هر چیزی که بشه باهاش آدم‌ها رو ذوق‌زده کرد.
+            </p>
+            <p>
+              این سایت جاییه که کارام رو بذارم، یه کم تجربه‌های شخصیم رو بگم، و کلی چیز
+              سرگرم‌کننده بسازم.
+            </p>
+
+            <div class="social">
+              <a href="#" class="social-link" aria-label="گیت‌هاب">
+                <span>🐙</span>
+              </a>
+              <a href="#" class="social-link" aria-label="توییتر">
+                <span>🐦</span>
+              </a>
+              <a href="#" class="social-link" aria-label="ایمیل">
+                <span>✉️</span>
+              </a>
+            </div>
+          </div>
+
+          <div class="about-card">
+            <div class="about-card-glow"></div>
+            <div class="about-card-inner">
+              <span class="about-emoji">💜</span>
+              <div class="about-motto">
+                «هیچ‌وقت از ساختن چیزهای باحال دست نکش»
+              </div>
+              <div class="about-sign">— من</div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ═══════════════════════════════════════════════════════
+       فوتر
+       ═══════════════════════════════════════════════════════ -->
+  <footer class="site-footer">
+    <div class="container footer-inner">
+
+      <div class="footer-brand">
+        <span class="logo-mark">✦</span>
+        <span>وب‌سایت من</span>
+      </div>
+
+      <p class="footer-copy">
+        ساخته شده با 💜 و یه کم جاوااسکریپت
+      </p>
+
+      <div class="footer-year" id="footerYear">۱۴۰۳</div>
+
     </div>
-    <div class="hp-item peer" id="hpPeer">
-      <div class="label">
-        <span>👥 رفیقت</span>
-        <span id="hpPeerText">۱۰۰٪</span>
-      </div>
-      <div class="hp-bar"><i id="hpPeerBar"></i></div>
-    </div>
-  </div>
+  </footer>
 
-  <div class="toast" id="toast"></div>
+  <!-- ═══════════════════════════════════════════════════════
+       اسکریپت اصلی
+       ═══════════════════════════════════════════════════════ -->
+  <script src="js/main.js"></script>
 
-  <div class="countdown-overlay" id="countdown">
-    <span id="countdownNum">۳</span>
-  </div>
-
-  <div class="game-over" id="gameOver">
-    <div class="icon" id="goIcon">💀</div>
-    <h2 id="goTitle">زامبی‌ها گرفتن‌تون!</h2>
-    <p id="goText">هر دو تون ناک‌اوت شدید. یه بار دیگه تلاش کنید و رکورد بزنید!</p>
-    <div class="stats">
-      <div class="stat">
-        <div class="k">امتیاز</div>
-        <div class="v" id="goScore">۰</div>
-      </div>
-      <div class="stat">
-        <div class="k">موج</div>
-        <div class="v" id="goWave">۱</div>
-      </div>
-      <div class="stat">
-        <div class="k">زامبی‌ها</div>
-        <div class="v" id="goKills">۰</div>
-      </div>
-    </div>
-    <button class="btn" id="playAgainBtn" style="max-width: 260px;">🔄 دوباره بزن</button>
-  </div>
-</div>
-
-<script>
-/* ============================================================
-   ابزار
-   ============================================================ */
-const faD = ['۰','۱','۲','۳','۴','۵','۶','۷','۸','۹'];
-const toFa = (n) => String(n).split('').map(d => faD[+d] ?? d).join('');
-const rand = (a, b) => a + Math.random() * (b - a);
-const randInt = (a, b) => Math.floor(rand(a, b + 1));
-const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
-const dist2 = (x1, y1, x2, y2) => (x1-x2)**2 + (y1-y2)**2;
-
-/* ============================================================
-   صدا
-   ============================================================ */
-const Sfx = {
-  ctx: null,
-  init() {
-    if (this.ctx) return;
-    try { this.ctx = new (window.AudioContext || window.webkitAudioContext)(); }
-    catch (e) {}
-  },
-  tone(freq, dur, type = 'sine', vol = 0.05, glide = null) {
-    this.init();
-    if (!this.ctx) return;
-    if (this.ctx.state === 'suspended') this.ctx.resume();
-    const o = this.ctx.createOscillator();
-    const g = this.ctx.createGain();
-    o.type = type;
-    o.frequency.setValueAtTime(freq, this.ctx.currentTime);
-    if (glide) o.frequency.exponentialRampToValueAtTime(glide, this.ctx.currentTime + dur);
-    g.gain.setValueAtTime(0, this.ctx.currentTime);
-    g.gain.linearRampToValueAtTime(vol, this.ctx.currentTime + 0.005);
-    g.gain.exponentialRampToValueAtTime(0.0001, this.ctx.currentTime + dur);
-    o.connect(g); g.connect(this.ctx.destination);
-    o.start(); o.stop(this.ctx.currentTime + dur + 0.02);
-  },
-  noise(dur, vol = 0.06, freq = 800) {
-    this.init();
-    if (!this.ctx) return;
-    if (this.ctx.state === 'suspended') this.ctx.resume();
-    const bufSize = Math.floor(this.ctx.sampleRate * dur);
-    const buf = this.ctx.createBuffer(1, bufSize, this.ctx.sampleRate);
-    const d = buf.getChannelData(0);
-    for (let i = 0; i < bufSize; i++) d[i] = (Math.random() * 2 - 1) * (1 - i / bufSize);
-    const src = this.ctx.createBufferSource();
-    src.buffer = buf;
-    const f = this.ctx.createBiquadFilter();
-    f.type = 'lowpass'; f.frequency.value = freq;
-    const g = this.ctx.createGain();
-    g.gain.setValueAtTime(vol, this.ctx.currentTime);
-    g.gain.exponentialRampToValueAtTime(0.0001, this.ctx.currentTime + dur);
-    src.connect(f); f.connect(g); g.connect(this.ctx.destination);
-    src.start(); src.stop(this.ctx.currentTime + dur);
-  },
-  shoot()     { this.tone(880, 0.05, 'square', 0.025, 350); },
-  hit()       { this.tone(200, 0.08, 'sawtooth', 0.04, 80); },
-  kill()      { this.noise(0.22, 0.08, 1200); this.tone(160, 0.18, 'triangle', 0.05, 60); },
-  hurt()      { this.tone(260, 0.18, 'sawtooth', 0.07, 100); this.noise(0.15, 0.06, 400); },
-  wave()      { [440, 554, 659, 880].forEach((f,i)=>setTimeout(()=>this.tone(f,0.15,'sine',0.06), i*90)); },
-  gameover()  { [400,330,260,180].forEach((f,i)=>setTimeout(()=>this.tone(f,0.4,'sine',0.08, f*0.7), i*180)); },
-  countdown() { this.tone(660, 0.15, 'sine', 0.07); },
-  start()     { [523,659,784,1047].forEach((f,i)=>setTimeout(()=>this.tone(f,0.2,'triangle',0.07), i*100)); }
-};
-
-/* ============================================================
-   شبکه (PeerJS)
-   ============================================================ */
-const GameNet = {
-  peer: null,
-  conn: null,
-  isHost: false,
-  roomCode: '',
-  myId: '',
-  connected: false,
-
-  // تولید کد ۶ حرفی
-  genCode() {
-    const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
-    let s = '';
-    for (let i = 0; i < 6; i++) s += chars[Math.floor(Math.random() * chars.length)];
-    return s;
-  },
-
-  host() {
-    return new Promise((resolve, reject) => {
-      this.roomCode = this.genCode();
-      this.myId = 'zombie-fa-' + this.roomCode;
-
-      this.peer = new Peer(this.myId, { debug: 0 });
-
-      const timeout = setTimeout(() => {
-        reject(new Error('زمان اتصال به سرور تموم شد. یه بار دیگه امتحان کن.'));
-      }, 15000);
-
-      this.peer.on('open', (id) => {
-        clearTimeout(timeout);
-        this.isHost = true;
-        resolve(this.roomCode);
-      });
-
-      this.peer.on('error', (err) => {
-        clearTimeout(timeout);
-        if (err.type === 'unavailable-id') {
-          // کد تکراری — دوباره امتحان
-          this.host().then(resolve).catch(reject);
-        } else {
-          reject(err);
-        }
-      });
-
-      this.peer.on('connection', (c) => {
-        this.conn = c;
-        c.on('open', () => {
-          this.connected = true;
-          Game.onPeerConnected();
-        });
-        c.on('data', (d) => Game.handleData(d));
-        c.on('close', () => {
-          this.connected = false;
-          Game.onPeerDisconnected();
-        });
-        c.on('error', () => {
-          this.connected = false;
-          Game.onPeerDisconnected();
-        });
-      });
-    });
-  },
-
-  join(code) {
-    return new Promise((resolve, reject) => {
-      this.roomCode = code.toUpperCase();
-      const targetId = 'zombie-fa-' + this.roomCode;
-      this.isHost = false;
-
-      this.peer = new Peer({ debug: 0 });
-
-      const timeout = setTimeout(() => {
-        reject(new Error('زمان اتصال تموم شد. مطمئن شو کد درسته.'));
-      }, 15000);
-
-      this.peer.on('open', () => {
-        this.myId = this.peer.id;
-        const c = this.peer.connect(targetId, { reliable: true });
-
-        c.on('open', () => {
-          clearTimeout(timeout);
-          this.conn = c;
-          this.connected = true;
-          c.on('data', (d) => Game.handleData(d));
-          c.on('close', () => {
-            this.connected = false;
-            Game.onPeerDisconnected();
-          });
-          resolve();
-        });
-
-        c.on('error', (err) => {
-          clearTimeout(timeout);
-          reject(new Error('اتصال به اتاق ممکن نشد.'));
-        });
-      });
-
-      this.peer.on('error', (err) => {
-        clearTimeout(timeout);
-        if (err.type === 'peer-unavailable') {
-          reject(new Error('اتاقی با این کد پیدا نشد.'));
-        } else {
-          reject(err);
-        }
-      });
-    });
-  },
-
-  send(msg) {
-    if (this.conn && this.connected) {
-      try { this.conn.send(msg); } catch (e) {}
-    }
-  },
-
-  destroy() {
-    if (this.conn) try { this.conn.close(); } catch(e){}
-    if (this.peer) try { this.peer.destroy(); } catch(e){}
-    this.conn = null;
-    this.peer = null;
-    this.connected = false;
-  }
-};
-
-/* ============================================================
-   Game
-   ============================================================ */
-const Game = {
-  // state
-  mode: 'lobby', // lobby | countdown | playing | over
-  myShip:  { x: 0, y: 0, hp: 100, maxHp: 100, angle: 0, dead: false, respawnTimer: 0 },
-  peerShip:{ x: 0, y: 0, hp: 100, maxHp: 100, angle: 0, dead: false, respawnTimer: 0 },
-  peerTarget: { x: 0, y: 0 }, // برای نرم‌سازی (interpolation)
-
-  zombies: [],
-  bullets: [],
-  particles: [],
-  bloodStains: [],
-
-  score: 0,
-  wave: 1,
-  kills: 0,
-  elapsed: 0,
-  lastSpawnTime: 0,
-  lastWaveTime: 0,
-  startTime: 0,
-
-  // network
-  lastStateSend: 0,
-  lastPeerStateRecv: 0,
-
-  // canvas
-  W: 0, H: 0, dpr: 1,
-
-  // input
-  pointerX: 0,
-  pointerY: 0,
-  hasPointer: false,
-};
-
-/* ============================================================
-   Canvas setup
-   ============================================================ */
-const canvas = document.getElementById('canvas');
-const ctx = canvas.getContext('2d');
-
-function resize() {
-  Game.dpr = Math.min(window.devicePixelRatio || 1, 2);
-  Game.W = window.innerWidth;
-  Game.H = window.innerHeight;
-  canvas.width = Game.W * Game.dpr;
-  canvas.height = Game.H * Game.dpr;
-  canvas.style.width = Game.W + 'px';
-  canvas.style.height = Game.H + 'px';
-  ctx.setTransform(Game.dpr, 0, 0, Game.dpr, 0, 0);
-}
-window.addEventListener('resize', resize);
-resize();
-
-/* ============================================================
-   ورودی
-   ============================================================ */
-function updatePointer(e) {
-  let cx, cy;
-  if (e.touches && e.touches.length) {
-    cx = e.touches[0].clientX;
-    cy = e.touches[0].clientY;
-  } else {
-    cx = e.clientX;
-    cy = e.clientY;
-  }
-  Game.pointerX = cx;
-  Game.pointerY = cy;
-  Game.hasPointer = true;
-}
-
-canvas.addEventListener('mousemove', updatePointer);
-canvas.addEventListener('mousedown', updatePointer);
-canvas.addEventListener('touchstart', (e) => { e.preventDefault(); updatePointer(e); }, { passive: false });
-canvas.addEventListener('touchmove',  (e) => { e.preventDefault(); updatePointer(e); }, { passive: false });
-
-/* ============================================================
-   Zombie
-   ============================================================ */
-let zombieIdCounter = 0;
-
-const ZOMBIE_TYPES = {
-  walker: { speed: 45, r: 16, color: '#84cc16', icon: '🧟', score: 10 },
-  runner: { speed: 95, r: 12, color: '#facc15', icon: '🧟‍♂️', score: 20 },
-  tank:   { speed: 30, r: 24, color: '#a855f7', icon: '🧟‍♀️', score: 40 },
-  mini:   { speed: 130, r: 9,  color: '#f43f5e', icon: '🧟', score: 15 },
-};
-
-class Zombie {
-  constructor(id, type, x, y, dirX, dirY, spawnTime) {
-    const cfg = ZOMBIE_TYPES[type];
-    this.id = id;
-    this.type = type;
-    this.cfg = cfg;
-    this.spawnX = x;
-    this.spawnY = y;
-    this.dirX = dirX;
-    this.dirY = dirY;
-    this.spawnTime = spawnTime;
-    this.seed = Math.random() * Math.PI * 2;
-    this.hp = 1;
-    this.maxHp = 1;
-    this.hitFlash = 0;
-    this.r = cfg.r;
-    this.color = cfg.color;
-    this.icon = cfg.icon;
-  }
-
-  getPos(elapsed) {
-    const t = elapsed - this.spawnTime;
-    if (t < 0) t = 0;
-    const speed = this.cfg.speed;
-    const sway = Math.sin(t * 3 + this.seed) * 22;
-    const swayY = Math.cos(t * 3 + this.seed) * 22;
-    const perpX = -this.dirY;
-    const perpY = this.dirX;
-
-    return {
-      x: this.spawnX + this.dirX * speed * t + perpX * sway,
-      y: this.spawnY + this.dirY * speed * t + perpY * swayY,
-    };
-  }
-
-  update(elapsed) {
-    const p = this.getPos(elapsed);
-    this.x = p.x;
-    this.y = p.y;
-    if (this.hitFlash > 0) this.hitFlash -= 0.05;
-  }
-}
-
-/* ============================================================
-   Spawn Zombie
-   ============================================================ */
-function pickZombieType() {
-  const w = Game.wave;
-  const r = Math.random();
-  if (w <= 2) return r < 0.85 ? 'walker' : 'runner';
-  if (w <= 4) {
-    if (r < 0.6) return 'walker';
-    if (r < 0.85) return 'runner';
-    if (r < 0.95) return 'mini';
-    return 'tank';
-  }
-  if (r < 0.45) return 'walker';
-  if (r < 0.7) return 'runner';
-  if (r < 0.87) return 'mini';
-  return 'tank';
-}
-
-function spawnZombie(elapsed) {
-  const W = Game.W, H = Game.H;
-  const edge = randInt(0, 3);
-  let x, y, dirX, dirY;
-
-  // از لبه‌ها به سمت وسط
-  if (edge === 0) { // بالا
-    x = rand(0, W); y = -20;
-    const tx = W / 2 + rand(-100, 100);
-    const ty = H / 2;
-    const dx = tx - x, dy = ty - y, d = Math.hypot(dx, dy);
-    dirX = dx / d; dirY = dy / d;
-  } else if (edge === 1) { // پایین
-    x = rand(0, W); y = H + 20;
-    const tx = W / 2 + rand(-100, 100);
-    const ty = H / 2;
-    const dx = tx - x, dy = ty - y, d = Math.hypot(dx, dy);
-    dirX = dx / d; dirY = dy / d;
-  } else if (edge === 2) { // چپ
-    x = -20; y = rand(0, H);
-    const tx = W / 2;
-    const ty = H / 2 + rand(-100, 100);
-    const dx = tx - x, dy = ty - y, d = Math.hypot(dx, dy);
-    dirX = dx / d; dirY = dy / d;
-  } else { // راست
-    x = W + 20; y = rand(0, H);
-    const tx = W / 2;
-    const ty = H / 2 + rand(-100, 100);
-    const dx = tx - x, dy = ty - y, d = Math.hypot(dx, dy);
-    dirX = dx / d; dirY = dy / d;
-  }
-
-  const type = pickZombieType();
-  const z = new Zombie(++zombieIdCounter, type, x, y, dirX, dirY, elapsed);
-  Game.zombies.push(z);
-
-  // اگه من هاستم، به رفیقم بگو
-  if (GameNet.isHost) {
-    GameNet.send({ t: 'spawn', id: z.id, type, x, y, dx: dirX, dy: dirY, st: elapsed });
-  }
-}
-
-/* ============================================================
-   ذرات
-   ============================================================ */
-function spawnParticles(x, y, color, count, opts = {}) {
-  for (let i = 0; i < count; i++) {
-    const a = Math.random() * Math.PI * 2;
-    const sp = opts.speed ?? rand(80, 260);
-    Game.particles.push({
-      x, y,
-      vx: Math.cos(a) * sp,
-      vy: Math.sin(a) * sp,
-      life: 1,
-      decay: rand(1.5, 3),
-      color: i % 4 === 0 ? '#fff' : color,
-      size: opts.size ?? rand(1.5, 3.5),
-      drag: 2.5,
-      glow: true
-    });
-  }
-}
-
-function spawnBlood(x, y, color) {
-  Game.bloodStains.push({ x, y, r: rand(14, 26), life: 1, color });
-  if (Game.bloodStains.length > 30) Game.bloodStains.shift();
-}
-
-/* ============================================================
-   شلیک
-   ============================================================ */
-function autoShoot() {
-  if (Game.mode !== 'playing') return;
-  if (Game.myShip.dead) return;
-
-  // نزدیک‌ترین زامبی
-  let nearest = null, bestD = Infinity;
-  for (const z of Game.zombies) {
-    const d = dist2(z.x, z.y, Game.myShip.x, Game.myShip.y);
-    if (d < bestD) { bestD = d; nearest = z; }
-  }
-  if (!nearest) return;
-  if (bestD > 620 * 620) return; // برد شلیک
-
-  Game.myShip.fireCooldown = (Game.myShip.fireCooldown || 0) - 0.016;
-  if (Game.myShip.fireCooldown > 0) return;
-  Game.myShip.fireCooldown = 0.18;
-
-  const dx = nearest.x - Game.myShip.x;
-  const dy = nearest.y - Game.myShip.y;
-  const d = Math.hypot(dx, dy) || 1;
-  const speed = 700;
-
-  Game.bullets.push({
-    x: Game.myShip.x,
-    y: Game.myShip.y,
-    vx: (dx / d) * speed,
-    vy: (dy / d) * speed,
-    r: 4,
-    color: '#22d3ee',
-    owner: 'me',
-    life: 1.2,
-    trail: []
-  });
-
-  Sfx.shoot();
-}
-
-/* ============================================================
-   مرگ زامبی
-   ============================================================ */
-function killZombie(z, index) {
-  Game.zombies.splice(index, 1);
-  Game.kills++;
-  Game.score += z.cfg.score;
-
-  spawnParticles(z.x, z.y, z.color, 18, { speed: rand(120, 320), size: rand(2, 4) });
-  spawnBlood(z.x, z.y, z.color);
-  Sfx.kill();
-
-  // اگه من هاستم، به رفیقم بگو
-  if (GameNet.isHost) {
-    GameNet.send({ t: 'kill', id: z.id });
-  } else {
-    // اگه مهمونم، به هاست بگو (تا هاست رکورد خودش رو هم به‌روز کنه)
-    GameNet.send({ t: 'kill', id: z.id });
-  }
-
-  updateHUD();
-}
-
-/* ============================================================
-   آسیب به بازیکن
-   ============================================================ */
-function damageMe(amount) {
-  if (Game.myShip.dead) return;
-  if (Game.myShip.invuln > 0) return;
-  Game.myShip.hp -= amount;
-  Game.myShip.invuln = 0.5;
-  Sfx.hurt();
-  Game.shake = 12;
-  if (Game.myShip.hp <= 0) {
-    Game.myShip.hp = 0;
-    Game.myShip.dead = true;
-    Game.myShip.respawnTimer = 4;
-    spawnParticles(Game.myShip.x, Game.myShip.y, '#22d3ee', 30, { speed: rand(150, 380) });
-    showToast('💀 ناک‌اوت شدی! ۴ ثانیه...');
-  }
-  updateHUD();
-}
-
-function reviveMe() {
-  Game.myShip.hp = Game.myShip.maxHp;
-  Game.myShip.dead = false;
-  Game.myShip.invuln = 2;
-  spawnParticles(Game.myShip.x, Game.myShip.y, '#22d3ee', 25, { speed: rand(100, 250) });
-}
-
-/* ============================================================
-   Update
-   ============================================================ */
-function update(dt) {
-  if (Game.mode !== 'playing') return;
-
-  // تایم
-  const elapsed = (performance.now() - Game.startTime) / 1000;
-  Game.elapsed = elapsed;
-
-  // حرکت کشتی من
-  if (!Game.myShip.dead && Game.hasPointer) {
-    const tx = Game.pointerX;
-    const ty = Game.pointerY;
-    // محدود به لبه‌ها
-    const txc = clamp(tx, 25, Game.W - 25);
-    const tyc = clamp(ty, 25, Game.H - 25);
-    Game.myShip.x += (txc - Game.myShip.x) * Math.min(1, dt * 14);
-    Game.myShip.y += (tyc - Game.myShip.y) * Math.min(1, dt * 14);
-  }
-
-  // نرمال‌سازی حرکت رفیق
-  Game.peerShip.x += (Game.peerTarget.x - Game.peerShip.x) * Math.min(1, dt * 10);
-  Game.peerShip.y += (Game.peerTarget.y - Game.peerShip.y) * Math.min(1, dt * 10);
-
-  if (Game.myShip.invuln > 0) Game.myShip.invuln -= dt;
-
-  // respawn timer
-  if (Game.myShip.dead) {
-    Game.myShip.respawnTimer -= dt;
-    if (Game.myShip.respawnTimer <= 0) reviveMe();
-  }
-
-  // اگه هم من هم رفیقم مرده‌ایم → پایان بازی
-  if (Game.myShip.dead && Game.peerShip.dead) {
-    if (Game.myShip.respawnTimer > 0 && Game.peerShip.respawnTimer <= 0) {
-      // رفیقم داره ریسپاون میشه — ادامه بده
-    } else {
-      endGame();
-      return;
-    }
-  }
-
-  // اسپاون زامبی (فقط هاست تصمیم می‌گیره)
-  if (GameNet.isHost) {
-    const spawnInterval = Math.max(0.25, 1.4 - Game.wave * 0.08);
-    while (elapsed - Game.lastSpawnTime > spawnInterval) {
-      Game.lastSpawnTime += spawnInterval;
-      if (Game.zombies.length < 60) spawnZombie(elapsed);
-    }
-
-    // موج بعدی
-    if (elapsed - Game.lastWaveTime > 25) {
-      Game.lastWaveTime = elapsed;
-      Game.wave++;
-      GameNet.send({ t: 'wave', n: Game.wave });
-      showToast('🌊 موج ' + toFa(Game.wave) + '!');
-      Sfx.wave();
-      updateHUD();
-    }
-  }
-
-  // آپدیت زامبی‌ها
-  for (const z of Game.zombies) z.update(elapsed);
-
-  // برخورد با بازیکن‌ها
-  for (let i = Game.zombies.length - 1; i >= 0; i--) {
-    const z = Game.zombies[i];
-    // با من
-    if (!Game.myShip.dead && dist2(z.x, z.y, Game.myShip.x, Game.myShip.y) < (z.r + 16) ** 2) {
-      damageMe(8 + Game.wave);
-      // زامبی هم منفجر میشه
-      spawnParticles(z.x, z.y, z.color, 12);
-      // حذف از همه — host sync
-      Game.zombies.splice(i, 1);
-      GameNet.send({ t: 'kill', id: z.id });
-      continue;
-    }
-    // با رفیقم
-    if (!Game.peerShip.dead && dist2(z.x, z.y, Game.peerShip.x, Game.peerShip.y) < (z.r + 16) ** 2) {
-      // رفیقم خودش آسیب رو حس می‌کنه، ولی زامبی از بین میره
-      spawnParticles(z.x, z.y, z.color, 12);
-      Game.zombies.splice(i, 1);
-      GameNet.send({ t: 'kill', id: z.id });
-      continue;
-    }
-    // خارج از صفحه (خیلی دور)
-    if (z.x < -200 || z.x > Game.W + 200 || z.y < -200 || z.y > Game.H + 200) {
-      // دور از دسترس — حذف نکن، در جریان بذار
-    }
-  }
-
-  // برخورد گلوله‌ها
-  for (let i = Game.bullets.length - 1; i >= 0; i--) {
-    const b = Game.bullets[i];
-    b.x += b.vx * dt;
-    b.y += b.vy * dt;
-    b.life -= dt;
-    b.trail.push({ x: b.x, y: b.y });
-    if (b.trail.length > 6) b.trail.shift();
-
-    if (b.life <= 0 || b.x < -50 || b.x > Game.W + 50 || b.y < -50 || b.y > Game.H + 50) {
-      Game.bullets.splice(i, 1);
-      continue;
-    }
-
-    // برخورد با زامبی
-    let hit = false;
-    for (let j = Game.zombies.length - 1; j >= 0; j--) {
-      const z = Game.zombies[j];
-      if (dist2(z.x, z.y, b.x, b.y) < (z.r + b.r) ** 2) {
-        spawnParticles(b.x, b.y, '#fff', 5, { speed: rand(80, 200), size: rand(1.5, 2.5) });
-        Game.zombies.splice(j, 1);
-        Game.kills++;
-        Game.score += z.cfg.score;
-        spawnParticles(z.x, z.y, z.color, 14, { speed: rand(120, 280), size: rand(2, 4) });
-        spawnBlood(z.x, z.y, z.color);
-        Sfx.kill();
-        GameNet.send({ t: 'kill', id: z.id });
-        Game.bullets.splice(i, 1);
-        hit = true;
-        updateHUD();
-        break;
-      }
-    }
-    if (hit) continue;
-  }
-
-  // ذرات
-  for (let i = Game.particles.length - 1; i >= 0; i--) {
-    const p = Game.particles[i];
-    p.x += p.vx * dt;
-    p.y += p.vy * dt;
-    const k = Math.exp(-p.drag * dt);
-    p.vx *= k; p.vy *= k;
-    p.life -= p.decay * dt;
-    if (p.life <= 0) Game.particles.splice(i, 1);
-  }
-
-  // لکه‌های خون
-  for (let i = Game.bloodStains.length - 1; i >= 0; i--) {
-    Game.bloodStains[i].life -= dt * 0.1;
-    if (Game.bloodStains[i].life <= 0) Game.bloodStains.splice(i, 1);
-  }
-
-  // شلیک
-  autoShoot();
-
-  // ارسال state به رفیق
-  const now = performance.now();
-  if (now - Game.lastStateSend > 40) {
-    Game.lastStateSend = now;
-    GameNet.send({
-      t: 's',
-      x: Game.myShip.x,
-      y: Game.myShip.y,
-      hp: Game.myShip.hp,
-      d: Game.myShip.dead,
-      rt: Game.myShip.respawnTimer
-    });
-  }
-
-  // لرزش
-  if (Game.shake > 0) Game.shake = Math.max(0, Game.shake - dt * 40);
-
-  updateHUD();
-}
-
-/* ============================================================
-   Render
-   ============================================================ */
-function render() {
-  const W = Game.W, H = Game.H;
-  ctx.clearRect(0, 0, W, H);
-
-  // پس‌زمینه
-  const bg = ctx.createRadialGradient(W/2, H/2, 0, W/2, H/2, Math.max(W, H) * 0.75);
-  bg.addColorStop(0, '#1a0b3a');
-  bg.addColorStop(0.5, '#0d0520');
-  bg.addColorStop(1, '#05010a');
-  ctx.fillStyle = bg;
-  ctx.fillRect(0, 0, W, H);
-
-  // لرزش
-  const shake = Game.shake || 0;
-  const sx = shake > 0 ? (Math.random() - 0.5) * shake : 0;
-  const sy = shake > 0 ? (Math.random() - 0.5) * shake : 0;
-
-  ctx.save();
-  ctx.translate(sx, sy);
-
-  // گرید
-  ctx.strokeStyle = 'rgba(167, 139, 250, 0.06)';
-  ctx.lineWidth = 1;
-  const gridSize = 60;
-  for (let x = 0; x < W; x += gridSize) {
-    ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, H); ctx.stroke();
-  }
-  for (let y = 0; y < H; y += gridSize) {
-    ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(W, y); ctx.stroke();
-  }
-
-  // لکه‌های خون
-  for (const b of Game.bloodStains) {
-    ctx.globalAlpha = b.life * 0.4;
-    ctx.fillStyle = b.color;
-    ctx.beginPath();
-    ctx.arc(b.x, b.y, b.r, 0, Math.PI * 2);
-    ctx.fill();
-  }
-  ctx.globalAlpha = 1;
-
-  // زامبی‌ها
-  for (const z of Game.zombies) {
-    drawZombie(z);
-  }
-
-  // گلوله‌ها
-  for (const b of Game.bullets) {
-    // دنباله
-    for (let i = 0; i < b.trail.length; i++) {
-      const t = b.trail[i];
-      ctx.globalAlpha = (i / b.trail.length) * 0.6;
-      ctx.fillStyle = b.color;
-      ctx.beginPath();
-      ctx.arc(t.x, t.y, b.r * (i / b.trail.length) * 0.9, 0, Math.PI * 2);
-      ctx.fill();
-    }
-    ctx.globalAlpha = 1;
-
-    // هاله
-    const g = ctx.createRadialGradient(b.x, b.y, 0, b.x, b.y, b.r * 3.5);
-    g.addColorStop(0, b.color);
-    g.addColorStop(0.4, b.color + '88');
-    g.addColorStop(1, 'transparent');
-    ctx.fillStyle = g;
-    ctx.beginPath();
-    ctx.arc(b.x, b.y, b.r * 3.5, 0, Math.PI * 2);
-    ctx.fill();
-
-    ctx.fillStyle = '#fff';
-    ctx.beginPath();
-    ctx.arc(b.x, b.y, b.r * 0.7, 0, Math.PI * 2);
-    ctx.fill();
-  }
-
-  // ذرات
-  for (const p of Game.particles) {
-    ctx.globalAlpha = Math.max(0, p.life);
-    ctx.fillStyle = p.color;
-    if (p.glow) { ctx.shadowColor = p.color; ctx.shadowBlur = 10; }
-    ctx.beginPath();
-    ctx.arc(p.x, p.y, p.size * (0.4 + p.life * 0.8), 0, Math.PI * 2);
-    ctx.fill();
-    if (p.glow) ctx.shadowBlur = 0;
-  }
-  ctx.globalAlpha = 1;
-
-  // کشتی رفیقم
-  if (Game.peerShip.x !== 0 || Game.peerShip.y !== 0) {
-    drawShip(Game.peerShip, '#ff5fae', '#be185d', '👥');
-  }
-
-  // کشتی من
-  drawShip(Game.myShip, '#22d3ee', '#0369a1', '👤');
-
-  ctx.restore();
-}
-
-function drawZombie(z) {
-  ctx.save();
-  ctx.translate(z.x, z.y);
-
-  // هاله
-  const g = ctx.createRadialGradient(0, 0, 0, 0, 0, z.r * 2.2);
-  g.addColorStop(0, z.color + 'aa');
-  g.addColorStop(1, 'transparent');
-  ctx.fillStyle = g;
-  ctx.beginPath();
-  ctx.arc(0, 0, z.r * 2.2, 0, Math.PI * 2);
-  ctx.fill();
-
-  // سایه
-  ctx.fillStyle = 'rgba(0,0,0,0.4)';
-  ctx.beginPath();
-  ctx.ellipse(0, z.r * 0.7, z.r * 0.9, z.r * 0.35, 0, 0, Math.PI * 2);
-  ctx.fill();
-
-  // بدنه
-  const grad = ctx.createRadialGradient(-z.r * 0.3, -z.r * 0.3, 0, 0, 0, z.r * 1.2);
-  grad.addColorStop(0, z.hitFlash > 0 ? '#fff' : z.color);
-  grad.addColorStop(1, '#1a0d2e');
-  ctx.fillStyle = grad;
-  ctx.beginPath();
-  ctx.arc(0, 0, z.r, 0, Math.PI * 2);
-  ctx.fill();
-
-  ctx.strokeStyle = z.color;
-  ctx.lineWidth = 2;
-  ctx.stroke();
-
-  // اموجی
-  ctx.font = (z.r * 1.35) + 'px sans-serif';
-  ctx.textAlign = 'center';
-  ctx.textBaseline = 'middle';
-  ctx.fillText(z.icon, 0, 1);
-
-  ctx.restore();
-}
-
-function drawShip(ship, colorLight, colorDark, label) {
-  if (ship.dead) {
-    // فقط سایه — بازیکن مرده
-    ctx.save();
-    ctx.globalAlpha = 0.25;
-    ctx.fillStyle = '#333';
-    ctx.beginPath();
-    ctx.arc(ship.x, ship.y, 16, 0, Math.PI * 2);
-    ctx.fill();
-    ctx.restore();
-    return;
-  }
-
-  ctx.save();
-  ctx.translate(ship.x, ship.y);
-
-  // هاله
-  const g = ctx.createRadialGradient(0, 0, 0, 0, 0, 55);
-  g.addColorStop(0, colorLight + 'aa');
-  g.addColorStop(0.5, colorLight + '44');
-  g.addColorStop(1, 'transparent');
-  ctx.fillStyle = g;
-  ctx.beginPath();
-  ctx.arc(0, 0, 55, 0, Math.PI * 2);
-  ctx.fill();
-
-  // حلقه
-  ctx.strokeStyle = colorLight;
-  ctx.lineWidth = 2;
-  ctx.beginPath();
-  ctx.arc(0, 0, 22, 0, Math.PI * 2);
-  ctx.stroke();
-
-  // درخشش
-  ctx.shadowColor = colorLight;
-  ctx.shadowBlur = 18;
-
-  // مثلث کشتی — جهت به سمت نزدیک‌ترین زامبی
-  ctx.fillStyle = colorLight;
-  ctx.beginPath();
-  ctx.arc(0, 0, 14, 0, Math.PI * 2);
-  ctx.fill();
-
-  // بدن
-  ctx.fillStyle = colorDark;
-  ctx.beginPath();
-  ctx.arc(0, 0, 10, 0, Math.PI * 2);
-  ctx.fill();
-
-  ctx.shadowBlur = 0;
-
-  // آیکن
-  ctx.font = '14px sans-serif';
-  ctx.textAlign = 'center';
-  ctx.textBaseline = 'middle';
-  ctx.fillText(label, 0, 0);
-
-  // ذرات چرخان
-  const t = performance.now() * 0.003;
-  for (let i = 0; i < 3; i++) {
-    const a = t + (Math.PI * 2 / 3) * i;
-    ctx.fillStyle = colorLight;
-    ctx.beginPath();
-    ctx.arc(Math.cos(a) * 24, Math.sin(a) * 24, 2.5, 0, Math.PI * 2);
-    ctx.fill();
-  }
-
-  ctx.restore();
-}
-
-/* ============================================================
-   Loop
-   ============================================================ */
-let lastT = performance.now();
-function loop(t) {
-  const dt = Math.min((t - lastT) / 1000, 0.05);
-  lastT = t;
-
-  update(dt);
-  render();
-
-  requestAnimationFrame(loop);
-}
-requestAnimationFrame(loop);
-
-/* ============================================================
-   HUD
-   ============================================================ */
-const hudScore = document.getElementById('hudScore');
-const hudWave = document.getElementById('hudWave');
-const hudZombies = document.getElementById('hudZombies');
-const hpMeBar = document.getElementById('hpMeBar');
-const hpMeText = document.getElementById('hpMeText');
-const hpPeerBar = document.getElementById('hpPeerBar');
-const hpPeerText = document.getElementById('hpPeerText');
-const hpMeEl = document.getElementById('hpMe');
-const hpPeerEl = document.getElementById('hpPeer');
-
-function updateHUD() {
-  hudScore.textContent = toFa(Game.score);
-  hudWave.textContent = toFa(Game.wave);
-  hudZombies.textContent = toFa(Game.kills);
-
-  // HP من
-  const pctMe = Math.max(0, Game.myShip.hp / Game.myShip.maxHp) * 100;
-  hpMeBar.style.width = pctMe + '%';
-  hpMeText.textContent = toFa(Math.max(0, Math.round(pctMe))) + '٪';
-  hpMeEl.classList.toggle('dead', Game.myShip.dead);
-
-  // HP رفیق
-  const pctPeer = Math.max(0, Game.peerShip.hp / Game.peerShip.maxHp) * 100;
-  hpPeerBar.style.width = pctPeer + '%';
-  hpPeerText.textContent = toFa(Math.max(0, Math.round(pctPeer))) + '٪';
-  hpPeerEl.classList.toggle('dead', Game.peerShip.dead);
-}
-
-/* ============================================================
-   Toast
-   ============================================================ */
-const toastEl = document.getElementById('toast');
-function showToast(text) {
-  toastEl.textContent = text;
-  toastEl.classList.remove('show');
-  void toastEl.offsetWidth;
-  toastEl.classList.add('show');
-}
-
-/* ============================================================
-   Networking handlers
-   ============================================================ */
-Game.handleData = function (d) {
-  if (!d) return;
-
-  if (d.t === 's') {
-    // state رفیق
-    Game.peerTarget.x = d.x;
-    Game.peerTarget.y = d.y;
-    Game.peerShip.hp = d.hp;
-    Game.peerShip.dead = d.d;
-    Game.peerShip.respawnTimer = d.rt || 0;
-    return;
-  }
-
-  if (d.t === 'spawn') {
-    // فقط مهمون‌ها این پیام رو از هاست می‌گیرن
-    if (GameNet.isHost) return;
-    // بررسی تکراری نبودن
-    if (Game.zombies.some(z => z.id === d.id)) return;
-    const z = new Zombie(d.id, d.type, d.x, d.y, d.dx, d.dy, d.st);
-    // سینک با تایم محلی (اگه startTime مشابه باشه)
-    Game.zombies.push(z);
-    return;
-  }
-
-  if (d.t === 'kill') {
-    // حذف زامبی
-    const idx = Game.zombies.findIndex(z => z.id === d.id);
-    if (idx >= 0) {
-      const z = Game.zombies[idx];
-      spawnParticles(z.x, z.y, z.color, 12, { speed: rand(100, 260) });
-      spawnBlood(z.x, z.y, z.color);
-      Game.zombies.splice(idx, 1);
-    }
-    return;
-  }
-
-  if (d.t === 'wave') {
-    if (GameNet.isHost) return;
-    Game.wave = d.n;
-    Game.lastWaveTime = Game.elapsed;
-    showToast('🌊 موج ' + toFa(d.n) + '!');
-    Sfx.wave();
-    updateHUD();
-    return;
-  }
-
-  if (d.t === 'over') {
-    endGame(true);
-    return;
-  }
-
-  if (d.t === 'again') {
-    // رفیقم دوباره شروع کرد
-    startGame(false);
-    return;
-  }
-};
-
-Game.onPeerConnected = function () {
-  const status = document.getElementById('connStatus');
-  status.classList.add('show');
-  status.textContent = '● متصل به رفیق';
-  status.style.color = 'var(--green)';
-
-  // شروع شمارش معکوس
-  startCountdown();
-};
-
-Game.onPeerDisconnected = function () {
-  if (Game.mode === 'lobby') return;
-  const status = document.getElementById('connStatus');
-  status.classList.add('show', 'lost');
-  status.textContent = '● رفیقت قطع شد';
-  showToast('⚠️ رفیقت از بازی خارج شد');
-};
-
-/* ============================================================
-   شروع بازی
-   ============================================================ */
-const countdownEl = document.getElementById('countdown');
-const countdownNum = document.getElementById('countdownNum');
-
-function startCountdown() {
-  Game.mode = 'countdown';
-  countdownEl.classList.add('show');
-
-  let n = 3;
-  countdownNum.textContent = toFa(n);
-  countdownNum.style.animation = 'none';
-  void countdownNum.offsetWidth;
-  countdownNum.style.animation = '';
-  Sfx.countdown();
-
-  const interval = setInterval(() => {
-    n--;
-    if (n > 0) {
-      countdownNum.textContent = toFa(n);
-      countdownNum.style.animation = 'none';
-      void countdownNum.offsetWidth;
-      countdownNum.style.animation = '';
-      Sfx.countdown();
-    } else {
-      clearInterval(interval);
-      countdownNum.textContent = 'بریم!';
-      Sfx.start();
-      setTimeout(() => {
-        countdownEl.classList.remove('show');
-        startGame(true);
-      }, 700);
-    }
-  }, 900);
-}
-
-function startGame(sendMsg) {
-  document.getElementById('lobby').style.display = 'none';
-  document.getElementById('game').classList.add('active');
-
-  // ریست state
-  Game.mode = 'playing';
-  Game.score = 0;
-  Game.wave = 1;
-  Game.kills = 0;
-  Game.elapsed = 0;
-  Game.zombies = [];
-  Game.bullets = [];
-  Game.particles = [];
-  Game.bloodStains = [];
-  zombieIdCounter = 0;
-
-  Game.myShip = {
-    x: GameNet.isHost ? Game.W * 0.35 : Game.W * 0.65,
-    y: Game.H * 0.5,
-    hp: 100, maxHp: 100, invuln: 2, dead: false, respawnTimer: 0, fireCooldown: 0
-  };
-
-  Game.peerShip = {
-    x: GameNet.isHost ? Game.W * 0.65 : Game.W * 0.35,
-    y: Game.H * 0.5,
-    hp: 100, maxHp: 100, dead: false, respawnTimer: 0
-  };
-  Game.peerTarget = { x: Game.peerShip.x, y: Game.peerShip.y };
-
-  Game.lastSpawnTime = 0;
-  Game.lastWaveTime = 0;
-  Game.startTime = performance.now();
-  Game.hasPointer = false;
-  Game.pointerX = Game.myShip.x;
-  Game.pointerY = Game.myShip.y;
-
-  document.getElementById('gameOver').classList.remove('show');
-  updateHUD();
-
-  if (sendMsg && GameNet.connected) {
-    GameNet.send({ t: 'again' });
-  }
-}
-
-/* ============================================================
-   پایان بازی
-   ============================================================ */
-let gameOverShown = false;
-
-function endGame(isRemote = false) {
-  if (Game.mode === 'over') return;
-  Game.mode = 'over';
-
-  // اطلاع به رفیق
-  if (!isRemote && GameNet.connected) {
-    GameNet.send({ t: 'over' });
-  }
-
-  document.getElementById('goScore').textContent = toFa(Game.score);
-  document.getElementById('goWave').textContent = toFa(Game.wave);
-  document.getElementById('goKills').textContent = toFa(Game.kills);
-
-  const icon = document.getElementById('goIcon');
-  const title = document.getElementById('goTitle');
-  const text = document.getElementById('goText');
-
-  if (Game.wave >= 5) {
-    icon.textContent = '🏆';
-    title.textContent = 'عالی بود!';
-    text.textContent = 'تا موج ' + toFa(Game.wave) + ' مقاومت کردید. رکورد خوبی زدید!';
-  } else {
-    icon.textContent = '💀';
-    title.textContent = 'زامبی‌ها گرفتن‌تون!';
-    text.textContent = 'به موج ' + toFa(Game.wave) + ' رسیدید. یه بار دیگه تلاش کنید!';
-  }
-
-  document.getElementById('gameOver').classList.add('show');
-  Sfx.gameover();
-}
-
-/* ============================================================
-   رویدادهای دکمه‌ها
-   ============================================================ */
-const hostBtn = document.getElementById('hostBtn');
-const joinBtn = document.getElementById('joinBtn');
-const joinInput = document.getElementById('joinInput');
-const errorMsg = document.getElementById('errorMsg');
-const hostInfo = document.getElementById('hostInfo');
-const codeDisplay = document.getElementById('codeDisplay');
-const playAgainBtn = document.getElementById('playAgainBtn');
-
-hostBtn.addEventListener('click', async () => {
-  hostBtn.disabled = true;
-  hostBtn.textContent = '⏳ در حال ساخت...';
-  errorMsg.textContent = '';
-
-  try {
-    const code = await GameNet.host();
-
-    // نمایش کد
-    codeDisplay.innerHTML = '';
-    for (const ch of code) {
-      const s = document.createElement('span');
-      s.textContent = ch;
-      codeDisplay.appendChild(s);
-    }
-    hostInfo.hidden = false;
-    hostBtn.style.display = 'none';
-    document.getElementById('hostSection').querySelector('.section-label').textContent = '🏠 اتاق تو آماده‌ست';
-  } catch (e) {
-    errorMsg.textContent = e.message || 'خطا در ساخت اتاق';
-    hostBtn.disabled = false;
-    hostBtn.textContent = '🎮 ساخت اتاق جدید';
-  }
-});
-
-joinBtn.addEventListener('click', async () => {
-  const code = joinInput.value.trim().toUpperCase();
-  if (code.length !== 6) {
-    errorMsg.textContent = 'کد باید ۶ حرفی باشه';
-    return;
-  }
-
-  joinBtn.disabled = true;
-  joinBtn.textContent = '⏳ در حال اتصال...';
-  errorMsg.textContent = '';
-
-  try {
-    await GameNet.join(code);
-    // شروع شمارش معکوس توسط Game.onPeerConnected انجام میشه
-  } catch (e) {
-    errorMsg.textContent = e.message || 'اتصال ناموفق';
-    joinBtn.disabled = false;
-    joinBtn.textContent = 'پیوستن به بازی';
-  }
-});
-
-joinInput.addEventListener('input', (e) => {
-  e.target.value = e.target.value.toUpperCase().replace(/[^A-Z0-9]/g, '');
-});
-
-playAgainBtn.addEventListener('click', () => {
-  document.getElementById('gameOver').classList.remove('show');
-  startCountdown();
-});
-
-/* ============================================================
-   تمیزکاری موقع خروج
-   ============================================================ */
-window.addEventListener('beforeunload', () => {
-  GameNet.destroy();
-});
-</script>
 </body>
 </html>
