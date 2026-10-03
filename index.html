@@ -2,15 +2,15 @@
 <html lang="fa" dir="rtl">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>به زودی... داریم جادو می‌کنیم ✨</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>در حال ورود به سایت جدید...</title>
 
 <link rel="preconnect" href="https://cdn.jsdelivr.net">
 <link href="https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/Vazirmatn-font-face.css" rel="stylesheet">
 
 <style>
 /* ============================================================
-   ۰) ریست و متغیرهای جهانی
+   ۰) ریست
    ============================================================ */
 *, *::before, *::after {
   margin: 0;
@@ -18,894 +18,489 @@
   box-sizing: border-box;
 }
 
-:root {
-  /* پالت کیهانی */
-  --bg-0: #07030f;
-  --bg-1: #120726;
-  --pink: #ff5fae;
-  --pink-soft: #ff9ad5;
-  --purple: #a78bfa;
-  --purple-deep: #7c3aed;
-  --cyan: #22d3ee;
-  --lime: #a3e635;
-  --amber: #fbbf24;
-
-  --ink: #f5e9ff;
-  --ink-soft: #b9a8d4;
-
-  --glass: rgba(255, 255, 255, 0.055);
-  --glass-strong: rgba(255, 255, 255, 0.09);
-  --glass-border: rgba(255, 255, 255, 0.14);
-
-  --radius: 36px;
-
-  --shadow-deep:
-    0 40px 90px -30px rgba(124, 58, 237, 0.55),
-    0 8px 30px -10px rgba(255, 95, 174, 0.35);
-
-  --ease-out-back: cubic-bezier(0.2, 0.9, 0.3, 1.35);
-}
-
 html, body {
+  width: 100%;
   height: 100%;
   overflow: hidden;
+  background: #000;
 }
 
 body {
   font-family: "Vazirmatn", system-ui, -apple-system, "Segoe UI", Tahoma, sans-serif;
-  color: var(--ink);
-
-  min-height: 100vh;
-  min-height: 100dvh;
-  display: grid;
-  place-items: center;
-  padding: 24px 18px;
-
-  background: radial-gradient(ellipse at 50% 0%, #1a0b35 0%, #0a0418 45%, #050208 100%);
+  color: #fff;
   position: relative;
-
   -webkit-font-smoothing: antialiased;
+  user-select: none;
   cursor: none;
 }
 
 @media (hover: none) {
   body { cursor: auto; }
-  .cursor-dot, .cursor-ring { display: none !important; }
+  .cursor { display: none !important; }
 }
 
 ::selection {
-  background: var(--pink);
-  color: #1a0b35;
+  background: #ff9a3c;
+  color: #000;
 }
 
 /* ============================================================
-   ۱) بوم ذرات (Canvas)
+   ۱) کانواس کیهانی
    ============================================================ */
-#stars {
-  position: fixed;
-  inset: 0;
-  z-index: 0;
-  pointer-events: none;
-  opacity: 0.85;
-}
-
-/* ============================================================
-   ۲) لکه‌های اورورا
-   ============================================================ */
-.aurora {
-  position: fixed;
-  border-radius: 50%;
-  filter: blur(90px);
-  pointer-events: none;
-  z-index: 1;
-  mix-blend-mode: screen;
-  opacity: 0.55;
-}
-
-.a1 {
-  width: 520px; height: 520px;
-  background: radial-gradient(circle, #ff5fae 0%, transparent 65%);
-  top: -180px; right: -120px;
-  animation: floatA 22s ease-in-out infinite;
-}
-.a2 {
-  width: 460px; height: 460px;
-  background: radial-gradient(circle, #22d3ee 0%, transparent 65%);
-  bottom: -160px; left: -130px;
-  animation: floatB 26s ease-in-out infinite;
-  opacity: 0.4;
-}
-.a3 {
-  width: 380px; height: 380px;
-  background: radial-gradient(circle, #a78bfa 0%, transparent 65%);
-  top: 40%; left: 52%;
-  animation: floatA 30s ease-in-out infinite reverse;
-  opacity: 0.35;
-}
-.a4 {
-  width: 300px; height: 300px;
-  background: radial-gradient(circle, #a3e635 0%, transparent 65%);
-  top: 8%; left: -80px;
-  animation: floatB 24s ease-in-out infinite;
-  opacity: 0.28;
-}
-
-@keyframes floatA {
-  0%, 100% { transform: translate(0, 0) scale(1); }
-  33%      { transform: translate(50px, -40px) scale(1.1); }
-  66%      { transform: translate(-35px, 35px) scale(0.92); }
-}
-@keyframes floatB {
-  0%, 100% { transform: translate(0, 0) scale(1); }
-  33%      { transform: translate(-45px, 30px) scale(1.12); }
-  66%      { transform: translate(30px, -30px) scale(0.94); }
-}
-
-/* گرید محو تزئینی */
-.grid-overlay {
+#cosmos {
   position: fixed;
   inset: 0;
   z-index: 1;
+  display: block;
+}
+
+/* نویز/دانه‌دانگی سینمایی */
+.grain {
+  position: fixed;
+  inset: 0;
+  z-index: 2;
   pointer-events: none;
-  background-image:
-    linear-gradient(rgba(167, 139, 250, 0.055) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(167, 139, 250, 0.055) 1px, transparent 1px);
-  background-size: 48px 48px;
-  mask-image: radial-gradient(ellipse at center, #000 10%, transparent 72%);
-  -webkit-mask-image: radial-gradient(ellipse at center, #000 10%, transparent 72%);
+  opacity: 0.06;
+  mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  animation: grainShift 0.7s steps(2) infinite;
+}
+
+@keyframes grainShift {
+  0%, 100% { transform: translate(0, 0); }
+  25%      { transform: translate(-3%, 4%); }
+  50%      { transform: translate(3%, -3%); }
+  75%      { transform: translate(-2%, -4%); }
+}
+
+/* ویگنت (تاریکی کناره‌ها) */
+.vignette {
+  position: fixed;
+  inset: 0;
+  z-index: 3;
+  pointer-events: none;
+  background: radial-gradient(ellipse at center, transparent 35%, rgba(0,0,0,0.75) 100%);
 }
 
 /* ============================================================
-   ۳) کرسر سفارشی
+   ۲) کرسر سفارشی
    ============================================================ */
-.cursor-dot,
-.cursor-ring {
+.cursor {
   position: fixed;
   top: 0; left: 0;
+  width: 10px; height: 10px;
+  border-radius: 50%;
+  background: #fff;
   pointer-events: none;
   z-index: 9999;
-  border-radius: 50%;
   transform: translate(-50%, -50%);
-  will-change: transform;
+  box-shadow:
+    0 0 16px 4px rgba(255, 170, 80, 0.9),
+    0 0 40px 12px rgba(255, 100, 60, 0.5);
   mix-blend-mode: screen;
 }
 
-.cursor-dot {
-  width: 8px; height: 8px;
-  background: #fff;
-  box-shadow: 0 0 14px 4px var(--pink), 0 0 30px 8px rgba(255, 95, 174, 0.55);
-}
-
-.cursor-ring {
-  width: 40px; height: 40px;
-  border: 1.5px solid rgba(255, 255, 255, 0.55);
-  transition: width .28s ease, height .28s ease, border-color .28s ease, background .28s ease;
-}
-
-.cursor-ring.hover {
-  width: 66px; height: 66px;
-  border-color: var(--pink);
-  background: rgba(255, 95, 174, 0.08);
-}
-
-/* دنبالهٔ ذرات کرسر */
-.spark {
+/* ============================================================
+   ۳) محتوای روی سیاهچاله
+   ============================================================ */
+.content {
   position: fixed;
-  width: 6px; height: 6px;
-  border-radius: 50%;
-  pointer-events: none;
-  z-index: 9998;
-  mix-blend-mode: screen;
-  animation: sparkFade 0.7s ease-out forwards;
-}
-
-@keyframes sparkFade {
-  0%   { opacity: 1; transform: translate(-50%, -50%) scale(1); }
-  100% { opacity: 0; transform: translate(-50%, -50%) scale(0.1) translateY(20px); }
-}
-
-/* ============================================================
-   ۴) کارت اصلی با افکت سه‌بعدی
-   ============================================================ */
-.stage {
-  position: relative;
-  z-index: 5;
-  perspective: 1400px;
-  width: min(720px, 100%);
-}
-
-.card {
-  position: relative;
-  width: 100%;
-  padding: clamp(30px, 5vw, 58px) clamp(22px, 4.5vw, 54px);
-
+  inset: 0;
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  padding: clamp(24px, 6vh, 60px) clamp(20px, 5vw, 50px);
   text-align: center;
-
-  background:
-    linear-gradient(180deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.02)),
-    rgba(18, 7, 38, 0.55);
-  backdrop-filter: blur(28px) saturate(180%);
-  -webkit-backdrop-filter: blur(28px) saturate(180%);
-
-  border: 1px solid var(--glass-border);
-  border-radius: var(--radius);
-  box-shadow: var(--shadow-deep), inset 0 1px 0 rgba(255, 255, 255, 0.14);
-
-  transform-style: preserve-3d;
-  transition: transform 0.35s cubic-bezier(0.2, 0.9, 0.3, 1);
-
-  animation: cardIn 1s var(--ease-out-back) both;
-  overflow: hidden;
-}
-
-/* هالهٔ دور کارت */
-.card::before {
-  content: "";
-  position: absolute;
-  inset: -2px;
-  border-radius: calc(var(--radius) + 2px);
-  padding: 1.5px;
-  background: linear-gradient(
-    130deg,
-    rgba(255, 95, 174, 0.75),
-    rgba(167, 139, 250, 0.15) 30%,
-    rgba(34, 211, 238, 0.75) 55%,
-    rgba(163, 230, 53, 0.15) 80%,
-    rgba(255, 95, 174, 0.75)
-  );
-  background-size: 300% 300%;
-  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
-  -webkit-mask-composite: xor;
-          mask-composite: exclude;
-  pointer-events: none;
-  animation: borderFlow 8s linear infinite;
-  opacity: 0.85;
-}
-
-/* درخشش عبوری روی کارت */
-.card::after {
-  content: "";
-  position: absolute;
-  top: 0; right: -70%;
-  width: 45%; height: 100%;
-  background: linear-gradient(100deg, transparent, rgba(255, 255, 255, 0.16), transparent);
-  transform: skewX(-18deg);
-  animation: cardShine 8s ease-in-out infinite;
   pointer-events: none;
 }
 
-@keyframes cardIn {
-  from {
-    opacity: 0;
-    transform: translateY(50px) rotateX(18deg) scale(0.9);
-    filter: blur(10px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0) rotateX(0) scale(1);
-    filter: blur(0);
-  }
+.content > * {
+  pointer-events: auto;
 }
 
-@keyframes borderFlow {
-  to { background-position: 300% 50%; }
-}
-
-@keyframes cardShine {
-  0%   { right: -70%; opacity: 0; }
-  12%  { opacity: 1; }
-  45%  { right: 130%; opacity: 0; }
-  100% { right: 130%; opacity: 0; }
-}
-
-/* ============================================================
-   ۵) نشان «در حال ساخت»
-   ============================================================ */
-.badge {
+/* --- بالای صفحه: نشان وضعیت --- */
+.top-badge {
   display: inline-flex;
   align-items: center;
   gap: 10px;
-  padding: 9px 20px;
-  margin-bottom: 22px;
 
-  font-size: 0.82rem;
+  padding: 9px 22px;
+  font-size: 0.78rem;
   font-weight: 800;
-  color: #fff;
+  letter-spacing: 0.04em;
 
-  background: linear-gradient(135deg, rgba(255, 95, 174, 0.18), rgba(167, 139, 250, 0.18));
-  border: 1px solid rgba(255, 255, 255, 0.16);
+  color: #ffd9a8;
+  background: rgba(255, 150, 60, 0.06);
+  border: 1px solid rgba(255, 150, 60, 0.28);
   border-radius: 999px;
+  backdrop-filter: blur(12px);
 
-  box-shadow: 0 10px 30px -12px rgba(255, 95, 174, 0.7);
-  animation: badgeIn 0.7s 0.3s var(--ease-out-back) both;
+  box-shadow: 0 0 30px -8px rgba(255, 150, 60, 0.6), inset 0 0 18px rgba(255, 150, 60, 0.08);
 
-  backdrop-filter: blur(10px);
+  animation: floatDown 0.9s 0.2s cubic-bezier(0.2, 0.9, 0.3, 1.35) both;
 }
 
-.badge .dot {
-  width: 8px;
-  height: 8px;
+.top-badge .dot {
+  width: 7px; height: 7px;
   border-radius: 50%;
-  background: var(--lime);
-  box-shadow: 0 0 0 0 rgba(163, 230, 53, 0.75);
-  animation: ping 1.7s ease-out infinite;
+  background: #ff9a3c;
+  box-shadow: 0 0 0 0 rgba(255, 154, 60, 0.8);
+  animation: ping 1.8s ease-out infinite;
 }
 
-@keyframes badgeIn {
-  from { opacity: 0; transform: scale(0.6) translateY(-12px); }
-  to   { opacity: 1; transform: scale(1) translateY(0); }
-}
 @keyframes ping {
-  0%   { box-shadow: 0 0 0 0 rgba(163, 230, 53, 0.75); }
-  70%  { box-shadow: 0 0 0 12px rgba(163, 230, 53, 0); }
-  100% { box-shadow: 0 0 0 0 rgba(163, 230, 53, 0); }
+  0%   { box-shadow: 0 0 0 0 rgba(255, 154, 60, 0.8); }
+  70%  { box-shadow: 0 0 0 12px rgba(255, 154, 60, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(255, 154, 60, 0); }
 }
 
-/* ============================================================
-   ۶) شخصیت مرکزی
-   ============================================================ */
-.mascot {
-  position: relative;
-  width: 160px;
-  height: 160px;
-  margin: 0 auto 18px;
-  display: grid;
-  place-items: center;
-  animation: mascotIn 0.9s 0.15s var(--ease-out-back) both;
-}
-
-.mascot .face {
-  position: relative;
-  z-index: 3;
-  font-size: 72px;
-  line-height: 1;
-  filter: drop-shadow(0 14px 24px rgba(255, 95, 174, 0.55));
-  animation: bob 2.8s ease-in-out infinite;
-}
-
-.mascot .tool {
-  position: absolute;
-  z-index: 4;
-  top: -2px;
-  left: 4px;
-  font-size: 30px;
-  transform-origin: 85% 85%;
-  animation: hammer 1.5s ease-in-out infinite;
-  filter: drop-shadow(0 6px 10px rgba(255, 95, 174, 0.5));
-}
-
-/* حلقه‌های گردان */
-.ring {
-  position: absolute;
-  inset: 0;
-  border-radius: 50%;
-  border: 1.5px dashed rgba(255, 95, 174, 0.5);
-  animation: spin 18s linear infinite;
-}
-.ring-2 {
-  inset: 14px;
-  border: 1.5px dashed rgba(34, 211, 238, 0.55);
-  animation: spin 12s linear infinite reverse;
-}
-.ring-3 {
-  inset: 28px;
-  border: 1.5px dashed rgba(163, 230, 53, 0.45);
-  animation: spin 9s linear infinite;
-}
-
-/* هالهٔ نورانی */
-.mascot .halo {
-  position: absolute;
-  inset: 20px;
-  border-radius: 50%;
-  background: radial-gradient(circle, rgba(255, 95, 174, 0.75), transparent 68%);
-  filter: blur(12px);
-  animation: pulse 3.2s ease-in-out infinite;
-}
-
-/* ذرات کوچک دور شخصیت */
-.mascot .orbit {
-  position: absolute;
-  inset: -8px;
-  animation: spin 14s linear infinite;
-}
-.mascot .orbit span {
-  position: absolute;
-  top: 50%; left: -6px;
-  width: 12px; height: 12px;
-  border-radius: 50%;
-  background: var(--cyan);
-  box-shadow: 0 0 14px 3px rgba(34, 211, 238, 0.85);
-  transform: translateY(-50%);
-}
-.mascot .orbit-2 {
-  inset: 6px;
-  animation: spin 10s linear infinite reverse;
-}
-.mascot .orbit-2 span {
-  background: var(--pink);
-  box-shadow: 0 0 14px 3px rgba(255, 95, 174, 0.85);
-  left: auto; right: -6px;
-}
-
-@keyframes mascotIn {
-  from { opacity: 0; transform: scale(0.4) rotate(-25deg); }
-  to   { opacity: 1; transform: scale(1) rotate(0); }
-}
-@keyframes bob {
-  0%, 100% { transform: translateY(0) rotate(0deg); }
-  50%      { transform: translateY(-12px) rotate(-6deg); }
-}
-@keyframes hammer {
-  0%, 100% { transform: rotate(-30deg); }
-  50%      { transform: rotate(28deg); }
-}
-@keyframes spin { to { transform: rotate(360deg); } }
-@keyframes pulse {
-  0%, 100% { transform: scale(1); opacity: 0.7; }
-  50%      { transform: scale(1.2); opacity: 1; }
-}
-
-/* ============================================================
-   ۷) تیتر با انیمیشن حروف
-   ============================================================ */
-.title {
-  font-size: clamp(1.5rem, 4.8vw, 2.5rem);
-  font-weight: 900;
-  line-height: 1.7;
-  letter-spacing: -0.3px;
-  margin-bottom: 16px;
-}
-
-.title .word {
-  display: inline-block;
-  margin: 0 3px;
-
-  background: linear-gradient(90deg, #ff5fae, #a78bfa 30%, #22d3ee 60%, #a3e635, #ff5fae);
-  background-size: 300% 100%;
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-
-  opacity: 0;
-  transform: translateY(24px) rotateX(60deg);
-  animation: wordIn 0.75s var(--ease-out-back) forwards, textFlow 8s linear infinite 0.8s;
-}
-
-.title .word:nth-child(1) { animation-delay: 0.45s, 0.8s; }
-.title .word:nth-child(2) { animation-delay: 0.58s, 0.8s; }
-.title .word:nth-child(3) { animation-delay: 0.71s, 0.8s; }
-.title .word:nth-child(4) { animation-delay: 0.84s, 0.8s; }
-.title .word:nth-child(5) { animation-delay: 0.97s, 0.8s; }
-
-@keyframes wordIn {
-  to { opacity: 1; transform: translateY(0) rotateX(0); }
-}
-@keyframes textFlow {
-  to { background-position: 300% 50%; }
-}
-
-/* ============================================================
-   ۸) متن زیر تیتر
-   ============================================================ */
-.subtitle {
-  font-size: clamp(0.9rem, 2.3vw, 1.02rem);
-  line-height: 2.1;
-  color: var(--ink-soft);
-  max-width: 46ch;
-  margin: 0 auto 6px;
-  animation: fadeUp 0.9s 1.05s ease both;
-}
-
-.subtitle b {
-  color: #fff;
-  font-weight: 800;
-  background: linear-gradient(90deg, var(--pink), var(--purple));
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-}
-
-/* ردیف ایموجی */
-.emoji-row {
-  display: flex;
-  justify-content: center;
-  gap: 12px;
-  font-size: 1.3rem;
-  margin-bottom: 4px;
-}
-.emoji-row span {
-  display: inline-block;
-  animation: wiggle 2.4s ease-in-out infinite;
-  opacity: 0;
-  animation-fill-mode: forwards;
-}
-.emoji-row span:nth-child(1) { animation-delay: 1.1s; }
-.emoji-row span:nth-child(2) { animation-delay: 1.22s; }
-.emoji-row span:nth-child(3) { animation-delay: 1.34s; }
-.emoji-row span:nth-child(4) { animation-delay: 1.46s; }
-.emoji-row span:nth-child(5) { animation-delay: 1.58s; }
-
-@keyframes wiggle {
-  0%   { opacity: 0; transform: translateY(14px) scale(0.5); }
-  25%  { opacity: 1; transform: translateY(-8px) rotate(-10deg) scale(1.12); }
-  75%  { transform: translateY(-4px) rotate(9deg) scale(1.05); }
-  100% { opacity: 1; transform: translateY(0) rotate(0) scale(1); }
-}
-
-@keyframes fadeUp {
-  from { opacity: 0; transform: translateY(16px); }
+@keyframes floatDown {
+  from { opacity: 0; transform: translateY(-20px); }
   to   { opacity: 1; transform: translateY(0); }
 }
 
-/* ============================================================
-   ۹) حلقهٔ پیشرفت + شمارنده
-   ============================================================ */
-.progress-wrap {
+/* --- وسط صفحه: هیچی (سیاهچاله اونجاست) --- */
+.spacer {
+  flex: 1;
+  min-height: 0;
+}
+
+/* --- پایین صفحه: متن‌ها و دکمه --- */
+.bottom-zone {
+  width: min(680px, 100%);
   display: flex;
-  justify-content: center;
+  flex-direction: column;
   align-items: center;
-  gap: 26px;
-  margin: 26px 0 22px;
-  flex-wrap: wrap;
-  animation: fadeUp 0.9s 1.2s ease both;
+  gap: 18px;
 }
 
-.ring-progress {
-  position: relative;
-  width: 108px;
-  height: 108px;
-  flex-shrink: 0;
-}
-
-.ring-progress svg {
-  width: 100%;
-  height: 100%;
-  transform: rotate(-90deg);
-}
-
-.ring-progress circle {
-  fill: none;
-  stroke-width: 7;
-  stroke-linecap: round;
-}
-
-.ring-progress .track {
-  stroke: rgba(255, 255, 255, 0.09);
-}
-
-.ring-progress .bar {
-  stroke: url(#ringGrad);
-  stroke-dasharray: 289;
-  stroke-dashoffset: 289;
-  animation: ringFill 9s cubic-bezier(0.5, 0, 0.25, 1) infinite;
-  filter: drop-shadow(0 0 8px rgba(255, 95, 174, 0.7));
-}
-
-@keyframes ringFill {
-  0%   { stroke-dashoffset: 254; }
-  45%  { stroke-dashoffset: 26; }
-  58%  { stroke-dashoffset: 26; }
-  100% { stroke-dashoffset: 254; }
-}
-
-.ring-progress .num {
-  position: absolute;
-  inset: 0;
-  display: grid;
-  place-items: center;
+.title {
+  font-size: clamp(1.35rem, 5vw, 2.4rem);
   font-weight: 900;
-  font-size: 1.35rem;
-  background: linear-gradient(90deg, var(--pink), var(--cyan));
+  line-height: 1.6;
+  letter-spacing: -0.4px;
+
+  background: linear-gradient(120deg, #fff 0%, #ffc87a 30%, #ff8b5c 55%, #c084fc 80%, #fff 100%);
+  background-size: 250% 100%;
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
-  font-variant-numeric: tabular-nums;
+
+  filter: drop-shadow(0 4px 24px rgba(255, 140, 60, 0.35));
+
+  animation: textFlow 6s linear infinite, riseIn 1s 0.5s cubic-bezier(0.2, 0.9, 0.3, 1.2) both;
 }
 
-.progress-info {
-  text-align: right;
-  min-width: 200px;
-  flex: 1;
-  max-width: 320px;
+@keyframes textFlow {
+  to { background-position: 250% 50%; }
 }
 
-.progress-info .head {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 12px;
-  margin-bottom: 10px;
-  font-size: 0.85rem;
+@keyframes riseIn {
+  from { opacity: 0; transform: translateY(30px); filter: blur(8px); }
+  to   { opacity: 1; transform: translateY(0); filter: blur(0); }
+}
+
+.subtitle {
+  font-size: clamp(0.85rem, 2.4vw, 1rem);
+  line-height: 2.1;
+  color: rgba(255, 255, 255, 0.62);
+  max-width: 44ch;
+
+  animation: riseIn 1s 0.75s cubic-bezier(0.2, 0.9, 0.3, 1.2) both;
+}
+
+.subtitle b {
+  color: #ffc87a;
   font-weight: 800;
-  color: var(--ink-soft);
 }
 
-.progress-info .head .label b {
+/* --- شمارش معکوس --- */
+.countdown {
+  display: flex;
+  gap: 14px;
+  margin-top: 4px;
+  animation: riseIn 1s 1s cubic-bezier(0.2, 0.9, 0.3, 1.2) both;
+}
+
+.count-cell {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+}
+
+.count-cell .num {
+  width: 62px;
+  height: 62px;
+  display: grid;
+  place-items: center;
+
+  font-size: 1.5rem;
+  font-weight: 900;
+  font-variant-numeric: tabular-nums;
+
   color: #fff;
-}
+  background: linear-gradient(150deg, rgba(255, 150, 60, 0.12), rgba(192, 132, 252, 0.12));
+  border: 1px solid rgba(255, 170, 90, 0.3);
+  border-radius: 14px;
+  backdrop-filter: blur(14px);
 
-.bar {
+  box-shadow:
+    0 10px 30px -12px rgba(255, 120, 60, 0.7),
+    inset 0 1px 0 rgba(255, 255, 255, 0.15);
+
   position: relative;
-  height: 14px;
-  border-radius: 999px;
-  background: rgba(255, 255, 255, 0.07);
-  border: 1px solid rgba(255, 255, 255, 0.1);
   overflow: hidden;
 }
 
-.bar i {
-  display: block;
-  height: 100%;
-  width: 12%;
-  border-radius: 999px;
-  background: linear-gradient(90deg, #ff5fae, #a78bfa, #22d3ee, #a3e635, #ff5fae);
-  background-size: 300% 100%;
-  animation:
-    barFill 9s cubic-bezier(0.5, 0, 0.25, 1) infinite,
-    barColor 4s linear infinite;
-  box-shadow: 0 0 20px -2px rgba(255, 95, 174, 0.9);
-}
-
-.bar i::after {
+.count-cell .num::after {
   content: "";
   position: absolute;
   inset: 0;
-  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.75), transparent);
-  animation: shine 2s linear infinite;
+  background: linear-gradient(180deg, rgba(255,255,255,0.15), transparent 55%);
+  pointer-events: none;
 }
 
-@keyframes barFill {
-  0%   { width: 12%; }
-  45%  { width: 88%; }
-  58%  { width: 88%; }
-  100% { width: 12%; }
-}
-@keyframes barColor { to { background-position: 300% 50%; } }
-@keyframes shine {
-  from { transform: translateX(-120%); }
-  to   { transform: translateX(120%); }
+.count-cell .lbl {
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.45);
+  letter-spacing: 0.02em;
 }
 
-/* ============================================================
-   ۱۰) چیپ‌های مرحله‌ها
-   ============================================================ */
-.chips {
-  list-style: none;
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 10px;
-  margin-bottom: 24px;
-  animation: fadeUp 0.9s 1.35s ease both;
-}
-
-.chips li {
-  padding: 9px 17px;
-  font-size: 0.83rem;
-  font-weight: 800;
-  color: var(--ink-soft);
-
-  background: var(--glass);
-  border: 1px solid var(--glass-border);
-  border-radius: 999px;
-
-  backdrop-filter: blur(10px);
-  box-shadow: 0 10px 24px -14px rgba(124, 58, 237, 0.9);
-
-  animation: chipFloat 3.8s ease-in-out infinite;
-  transition: transform 0.3s var(--ease-out-back), color 0.3s, border-color 0.3s, box-shadow 0.3s;
-}
-
-.chips li:nth-child(1) { animation-delay: 0s; }
-.chips li:nth-child(2) { animation-delay: 0.5s; }
-.chips li:nth-child(3) { animation-delay: 1s; }
-.chips li:nth-child(4) { animation-delay: 1.5s; }
-
-.chips li:hover {
-  color: #fff;
-  transform: translateY(-5px) scale(1.08);
-  border-color: rgba(255, 95, 174, 0.7);
-  box-shadow: 0 18px 34px -16px rgba(255, 95, 174, 1);
-}
-
-@keyframes chipFloat {
-  0%, 100% { transform: translateY(0); }
-  50%      { transform: translateY(-6px); }
-}
-
-/* ============================================================
-   ۱۱) نوار صوتی/اکولایزر بامزه
-   ============================================================ */
-.equalizer {
-  display: flex;
-  justify-content: center;
-  align-items: flex-end;
-  gap: 5px;
-  height: 26px;
-  margin: 0 auto 22px;
-  animation: fadeUp 0.9s 1.5s ease both;
-}
-
-.equalizer i {
-  display: block;
-  width: 5px;
-  border-radius: 3px;
-  background: linear-gradient(180deg, var(--pink), var(--purple));
-  animation: eq 1.1s ease-in-out infinite;
-  box-shadow: 0 0 10px rgba(255, 95, 174, 0.6);
-}
-.equalizer i:nth-child(1) { animation-delay: 0s;    height: 40%; }
-.equalizer i:nth-child(2) { animation-delay: 0.15s; height: 70%; background: linear-gradient(180deg, var(--purple), var(--cyan)); }
-.equalizer i:nth-child(3) { animation-delay: 0.3s;  height: 100%; background: linear-gradient(180deg, var(--cyan), var(--lime)); }
-.equalizer i:nth-child(4) { animation-delay: 0.45s; height: 55%; background: linear-gradient(180deg, var(--lime), var(--pink)); }
-.equalizer i:nth-child(5) { animation-delay: 0.6s;  height: 80%; background: linear-gradient(180deg, var(--pink), var(--purple)); }
-.equalizer i:nth-child(6) { animation-delay: 0.75s; height: 45%; }
-
-@keyframes eq {
-  0%, 100% { transform: scaleY(0.35); opacity: 0.6; }
-  50%      { transform: scaleY(1);    opacity: 1; }
-}
-
-/* ============================================================
-   ۱۲) یادداشت پایانی + دکمهٔ کانفتی
-   ============================================================ */
-.note {
-  font-size: 0.82rem;
-  line-height: 2;
-  color: var(--ink-soft);
-  opacity: 0.9;
-  animation: fadeUp 0.9s 1.6s ease both;
-}
-
-.note .heart {
-  display: inline-block;
-  animation: heartbeat 1.6s ease-in-out infinite;
-}
-@keyframes heartbeat {
-  0%, 100% { transform: scale(1); }
-  20%      { transform: scale(1.3); }
-  40%      { transform: scale(1); }
-  60%      { transform: scale(1.2); }
-}
-
+/* --- دکمهٔ اصلی --- */
 .cta {
-  margin-top: 22px;
+  position: relative;
   display: inline-flex;
   align-items: center;
-  gap: 9px;
+  gap: 12px;
 
-  padding: 13px 26px;
+  margin-top: 12px;
+  padding: 17px 42px;
+
   font-family: inherit;
-  font-size: 0.92rem;
-  font-weight: 800;
-  color: #1a0b35;
+  font-size: 1.02rem;
+  font-weight: 900;
+  letter-spacing: 0.02em;
+  color: #1a0a05;
 
-  background: linear-gradient(135deg, #ff9ad5, #a78bfa 55%, #22d3ee);
-  background-size: 220% 100%;
+  background: linear-gradient(135deg, #ffb45c, #ff7a3c 45%, #ff5c8b);
+  background-size: 200% 200%;
+
   border: none;
   border-radius: 999px;
   cursor: none;
 
-  box-shadow: 0 14px 34px -12px rgba(255, 95, 174, 0.9);
-  transition: transform 0.3s var(--ease-out-back), box-shadow 0.3s, background-position 0.6s;
-  animation: fadeUp 0.9s 1.75s ease both;
-  position: relative;
+  box-shadow:
+    0 0 0 1px rgba(255, 200, 130, 0.4) inset,
+    0 20px 50px -14px rgba(255, 100, 60, 0.85),
+    0 0 80px -10px rgba(255, 150, 60, 0.6);
+
+  transition: transform 0.35s cubic-bezier(0.2, 0.9, 0.3, 1.4), box-shadow 0.35s, background-position 0.6s;
   overflow: hidden;
+
+  animation: riseIn 1s 1.2s cubic-bezier(0.2, 0.9, 0.3, 1.2) both, ctaPulse 2.4s ease-in-out infinite 2.4s;
 }
 
-.cta::after {
+.cta::before {
   content: "";
   position: absolute;
   inset: 0;
-  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.6), transparent);
-  transform: translateX(-120%);
-  animation: shine 2.8s ease-in-out infinite 2s;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.7), transparent);
+  transform: translateX(-130%);
+  animation: ctaShine 3s ease-in-out infinite 2.5s;
 }
 
 .cta:hover {
-  transform: translateY(-4px) scale(1.06);
-  box-shadow: 0 22px 46px -14px rgba(255, 95, 174, 1);
+  transform: translateY(-4px) scale(1.05);
   background-position: 100% 50%;
+  box-shadow:
+    0 0 0 1px rgba(255, 220, 160, 0.6) inset,
+    0 30px 60px -16px rgba(255, 100, 60, 1),
+    0 0 110px -10px rgba(255, 150, 60, 0.9);
 }
 
 .cta:active {
   transform: translateY(-1px) scale(0.98);
 }
 
-@media (hover: none) {
-  .cta { cursor: pointer; }
+@media (hover: none) { .cta { cursor: pointer; } }
+
+@keyframes ctaPulse {
+  0%, 100% { box-shadow: 0 0 0 1px rgba(255,200,130,0.4) inset, 0 20px 50px -14px rgba(255,100,60,0.85), 0 0 80px -10px rgba(255,150,60,0.6); }
+  50%      { box-shadow: 0 0 0 1px rgba(255,200,130,0.6) inset, 0 24px 60px -14px rgba(255,100,60,1), 0 0 120px -10px rgba(255,150,60,0.9); }
+}
+
+@keyframes ctaShine {
+  0%   { transform: translateX(-130%); }
+  40%  { transform: translateX(130%); }
+  100% { transform: translateX(130%); }
+}
+
+.cta .arrow {
+  display: inline-block;
+  font-size: 1.15rem;
+  transition: transform 0.35s cubic-bezier(0.2, 0.9, 0.3, 1.4);
+}
+
+.cta:hover .arrow {
+  transform: translateX(-6px) scale(1.15);
+}
+
+/* --- یادداشت کوچک --- */
+.hint {
+  font-size: 0.76rem;
+  color: rgba(255, 255, 255, 0.35);
+  letter-spacing: 0.02em;
+  margin-top: 4px;
+  animation: riseIn 1s 1.4s cubic-bezier(0.2, 0.9, 0.3, 1.2) both;
 }
 
 /* ============================================================
-   ۱۳) کانفتی
+   ۴) فلاش سفید و پرش نهایی
    ============================================================ */
-#confetti {
+.flash {
   position: fixed;
   inset: 0;
-  pointer-events: none;
-  z-index: 9997;
-}
-
-.confetti-piece {
-  position: absolute;
-  width: 10px;
-  height: 14px;
-  border-radius: 2px;
-  will-change: transform;
-  animation: confettiFall linear forwards;
-}
-
-@keyframes confettiFall {
-  0%   { transform: translate3d(0, 0, 0) rotate(0deg); opacity: 1; }
-  100% { transform: translate3d(var(--tx), var(--ty), 0) rotate(var(--rot)); opacity: 0; }
-}
-
-/* ============================================================
-   ۱۴) حباب‌های شناور ایموجی
-   ============================================================ */
-.bubble {
-  position: fixed;
-  bottom: -14vh;
-  z-index: 2;
-  font-size: 1.6rem;
+  z-index: 100;
+  background: radial-gradient(circle at center, #fff 0%, #ffe6c8 40%, #ff9a3c 70%, #000 100%);
   opacity: 0;
   pointer-events: none;
-  user-select: none;
-  will-change: transform;
-  filter: drop-shadow(0 0 14px rgba(255, 95, 174, 0.5));
-  animation: rise linear infinite;
+  transition: opacity 0.4s ease;
 }
 
-@keyframes rise {
-  0%   { transform: translate3d(0, 0, 0) rotate(0deg); opacity: 0; }
-  10%  { opacity: 0.95; }
-  50%  { transform: translate3d(28px, -60vh, 0) rotate(180deg); opacity: 0.95; }
-  90%  { opacity: 0.85; }
-  100% { transform: translate3d(-22px, -128vh, 0) rotate(360deg); opacity: 0; }
+body.warping .flash {
+  opacity: 1;
 }
 
-.b1  { left: 4%;  font-size: 2.2rem; animation-duration: 18s; animation-delay: 0s; }
-.b2  { left: 14%; font-size: 1.5rem; animation-duration: 23s; animation-delay: 2.5s; }
-.b3  { left: 24%; font-size: 2rem;   animation-duration: 20s; animation-delay: 5s; }
-.b4  { left: 34%; font-size: 1.4rem; animation-duration: 26s; animation-delay: 1.2s; }
-.b5  { left: 44%; font-size: 2.1rem; animation-duration: 17s; animation-delay: 7s; }
-.b6  { left: 54%; font-size: 1.6rem; animation-duration: 24s; animation-delay: 3.6s; }
-.b7  { left: 64%; font-size: 2.3rem; animation-duration: 19s; animation-delay: 9s; }
-.b8  { left: 74%; font-size: 1.5rem; animation-duration: 22s; animation-delay: 0.8s; }
-.b9  { left: 84%; font-size: 2rem;   animation-duration: 25s; animation-delay: 6s; }
-.b10 { left: 92%; font-size: 1.7rem; animation-duration: 18s; animation-delay: 11s; }
+body.warping .content {
+  animation: contentSuck 1.4s cubic-bezier(0.6, 0, 0.9, 0.5) forwards;
+}
+
+@keyframes contentSuck {
+  0%   { transform: scale(1); filter: blur(0); opacity: 1; }
+  100% { transform: scale(0.2) translateY(-40px); filter: blur(20px); opacity: 0; }
+}
 
 /* ============================================================
-   ۱۵) ریسپانسیو
+   ۵) صفحهٔ رسیدن
    ============================================================ */
-@media (max-width: 640px) {
-  body { padding: 16px 12px; }
+.arrival {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 22px;
+  padding: 40px 24px;
+  text-align: center;
 
-  .stage { width: 100%; }
-  .card { border-radius: 28px; }
+  background: radial-gradient(ellipse at center, #1a0b2e 0%, #050110 55%, #000 100%);
 
-  .mascot { width: 130px; height: 130px; }
-  .mascot .face { font-size: 58px; }
-  .mascot .tool { font-size: 24px; }
-
-  .ring-progress { width: 88px; height: 88px; }
-  .ring-progress .num { font-size: 1.1rem; }
-
-  .progress-wrap { gap: 18px; }
-
-  .chips li { padding: 8px 13px; font-size: 0.76rem; }
-
-  .b3, .b5, .b8 { display: none; }
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.8s ease 0.4s;
 }
 
-@media (max-width: 400px) {
-  .b2, .b6, .b9, .b10 { display: none; }
-  .progress-info { max-width: 100%; }
+body.arrived .arrival {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.arrival-icon {
+  font-size: 5rem;
+  line-height: 1;
+  filter: drop-shadow(0 0 40px rgba(255, 170, 80, 0.9));
+  animation: arriveIcon 1.2s cubic-bezier(0.2, 0.9, 0.3, 1.5) 0.8s both;
+}
+
+@keyframes arriveIcon {
+  0%   { transform: scale(0) rotate(-180deg); opacity: 0; }
+  60%  { transform: scale(1.25) rotate(15deg); opacity: 1; }
+  100% { transform: scale(1) rotate(0deg); opacity: 1; }
+}
+
+.arrival h1 {
+  font-size: clamp(1.6rem, 6vw, 3rem);
+  font-weight: 900;
+  line-height: 1.6;
+
+  background: linear-gradient(120deg, #ffc87a, #ff8b5c, #c084fc, #ffc87a);
+  background-size: 300% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: textFlow 6s linear infinite, arriveText 1s 1.1s cubic-bezier(0.2, 0.9, 0.3, 1.2) both;
+}
+
+.arrival p {
+  max-width: 42ch;
+  font-size: clamp(0.9rem, 2.6vw, 1.05rem);
+  line-height: 2;
+  color: rgba(255, 255, 255, 0.6);
+  animation: arriveText 1s 1.3s cubic-bezier(0.2, 0.9, 0.3, 1.2) both;
+}
+
+.arrival p b {
+  color: #ffc87a;
+  font-weight: 800;
+}
+
+@keyframes arriveText {
+  from { opacity: 0; transform: translateY(20px); filter: blur(6px); }
+  to   { opacity: 1; transform: translateY(0); filter: blur(0); }
+}
+
+.arrival-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 20px;
+  font-size: 0.75rem;
+  font-weight: 800;
+  color: #ffd9a8;
+  background: rgba(255, 150, 60, 0.08);
+  border: 1px solid rgba(255, 150, 60, 0.3);
+  border-radius: 999px;
+  backdrop-filter: blur(10px);
+  animation: arriveText 1s 1.5s cubic-bezier(0.2, 0.9, 0.3, 1.2) both;
+}
+
+/* ستاره‌های تشویقی توی صفحهٔ رسیدن */
+.arrival-stars {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.arrival-stars span {
+  position: absolute;
+  font-size: 1.4rem;
+  opacity: 0;
+  animation: twinkleStar 3s ease-in-out infinite;
+}
+
+@keyframes twinkleStar {
+  0%, 100% { opacity: 0; transform: scale(0.5) rotate(0deg); }
+  50%      { opacity: 1; transform: scale(1.2) rotate(180deg); }
 }
 
 /* ============================================================
-   ۱۶) کاهش انیمیشن برای کاربران حساس
+   ۶) ریسپانسیو
+   ============================================================ */
+@media (max-width: 520px) {
+  .count-cell .num { width: 52px; height: 52px; font-size: 1.25rem; }
+  .cta { padding: 15px 34px; font-size: 0.95rem; }
+  .arrival-icon { font-size: 4rem; }
+}
+
+/* ============================================================
+   ۷) کاهش انیمیشن
    ============================================================ */
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
@@ -913,148 +508,110 @@ body {
     animation-iteration-count: 1 !important;
     transition-duration: 0.001ms !important;
   }
-  .bubble, .grid-overlay { display: none; }
-  .cursor-dot, .cursor-ring { display: none; }
-  body { cursor: auto; }
+  .grain { display: none; }
 }
 </style>
 </head>
 
 <body>
 
-<!-- Canvas ذرات -->
-<canvas id="stars"></canvas>
+<!-- کانواس اصلی -->
+<canvas id="cosmos"></canvas>
 
-<!-- اوروراها -->
-<div class="aurora a1"></div>
-<div class="aurora a2"></div>
-<div class="aurora a3"></div>
-<div class="aurora a4"></div>
-
-<!-- گرید محو -->
-<div class="grid-overlay"></div>
+<!-- لایه‌های تزئینی -->
+<div class="grain"></div>
+<div class="vignette"></div>
 
 <!-- کرسر سفارشی -->
-<div class="cursor-dot" id="cDot"></div>
-<div class="cursor-ring" id="cRing"></div>
+<div class="cursor" id="cursor"></div>
 
-<!-- حباب‌های شناور -->
-<div class="bubble b1">✨</div>
-<div class="bubble b2">🎈</div>
-<div class="bubble b3">🚀</div>
-<div class="bubble b4">⭐</div>
-<div class="bubble b5">💜</div>
-<div class="bubble b6">🌸</div>
-<div class="bubble b7">🍭</div>
-<div class="bubble b8">🛠️</div>
-<div class="bubble b9">🎉</div>
-<div class="bubble b10">💫</div>
+<!-- محتوای اصلی -->
+<div class="content" id="content">
 
-<!-- کانفتی -->
-<canvas id="confetti"></canvas>
+  <div class="top-badge">
+    <span class="dot"></span>
+    در حال ورود به سایت جدید
+  </div>
 
-<!-- صحنه و کارت -->
-<main class="stage">
-  <section class="card" id="card">
+  <div class="spacer"></div>
 
-    <div class="badge">
-      <span class="dot"></span>
-      در حال ساخت · Coming Soon
-    </div>
+  <div class="bottom-zone">
 
-    <div class="mascot">
-      <span class="halo"></span>
-      <span class="ring"></span>
-      <span class="ring ring-2"></span>
-      <span class="ring ring-3"></span>
-      <span class="orbit"><span></span></span>
-      <span class="orbit orbit-2"><span></span></span>
-      <span class="tool">🔨</span>
-      <span class="face">👷‍♀️</span>
-    </div>
-
-    <div class="emoji-row">
-      <span>✨</span>
-      <span>🎀</span>
-      <span>💖</span>
-      <span>🎀</span>
-      <span>✨</span>
-    </div>
-
-    <h1 class="title">
-      <span class="word">عزیزا،</span>
-      <span class="word">چند</span>
-      <span class="word">دقیقه</span>
-      <span class="word">دیگه</span>
-      <span class="word">سایت میاد!</span>
-    </h1>
+    <h1 class="title">داریم وارد سایت جدید میشیم</h1>
 
     <p class="subtitle">
-      داریم آخرین پیچ‌ها رو محکم می‌کنیم، رنگ‌ها رو قشنگ می‌چینیم و یه چیز
-      <b>خفن و تمیز</b> برات آماده می‌کنیم.
-      یه فنجون چای بریز، ما زودی تمومه 💜
+      همه‌چیز آماده‌ست... یه قدم مونده تا از دل <b>سیاهچاله</b> بپری بیرون
+      و برسی به دنیای تازه‌ای که برات ساختیم 💜
     </p>
 
-    <div class="progress-wrap">
-
-      <div class="ring-progress">
-        <svg viewBox="0 0 100 100">
-          <defs>
-            <linearGradient id="ringGrad" x1="0" y1="0" x2="1" y2="1">
-              <stop offset="0%"   stop-color="#ff5fae"/>
-              <stop offset="50%"  stop-color="#a78bfa"/>
-              <stop offset="100%" stop-color="#22d3ee"/>
-            </linearGradient>
-          </defs>
-          <circle class="track" cx="50" cy="50" r="46"></circle>
-          <circle class="bar"   cx="50" cy="50" r="46"></circle>
-        </svg>
-        <span class="num" id="ringNum">۰٪</span>
+    <div class="countdown">
+      <div class="count-cell">
+        <div class="num" id="d1">۰</div>
+        <div class="lbl">ثانیه</div>
       </div>
-
-      <div class="progress-info">
-        <div class="head">
-          <span class="label">⏳ <b>در حال آماده‌سازی...</b></span>
-          <span id="barNum">۰٪</span>
-        </div>
-        <div class="bar"><i></i></div>
+      <div class="count-cell">
+        <div class="num" id="d2">۰</div>
+        <div class="lbl">دقیقه</div>
       </div>
-
+      <div class="count-cell">
+        <div class="num" id="d3">۰</div>
+        <div class="lbl">ساعت</div>
+      </div>
     </div>
-
-    <ul class="chips">
-      <li>🎨 طراحی</li>
-      <li>⚙️ کدنویسی</li>
-      <li>🧪 تست نهایی</li>
-      <li>🚀 انتشار</li>
-    </ul>
-
-    <div class="equalizer" aria-hidden="true">
-      <i></i><i></i><i></i><i></i><i></i><i></i>
-    </div>
-
-    <p class="note">
-      ممنون که منتظری <span class="heart">💗</span>
-      <br>
-      یه بار دیگه سر بزن، شاید زودتر آماده شد 😉
-    </p>
 
     <button class="cta" id="cta">
-      🎉 یه جشن کوچیک بگیر
+      <span>بزن بریم</span>
+      <span class="arrow">🚀</span>
     </button>
 
-  </section>
-</main>
+    <p class="hint">
+      کمربندت رو ببند، سفر کوتاهه اما هیجان‌انگیز ✨
+    </p>
+
+  </div>
+
+</div>
+
+<!-- فلاش سفید -->
+<div class="flash"></div>
+
+<!-- صفحهٔ رسیدن -->
+<div class="arrival" id="arrival">
+  <div class="arrival-stars">
+    <span style="top:12%; left:14%; animation-delay:0s;">✨</span>
+    <span style="top:22%; right:12%; animation-delay:0.4s;">⭐</span>
+    <span style="bottom:20%; left:18%; animation-delay:0.8s;">💫</span>
+    <span style="bottom:14%; right:16%; animation-delay:1.2s;">🌟</span>
+    <span style="top:44%; left:8%; animation-delay:1.6s;">✨</span>
+    <span style="top:36%; right:8%; animation-delay:2s;">⭐</span>
+  </div>
+
+  <div class="arrival-badge">🎉 پرواز موفق بود</div>
+
+  <div class="arrival-icon">🪐</div>
+
+  <h1>به سایت جدید خوش اومدی</h1>
+
+  <p>
+    از دل سیاهچاله رد شدی و رسیدی به یه دنیای تازه.
+    <b>آماده‌ای ببینیم چی برات ساختیم؟</b>
+  </p>
+</div>
 
 <script>
 /* ============================================================
-   ۱) ذرات شبکه‌ای روی Canvas
+   ۱) کانواس سیاهچاله: ستاره‌های وارپ + دیسک برافزایشی + عدسی گرانشی
    ============================================================ */
 (() => {
-  const canvas = document.getElementById('stars');
+  const canvas = document.getElementById('cosmos');
   const ctx = canvas.getContext('2d');
-  let W, H, dpr, particles = [];
-  const COLORS = ['#ff5fae', '#a78bfa', '#22d3ee', '#a3e635', '#fbbf24'];
+  let W, H, dpr, cx, cy;
+  let BH_R;
+
+  let warpFactor = 1;      // ۱ = عادی، بالاتر = سرعت وارپ
+  let targetWarp = 1;
+  let holeSize = 1;
+  let targetHoleSize = 1;
 
   function resize() {
     dpr = Math.min(window.devicePixelRatio || 1, 2);
@@ -1062,304 +619,411 @@ body {
     H = canvas.height = innerHeight * dpr;
     canvas.style.width  = innerWidth + 'px';
     canvas.style.height = innerHeight + 'px';
-    initParticles();
-  }
 
-  function initParticles() {
-    const count = Math.min(Math.floor(innerWidth * innerHeight / 22000), 90);
-    particles = [];
-    for (let i = 0; i < count; i++) {
-      particles.push({
-        x: Math.random() * W,
-        y: Math.random() * H,
-        vx: (Math.random() - 0.5) * 0.22 * dpr,
-        vy: (Math.random() - 0.5) * 0.22 * dpr,
-        r: (Math.random() * 1.6 + 0.6) * dpr,
-        color: COLORS[Math.floor(Math.random() * COLORS.length)],
-        pulse: Math.random() * Math.PI * 2,
-        pulseSpeed: 0.01 + Math.random() * 0.02
-      });
+    cx = W / 2;
+    cy = H * 0.44; // سیاهچاله کمی بالاتر از مرکز
+    BH_R = Math.min(W, H) * 0.075;
+  }
+  resize();
+  addEventListener('resize', resize);
+
+  /* ---------- ستاره‌های وارپ ---------- */
+  class WarpStar {
+    constructor() { this.reset(true); }
+    reset(initial = false) {
+      this.angle = Math.random() * Math.PI * 2;
+      const maxR = Math.max(W, H) * 0.85;
+      this.radius = initial
+        ? Math.random() * maxR
+        : maxR * (0.85 + Math.random() * 0.5);
+      this.speed = 0.4 + Math.random() * 1.6;
+      this.size = 0.4 + Math.random() * 1.7;
+      this.hue = this.pickHue();
+      this.alpha = 0.35 + Math.random() * 0.65;
+      this.twinkle = Math.random() * Math.PI * 2;
+    }
+    pickHue() {
+      const r = Math.random();
+      if (r < 0.55) return { h: 30, s: 90, l: 75 };   // نارنجی طلایی
+      if (r < 0.78) return { h: 280, s: 70, l: 78 };  // بنفش
+      if (r < 0.92) return { h: 0, s: 0, l: 100 };    // سفید
+      return { h: 200, s: 80, l: 80 };                // آبی
+    }
+    update(warp) {
+      const distFromCenter = this.radius / Math.max(W, H);
+      // نزدیک‌تر به سیاهچاله = سریع‌تر (شتاب گرانشی)
+      const accel = 1 + (1 - Math.min(distFromCenter, 1)) * 0.6;
+      this.radius -= this.speed * warp * accel * 1.2;
+      this.twinkle += 0.1;
+      if (this.radius < BH_R * 0.9) this.reset();
+    }
+    draw(warp) {
+      const cos = Math.cos(this.angle);
+      const sin = Math.sin(this.angle);
+
+      const x1 = cx + cos * this.radius;
+      const y1 = cy + sin * this.radius;
+
+      // طول دنباله بر اساس سرعت
+      const trail = this.speed * warp * (2 + (1 - this.radius / Math.max(W, H)) * 12);
+      const x2 = cx + cos * (this.radius + trail);
+      const y2 = cy + sin * (this.radius + trail);
+
+      const { h, s, l } = this.hue;
+      const flicker = 0.7 + Math.sin(this.twinkle) * 0.3;
+      const alpha = this.alpha * flicker;
+
+      // دنباله
+      const grad = ctx.createLinearGradient(x2, y2, x1, y1);
+      grad.addColorStop(0, `hsla(${h}, ${s}%, ${l}%, 0)`);
+      grad.addColorStop(1, `hsla(${h}, ${s}%, ${l}%, ${alpha})`);
+
+      ctx.strokeStyle = grad;
+      ctx.lineWidth = this.size * dpr;
+      ctx.lineCap = 'round';
+      ctx.beginPath();
+      ctx.moveTo(x2, y2);
+      ctx.lineTo(x1, y1);
+      ctx.stroke();
+
+      // سر ستاره
+      ctx.fillStyle = `hsla(${h}, ${s}%, ${l}%, ${alpha})`;
+      ctx.shadowColor = `hsla(${h}, ${s}%, ${l}%, 0.9)`;
+      ctx.shadowBlur = 10 * dpr;
+      ctx.beginPath();
+      ctx.arc(x1, y1, this.size * dpr * 0.7, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.shadowBlur = 0;
     }
   }
 
-  function draw() {
-    ctx.clearRect(0, 0, W, H);
-
-    // خطوط بین ذرات نزدیک
-    for (let i = 0; i < particles.length; i++) {
-      const a = particles[i];
-      for (let j = i + 1; j < particles.length; j++) {
-        const b = particles[j];
-        const dx = a.x - b.x, dy = a.y - b.y;
-        const d2 = dx * dx + dy * dy;
-        const maxD = 130 * dpr;
-        if (d2 < maxD * maxD) {
-          const alpha = (1 - Math.sqrt(d2) / maxD) * 0.22;
-          ctx.strokeStyle = `rgba(167, 139, 250, ${alpha})`;
-          ctx.lineWidth = 1 * dpr;
-          ctx.beginPath();
-          ctx.moveTo(a.x, a.y);
-          ctx.lineTo(b.x, b.y);
-          ctx.stroke();
-        }
-      }
+  /* ---------- ذرات دیسک برافزایشی ---------- */
+  class DiskParticle {
+    constructor() { this.reset(); }
+    reset() {
+      this.angle = Math.random() * Math.PI * 2;
+      this.orbitR = BH_R * (1.7 + Math.random() * 3.2);
+      // سرعت زاویه‌ای بر اساس فیزیک کپلری (نزدیک‌تر = سریع‌تر)
+      this.omega = (BH_R * 2.2) / this.orbitR * (0.006 + Math.random() * 0.002);
+      this.size = (0.5 + Math.random() * 1.6) * dpr;
+      this.tilt = 0.34;           // میزان تخت‌شدگی دیسک (زاویه دید)
+      this.depth = Math.random(); // برای لایه‌بندی
+      this.bright = 0.6 + Math.random() * 0.4;
+      this.hue = 20 + Math.random() * 40; // نارنجی-طلایی
     }
+    update() {
+      this.angle += this.omega;
+      if (this.angle > Math.PI * 2) this.angle -= Math.PI * 2;
+    }
+    get3D() {
+      const x = Math.cos(this.angle) * this.orbitR;
+      const y = Math.sin(this.angle) * this.orbitR * this.tilt;
+      // depth: منفی = پشت سیاهچاله، مثبت = جلو
+      const depth = Math.sin(this.angle);
+      return { x: cx + x, y: cy + y, depth };
+    }
+    draw() {
+      const p = this.get3D();
 
-    // نقطه‌ها
-    for (const p of particles) {
-      p.x += p.vx;
-      p.y += p.vy;
-      p.pulse += p.pulseSpeed;
+      // Doppler: سمتی که به سمت ما میاد روشن‌تره
+      // angle ۰ => cos=1 => سمت راست
+      // سرعت خطی با cos(angle) متناسبه با جهت دید
+      const doppler = 0.55 + 0.45 * Math.cos(this.angle);
 
-      if (p.x < 0 || p.x > W) p.vx *= -1;
-      if (p.y < 0 || p.y > H) p.vy *= -1;
+      // fade در نزدیکی افق رویداد
+      const distFromHorizon = (this.orbitR - BH_R) / (BH_R * 3.2);
+      const fadeIn = Math.min(1, distFromHorizon * 1.6);
+      const fadeOut = 1 - Math.pow(1 - Math.min(distFromHorizon, 1), 2);
 
-      const scale = 0.8 + Math.sin(p.pulse) * 0.35;
-      const radius = p.r * scale;
+      const alpha = this.bright * doppler * fadeIn * fadeOut * 0.9;
+
+      const hue = this.hue + doppler * 20;
+      const light = 45 + doppler * 35;
 
       // هاله
-      const grad = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, radius * 6);
-      grad.addColorStop(0, p.color);
-      grad.addColorStop(1, 'transparent');
-      ctx.fillStyle = grad;
+      ctx.shadowColor = `hsla(${hue}, 100%, 65%, ${alpha})`;
+      ctx.shadowBlur = 12 * dpr;
+      ctx.fillStyle = `hsla(${hue}, 100%, ${light}%, ${alpha})`;
       ctx.beginPath();
-      ctx.arc(p.x, p.y, radius * 6, 0, Math.PI * 2);
+      ctx.arc(p.x, p.y, this.size, 0, Math.PI * 2);
       ctx.fill();
-
-      // هسته
-      ctx.fillStyle = p.color;
-      ctx.beginPath();
-      ctx.arc(p.x, p.y, radius, 0, Math.PI * 2);
-      ctx.fill();
+      ctx.shadowBlur = 0;
     }
-
-    requestAnimationFrame(draw);
   }
 
-  addEventListener('resize', resize);
-  resize();
-  draw();
+  /* ---------- راه‌اندازی ---------- */
+  const stars = Array.from({ length: 220 }, () => new WarpStar());
+  const diskParticles = Array.from({ length: 260 }, () => new DiskParticle());
+
+  /* ---------- رسم سیاهچاله ---------- */
+  function drawBlackHole(time) {
+    const R = BH_R * holeSize;
+
+    /* --- هالهٔ بیرونی نارنجی-بنفش --- */
+    const outerGlow = ctx.createRadialGradient(cx, cy, R * 1.05, cx, cy, R * 4.2);
+    outerGlow.addColorStop(0,    'rgba(255, 190, 100, 0.55)');
+    outerGlow.addColorStop(0.25, 'rgba(255, 130, 70, 0.28)');
+    outerGlow.addColorStop(0.55, 'rgba(192, 100, 255, 0.14)');
+    outerGlow.addColorStop(1,    'transparent');
+    ctx.fillStyle = outerGlow;
+    ctx.beginPath();
+    ctx.arc(cx, cy, R * 4.2, 0, Math.PI * 2);
+    ctx.fill();
+
+    /* --- دیسک برافزایشی (بیضی چرخان) --- */
+    ctx.save();
+    ctx.translate(cx, cy);
+
+    // لایهٔ بیرونی دیسک
+    ctx.save();
+    ctx.scale(1, 0.34);
+    ctx.translate(0, 0);
+    const diskGrad = ctx.createRadialGradient(0, 0, R * 1.4, 0, 0, R * 3.6);
+    diskGrad.addColorStop(0,    'rgba(255, 230, 160, 0.55)');
+    diskGrad.addColorStop(0.3,  'rgba(255, 150, 70, 0.45)');
+    diskGrad.addColorStop(0.65, 'rgba(255, 80, 130, 0.22)');
+    diskGrad.addColorStop(1,    'transparent');
+    ctx.fillStyle = diskGrad;
+    ctx.beginPath();
+    ctx.arc(0, 0, R * 3.6, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.restore();
+
+    // حلقهٔ نازک پرانرژی
+    ctx.save();
+    ctx.scale(1, 0.34);
+    ctx.strokeStyle = 'rgba(255, 220, 140, 0.55)';
+    ctx.lineWidth = 2.2 * dpr;
+    ctx.shadowColor = 'rgba(255, 180, 90, 0.9)';
+    ctx.shadowBlur = 22 * dpr;
+    ctx.beginPath();
+    ctx.arc(0, 0, R * 1.75, 0, Math.PI * 2);
+    ctx.stroke();
+    ctx.shadowBlur = 0;
+    ctx.restore();
+
+    ctx.restore();
+
+    /* --- حلقهٔ فوتون (نور پیچیده دور سیاهچاله) --- */
+    const photonPulse = 1 + Math.sin(time * 0.002) * 0.02;
+    ctx.save();
+    ctx.strokeStyle = 'rgba(255, 240, 200, 0.95)';
+    ctx.lineWidth = 2.6 * dpr;
+    ctx.shadowColor = 'rgba(255, 180, 90, 1)';
+    ctx.shadowBlur = 30 * dpr;
+    ctx.beginPath();
+    ctx.arc(cx, cy, R * 1.03 * photonPulse, 0, Math.PI * 2);
+    ctx.stroke();
+
+    // حلقهٔ دوم محوتر
+    ctx.strokeStyle = 'rgba(255, 200, 140, 0.5)';
+    ctx.lineWidth = 1.4 * dpr;
+    ctx.shadowBlur = 18 * dpr;
+    ctx.beginPath();
+    ctx.arc(cx, cy, R * 1.12, 0, Math.PI * 2);
+    ctx.stroke();
+    ctx.shadowBlur = 0;
+    ctx.restore();
+
+    /* --- افق رویداد: سیاهی مطلق --- */
+    const horizonGrad = ctx.createRadialGradient(cx, cy, 0, cx, cy, R);
+    horizonGrad.addColorStop(0,    '#000');
+    horizonGrad.addColorStop(0.85, '#000');
+    horizonGrad.addColorStop(1,    'rgba(0,0,0,0.98)');
+    ctx.fillStyle = horizonGrad;
+    ctx.beginPath();
+    ctx.arc(cx, cy, R, 0, Math.PI * 2);
+    ctx.fill();
+
+    /* --- عدسی گرانشی: کمان نور بالای سیاهچاله --- */
+    ctx.save();
+    ctx.strokeStyle = 'rgba(255, 200, 120, 0.35)';
+    ctx.lineWidth = 1.6 * dpr;
+    ctx.shadowColor = 'rgba(255, 180, 90, 0.7)';
+    ctx.shadowBlur = 20 * dpr;
+    ctx.beginPath();
+    ctx.ellipse(cx, cy, R * 1.28, R * 0.2, 0, 0, Math.PI * 2);
+    ctx.stroke();
+    ctx.restore();
+  }
+
+  /* ---------- حلقهٔ رندر ---------- */
+  let lastTime = performance.now();
+  function loop(now) {
+    const dt = now - lastTime;
+    lastTime = now;
+
+    // نرم‌کردن warp و اندازهٔ سیاهچاله
+    warpFactor += (targetWarp - warpFactor) * 0.06;
+    holeSize   += (targetHoleSize - holeSize) * 0.05;
+
+    // پاک کردن با trail خیلی کم برای حس حرکت
+    ctx.fillStyle = 'rgba(0, 0, 0, 0.34)';
+    ctx.fillRect(0, 0, W, H);
+
+    // ۱) ستاره‌های وارپ
+    for (const s of stars) {
+      s.update(warpFactor);
+      s.draw(warpFactor);
+    }
+
+    // ۲) نیمهٔ پشتی دیسک برافزایشی
+    const frontParticles = [];
+    for (const p of diskParticles) {
+      p.update();
+    }
+    // مرتب‌سازی بر اساس عمق
+    diskParticles.sort((a, b) => Math.sin(a.angle) - Math.sin(b.angle));
+
+    const backOnes = [];
+    const frontOnes = [];
+    for (const p of diskParticles) {
+      if (Math.sin(p.angle) < 0) backOnes.push(p);
+      else frontOnes.push(p);
+    }
+
+    for (const p of backOnes) p.draw();
+
+    // ۳) خود سیاهچاله
+    drawBlackHole(now);
+
+    // ۴) نیمهٔ جلویی دیسک
+    for (const p of frontOnes) p.draw();
+
+    requestAnimationFrame(loop);
+  }
+  requestAnimationFrame(loop);
+
+  /* ---------- API برای کنترل از بیرون ---------- */
+  window.__bh = {
+    warp: (val) => { targetWarp = val; },
+    grow: (val) => { targetHoleSize = val; }
+  };
 })();
 
 /* ============================================================
-   ۲) کرسر سفارشی + دنبالهٔ ذرات
+   ۲) کرسر سفارشی نرم
    ============================================================ */
 (() => {
   const isTouch = matchMedia('(hover: none)').matches;
   if (isTouch) return;
 
-  const dot  = document.getElementById('cDot');
-  const ring = document.getElementById('cRing');
-
-  let mx = innerWidth / 2, my = innerHeight / 2;
-  let rx = mx, ry = my;
-  let lastSpark = 0;
-  const SPARK_COLORS = ['#ff5fae', '#a78bfa', '#22d3ee', '#a3e635', '#fbbf24'];
+  const cur = document.getElementById('cursor');
+  let tx = innerWidth / 2, ty = innerHeight / 2;
+  let x = tx, y = ty;
 
   document.addEventListener('mousemove', (e) => {
-    mx = e.clientX; my = e.clientY;
-    dot.style.transform = `translate(${mx}px, ${my}px) translate(-50%, -50%)`;
-
-    const now = performance.now();
-    if (now - lastSpark > 45) {
-      lastSpark = now;
-      createSpark(mx, my);
-    }
+    tx = e.clientX;
+    ty = e.clientY;
   });
 
-  function createSpark(x, y) {
-    const s = document.createElement('div');
-    s.className = 'spark';
-    const c = SPARK_COLORS[Math.floor(Math.random() * SPARK_COLORS.length)];
-    s.style.background = c;
-    s.style.boxShadow = `0 0 12px 3px ${c}`;
-    s.style.left = (x + (Math.random() - 0.5) * 22) + 'px';
-    s.style.top  = (y + (Math.random() - 0.5) * 22) + 'px';
-    s.style.width = s.style.height = (4 + Math.random() * 5) + 'px';
-    document.body.appendChild(s);
-    setTimeout(() => s.remove(), 700);
-  }
-
-  // حرکت نرم حلقه
   function loop() {
-    rx += (mx - rx) * 0.16;
-    ry += (my - ry) * 0.16;
-    ring.style.transform = `translate(${rx}px, ${ry}px) translate(-50%, -50%)`;
+    x += (tx - x) * 0.22;
+    y += (ty - y) * 0.22;
+    cur.style.transform = `translate(${x}px, ${y}px) translate(-50%, -50%)`;
     requestAnimationFrame(loop);
   }
   loop();
 
-  // بزرگ‌شدن روی عناصر تعاملی
-  document.querySelectorAll('a, button, .cta, .chips li, .card').forEach(el => {
-    el.addEventListener('mouseenter', () => ring.classList.add('hover'));
-    el.addEventListener('mouseleave', () => ring.classList.remove('hover'));
-  });
-})();
-
-/* ============================================================
-   ۳) افکت سه‌بعدی کارت با حرکت ماوس
-   ============================================================ */
-(() => {
-  const card = document.getElementById('card');
-  if (!card || matchMedia('(hover: none)').matches) return;
-
-  const stage = card.parentElement;
-  let rafId = null;
-  let targetX = 0, targetY = 0;
-  let currentX = 0, currentY = 0;
-
-  stage.addEventListener('mousemove', (e) => {
-    const rect = card.getBoundingClientRect();
-    const cx = rect.left + rect.width / 2;
-    const cy = rect.top + rect.height / 2;
-    targetX = ((e.clientY - cy) / rect.height) * -10; // rotateX
-    targetY = ((e.clientX - cx) / rect.width)  *  10; // rotateY
-
-    if (!rafId) rafId = requestAnimationFrame(update);
-  });
-
-  stage.addEventListener('mouseleave', () => {
-    targetX = 0; targetY = 0;
-    if (!rafId) rafId = requestAnimationFrame(update);
-  });
-
-  function update() {
-    currentX += (targetX - currentX) * 0.12;
-    currentY += (targetY - currentY) * 0.12;
-
-    card.style.transform =
-      `rotateX(${currentX}deg) rotateY(${currentY}deg) translateZ(0)`;
-
-    if (Math.abs(targetX - currentX) < 0.05 && Math.abs(targetY - currentY) < 0.05) {
-      rafId = null;
-      return;
-    }
-    rafId = requestAnimationFrame(update);
-  }
-})();
-
-/* ============================================================
-   ۴) شمارندهٔ درصد (حلقه + نوار)
-   ============================================================ */
-(() => {
-  const ringNum = document.getElementById('ringNum');
-  const barNum  = document.getElementById('barNum');
-  if (!ringNum || !barNum) return;
-
-  const faDigits = ['۰','۱','۲','۳','۴','۵','۶','۷','۸','۹'];
-  const toFa = (n) => String(n).split('').map(d => faDigits[+d] ?? d).join('');
-
-  let current = 0;
-  let direction = 1;
-
-  setInterval(() => {
-    // نوسان بین 12 و 92 برای القای حس "در حال کار"
-    if (direction > 0) {
-      current += Math.random() * 3 + 1;
-      if (current >= 92) { current = 92; direction = -1; }
-    } else {
-      current -= Math.random() * 2 + 0.6;
-      if (current <= 14) { current = 14; direction = 1; }
-    }
-    const v = Math.round(current);
-    ringNum.textContent = toFa(v) + '٪';
-    barNum.textContent  = toFa(v) + '٪';
-  }, 220);
-})();
-
-/* ============================================================
-   ۵) کانفتی (Canvas) - با کلیک روی دکمه یا هر جای کارت
-   ============================================================ */
-(() => {
-  const canvas = document.getElementById('confetti');
-  const ctx = canvas.getContext('2d');
-  let W, H, dpr;
-
-  function resize() {
-    dpr = Math.min(window.devicePixelRatio || 1, 2);
-    W = canvas.width  = innerWidth  * dpr;
-    H = canvas.height = innerHeight * dpr;
-    canvas.style.width  = innerWidth + 'px';
-    canvas.style.height = innerHeight + 'px';
-  }
-  resize();
-  addEventListener('resize', resize);
-
-  const COLORS = ['#ff5fae', '#a78bfa', '#22d3ee', '#a3e635', '#fbbf24', '#fff'];
-  const pieces = [];
-
-  function burst(x, y, count = 90) {
-    for (let i = 0; i < count; i++) {
-      const angle = (Math.PI * 2 * i) / count + Math.random() * 0.4;
-      const speed = 6 + Math.random() * 14;
-      pieces.push({
-        x: x * dpr,
-        y: y * dpr,
-        vx: Math.cos(angle) * speed * dpr,
-        vy: Math.sin(angle) * speed * dpr - 4 * dpr,
-        g: 0.32 * dpr,
-        life: 1,
-        decay: 0.008 + Math.random() * 0.014,
-        size: (5 + Math.random() * 7) * dpr,
-        color: COLORS[Math.floor(Math.random() * COLORS.length)],
-        rot: Math.random() * Math.PI * 2,
-        vrot: (Math.random() - 0.5) * 0.4
-      });
-    }
-    if (pieces.length > 0 && !raf) loop();
-  }
-
-  let raf = null;
-
-  function loop() {
-    ctx.clearRect(0, 0, W, H);
-    for (let i = pieces.length - 1; i >= 0; i--) {
-      const p = pieces[i];
-      p.vy += p.g;
-      p.vx *= 0.99;
-      p.x += p.vx;
-      p.y += p.vy;
-      p.rot += p.vrot;
-      p.life -= p.decay;
-
-      if (p.life <= 0 || p.y > H + 40) {
-        pieces.splice(i, 1);
-        continue;
-      }
-
-      ctx.save();
-      ctx.globalAlpha = Math.max(p.life, 0);
-      ctx.translate(p.x, p.y);
-      ctx.rotate(p.rot);
-      ctx.fillStyle = p.color;
-      ctx.fillRect(-p.size / 2, -p.size / 4, p.size, p.size / 2);
-      ctx.restore();
-    }
-
-    if (pieces.length > 0) {
-      raf = requestAnimationFrame(loop);
-    } else {
-      raf = null;
-      ctx.clearRect(0, 0, W, H);
-    }
-  }
-
-  // دکمهٔ کانفتی
+  // بزرگ‌شدن روی دکمه
   const cta = document.getElementById('cta');
-  cta.addEventListener('click', (e) => {
-    const rect = cta.getBoundingClientRect();
-    burst(rect.left + rect.width / 2, rect.top + rect.height / 2, 140);
-    // انفجار دوم کوچک
+  cta.addEventListener('mouseenter', () => {
+    cur.style.width = '22px';
+    cur.style.height = '22px';
+  });
+  cta.addEventListener('mouseleave', () => {
+    cur.style.width = '10px';
+    cur.style.height = '10px';
+  });
+})();
+
+/* ============================================================
+   ۳) شمارش معکوس زنده (به سمت یه زمان هدف)
+   ============================================================ */
+(() => {
+  const faD = ['۰','۱','۲','۳','۴','۵','۶','۷','۸','۹'];
+  const toFa = (n) => String(n).padStart(2, '0')
+    .split('').map(d => faD[+d] ?? d).join('');
+
+  const d1 = document.getElementById('d1');
+  const d2 = document.getElementById('d2');
+  const d3 = document.getElementById('d3');
+
+  // هدف: ۵ ثانیه بعد از باز شدن صفحه (برای دمو)
+  const target = Date.now() + 5 * 1000;
+
+  function tick() {
+    let diff = Math.max(0, Math.floor((target - Date.now()) / 1000));
+    const h = Math.floor(diff / 3600);
+    const m = Math.floor((diff % 3600) / 60);
+    const s = diff % 60;
+
+    d1.textContent = toFa(s);
+    d2.textContent = toFa(m);
+    d3.textContent = toFa(h);
+  }
+  tick();
+  setInterval(tick, 1000);
+})();
+
+/* ============================================================
+   ۴) پرش نهایی با کلیک روی دکمه
+   ============================================================ */
+(() => {
+  const cta = document.getElementById('cta');
+  let warping = false;
+
+  function startWarp() {
+    if (warping) return;
+    warping = true;
+
+    // لرزش کل صفحه
+    document.documentElement.style.transition = 'transform 1.4s cubic-bezier(0.6,0,0.9,0.5)';
+    document.documentElement.style.transform = 'scale(1.06)';
+
+    // وارپ ستاره‌ها + بزرگ شدن سیاهچاله
+    window.__bh.warp(9);
+    setTimeout(() => window.__bh.warp(30), 400);
+    setTimeout(() => window.__bh.warp(80), 900);
+
+    setTimeout(() => window.__bh.grow(2.2), 400);
+    setTimeout(() => window.__bh.grow(6), 1000);
+    setTimeout(() => window.__bh.grow(14), 1500);
+
+    // کلاس وارپینگ برای فلاش و مکیده‌شدن محتوا
+    document.body.classList.add('warping');
+
+    // لرزش شدید
+    let shakeCount = 0;
+    const shakeInterval = setInterval(() => {
+      const amt = 3 + shakeCount * 0.5;
+      const rx = (Math.random() - 0.5) * amt;
+      const ry = (Math.random() - 0.5) * amt;
+      document.documentElement.style.transform =
+        `scale(${1.06 + shakeCount * 0.008}) translate(${rx}px, ${ry}px)`;
+      shakeCount++;
+      if (shakeCount > 40) clearInterval(shakeInterval);
+    }, 30);
+
+    // رسیدن به مقصد
     setTimeout(() => {
-      burst(innerWidth / 2, innerHeight / 2, 80);
-    }, 180);
+      document.body.classList.add('arrived');
+      document.documentElement.style.transform = 'none';
+      document.documentElement.style.transition = 'none';
+    }, 2600);
+  }
+
+  cta.addEventListener('click', startWarp);
+
+  // با کلیک روی هرجای صفحه هم اجرا بشه (برای حس سینمایی)
+  document.addEventListener('click', (e) => {
+    if (e.target.closest('.cta')) return;
+    if (warping) return;
+    // فقط بعد از چند ثانیه که کاربر متن رو خونده
+    if (Date.now() - startTime > 3500) startWarp();
   });
 
-  // با کلیک روی کارت هم کانفتی بپاشه (سبک‌تر)
-  document.getElementById('card').addEventListener('click', (e) => {
-    if (e.target.closest('.cta')) return;
-    burst(e.clientX, e.clientY, 50);
-  });
+  const startTime = Date.now();
 })();
 </script>
 </body>
